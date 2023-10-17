@@ -13,18 +13,18 @@ aider les gens ayant besoin d’un accès encore plus facile à de la nourriture
 de l'API qui concerne les Banques alimentaire. Ils développeront
 tout le nécessaire comme l'inscription et la création d'un profil.
 Ils peuvent aussi modifier leur menu avec la possibilité d'ajouter
-,supprimer ou mettre à jour des aliments dans le menu. Ils rendent
-les profils et les menus disponibles pour que les clients
-puissent les consulter. Aussi, ils donnent l'API la fonctionnalité
-de recevoir des commandes des clients et envoyer des commandes
+,supprimer ou mettre à jour des aliments dans le menu et les classer par catégorie comme laitièr , viande , légume ou fruits
+.Ils rendent les profils et les menus disponibles pour que les clients puissent les consulter. 
+Aussi, ils donnent l'API la fonctionnalitéde recevoir des commandes et modifier 
+l'état des commandes des clients  et envoyer des commandes
 pour que les livreurs pour la livraison.
 
 **Sous-équipe 2 : Client** est responsable de la partie de l'API 
 qui concerne les clients. Ils développeront tout le nécessaire 
-comme l'inscription et la création d'un profil. Ils peuvent ajouter
+comme l'inscription et la création d'un profil . Ils peuvent ajouter
 ,modifier ou supprimer leurs commandes.Aussi , ils donnent les 
-fonctionnalités de choisir des denrés alimentaires et ajouter ou 
-modifier les items du panier.
+fonctionnalités de choisir des denrés alimentaires, ajouter ou 
+modifier les items du panier et noter la qualité de livraison.
 
 **Sous-équipe 3 : Livreur** est responsable de la partie de l'API
 qui concerne les livreurs. Ils développeront tout le nécessaire
