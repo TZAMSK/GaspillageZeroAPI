@@ -9,6 +9,8 @@ class PanierDAOImpl: PanierDAO {
     override fun chercherTous(): List<Panier> = SourceDonnées.paniers
     override fun chercherParCode(idPanier: Int): Panier? = SourceDonnées.paniers.find{it.idPanier == idPanier}
 
+    override fun chercherContenueParCommande(idCommande: Int): Panier? = SourceDonnées.paniers.find{it.idPanier == SourceDonnées.commandes.find { it.idCommande == idCommande }?.idPanier}
+
     override fun ajouter(panier: Panier): Panier? {
         SourceDonnées.paniers.add(panier)
         return panier
