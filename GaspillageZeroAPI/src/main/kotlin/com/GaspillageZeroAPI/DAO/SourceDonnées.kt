@@ -35,7 +35,7 @@ class SourceDonnées {
                 Utilisateur(3, "Tabti", "Lyazid", "lyatabti@gmail.com", adresses[2], "514 894-8268"),
                 Utilisateur(4, "Vienneau", "Joël", "joelvienneau@gmail.com", adresses[3], "514 181-9135"),
                 Utilisateur(4, "Lerouge", "Jean-Gabriel", "gabriellerouge@gmail.com", adresses[4], "514 112-8391"),
-                Utilisateur(4, "Ligtas", "Audric", "audricligtas@gmail.com", adresses[5], "514 892-1903"),
+                Utilisateur(4, "Ligtas", "Audric", "audricligtas@gmail.com", adresses[4], "514 892-1903"),
         )
         val commandes = mutableListOf(
                 Commande(1, épiceries[0].idÉpicerie, utilisateurs[0].idUtilisateur),

@@ -40,10 +40,6 @@ class CommandeControleurTest {
     }
 
     @Test
-    fun `Étant donnée une commande avec le code 4 qui existe déjà, lorsqu'on éffectue une requête POST, on obtient le code 401(conflit)`(){
-        TODO()
-    }
-    @Test
     fun `Étant donnée une commande avec le code 3, lorsqu'on essaie de supprimer avec la requête DELETE la commande avec le code 3, on obtient le code 200`(){
         TODO()
     }
