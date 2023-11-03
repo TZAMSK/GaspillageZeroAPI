@@ -50,7 +50,22 @@ class UtilisateurControleurTest{
 
 
     @Test
-    fun `Étant donnée un Utilsiateur avec le ID 3 qui n'existe pas, lorsqu'on exécute un requête DELETE, on obtient le code 404`(){
+    fun `Étant donnée un Utilsiateur avec le ID 3 qui n'existe pas, lorsqu'on exécute une requête DELETE, on obtient le code 404`(){
+        TODO()
+    }
+
+    @Test
+    fun `Étant donnée un Utilisateur avec le ID 2, lorsqu'on exécute une requête PUT avec une objet Utilisateur en JSON, on obtient alors le code 202 pour accepted`(){
+        TODO()
+    }
+
+    @Test
+    fun `Étant donnée un Utilisateur avec le ID 3 qui n'existe pas, lorsqu'on exécute une requete PUT avec un objet Utilisateur en JSON, on obtient alors le code d'erreur 404`(){
+        TODO()
+    }
+
+    @Test
+    fun `Étant donnée un Utilisateur avec le ID 2, lorsqu'on exécute la requete avec sans l'objet JSON on obtient alors un code d'erreur 422`(){
         TODO()
     }
 }

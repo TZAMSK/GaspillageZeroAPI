@@ -40,7 +40,7 @@ class CommandeControleurTest {
     }
 
     @Test
-    fun `Étant donnée une commande avec le code 3 qui existe déjà, lorsqu'on éffectue une requête POST, on obtient le code 401(conflit)`(){
+    fun `Étant donnée une commande avec le code 4 qui existe déjà, lorsqu'on éffectue une requête POST, on obtient le code 401(conflit)`(){
         TODO()
     }
     @Test
@@ -48,6 +48,15 @@ class CommandeControleurTest {
         TODO()
     }
 
+    @Test
+    fun `Étant donnée une commande avec le code 3, lorsqu'on essaie de modifier un attribut avec la requête PUT, on obtient le code 200`(){
+        TODO()
+    }
+
+    @Test
+    fun `Étant donnée une commande avec le code 4 qui n'existe pas, lorsqu'on exécute un requête PUT afin de modifier un attribut on obtient alors un code d'erreur 404`(){
+        TODO()
+    }
 
 
 }
