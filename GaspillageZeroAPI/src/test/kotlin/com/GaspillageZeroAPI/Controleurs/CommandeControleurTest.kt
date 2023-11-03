@@ -19,7 +19,7 @@ class CommandeControleurTest {
     @Autowired
     private lateinit var mockMvc: MockMvc
 
-    val commande: Commande = Commande(3,1,2)
+    val commande: Commande = Commande(3,1,2, 2)
 
     @Test
     fun `Étant donnée la commande avec le code 3, lorsqu'on éffectue une requète GET alors on obtient une commande dans un format JSON avec le id 3 et un code 200 `(){

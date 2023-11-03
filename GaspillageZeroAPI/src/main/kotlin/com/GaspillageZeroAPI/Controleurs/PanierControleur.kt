@@ -13,6 +13,9 @@ class PanierControleur(val service: PanierService) {
     @GetMapping("/panier/{idPanier}")
     fun obtenirPanierparCode(@PathVariable idPanier: Int) = service.chercherParCode(idPanier)
 
+    @GetMapping("/commande/{idCommande}/panier")
+    fun obtenirContenuParCommande(@PathVariable idCommande: Int) = service.chercherContenuParCommande(idCommande)
+
     @PostMapping("/panier")
     fun ajouterPanier(@RequestBody panier: Panier) {
         service.ajouter(panier)

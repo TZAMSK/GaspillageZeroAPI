@@ -34,6 +34,7 @@ class SourceDonnées {
                 Utilisateur(2, "Khakimov", "Alikhan", "akhakimov@gmail.com", adresses[1], "514 676-9823"),
                 Utilisateur(3, "Tabti", "Lyazid", "lyatabti@gmail.com", adresses[2], "514 894-8268"),
                 Utilisateur(4, "Vienneau", "Joël", "joelvienneau@gmail.com", adresses[3], "514 181-9135"),
+<<<<<<< HEAD
                 Utilisateur(4, "Lerouge", "Jean-Gabriel", "gabriellerouge@gmail.com", adresses[4], "514 112-8391"),
                 Utilisateur(4, "Ligtas", "Audric", "audricligtas@gmail.com", adresses[4], "514 892-1903"),
         )
@@ -42,10 +43,22 @@ class SourceDonnées {
                 Commande(2, épiceries[1].idÉpicerie, utilisateurs[1].idUtilisateur),
                 Commande(3, épiceries[2].idÉpicerie, utilisateurs[2].idUtilisateur),
                 Commande(4, épiceries[3].idÉpicerie, utilisateurs[3].idUtilisateur),
+=======
+                Utilisateur(5, "Lerouge", "Jean-Gabriel", "gabriellerouge@gmail.com", adresses[4], "514 112-8391"),
+                Utilisateur(6, "Ligtas", "Audric", "audricligtas@gmail.com", adresses[4], "514 892-1903"),
+>>>>>>> afb5d02d8c45b88dc9de78fe0a0ed7f540888872
         )
         val paniers = mutableListOf(
-                Panier(1, produits[0].idProduit, commandes[0].idCommande),
-                Panier(2, produits[1].idProduit, commandes[1].idCommande),
+                Panier(1, produits[0].idProduit, 1),
+                Panier(2, produits[1].idProduit, 4),
+        )
+        val commandes = mutableListOf(
+                Commande(1, épiceries[0].idÉpicerie, utilisateurs[0].idUtilisateur, paniers[0].idPanier),
+                Commande(2, épiceries[1].idÉpicerie, utilisateurs[1].idUtilisateur, paniers[0].idPanier),
+                Commande(3, épiceries[2].idÉpicerie, utilisateurs[2].idUtilisateur, paniers[1].idPanier),
+                Commande(4, épiceries[3].idÉpicerie, utilisateurs[3].idUtilisateur, paniers[1].idPanier),
+                Commande(5, épiceries[1].idÉpicerie, utilisateurs[0].idUtilisateur, paniers[1].idPanier),
+                Commande(6, épiceries[0].idÉpicerie, utilisateurs[4].idUtilisateur, paniers[1].idPanier),
         )
     }
 }
