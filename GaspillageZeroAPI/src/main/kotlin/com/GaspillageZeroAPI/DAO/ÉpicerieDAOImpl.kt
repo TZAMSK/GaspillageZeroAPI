@@ -1,6 +1,5 @@
 package com.GaspillageZeroAPI.DAO
 
-import com.GaspillageZeroAPI.Modèle.Produit
 import com.GaspillageZeroAPI.Modèle.Épicerie
 import org.springframework.stereotype.Repository
 

@@ -20,7 +20,7 @@ class ÉpicerieControleur(val service: ÉpicerieService) {
 
     @DeleteMapping("/épicerie/delete/{idÉpicerie}")
     fun suppimerÉpicerie(@PathVariable idÉpicerie: Int) {
-        service.suppimer(idÉpicerie)
+        service.supprimer(idÉpicerie)
     }
 
     @PutMapping("/épicerie/save")
