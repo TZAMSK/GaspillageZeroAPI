@@ -39,7 +39,7 @@ class UtilisateurControleurTest{
     }
 
     @Test
-    fun `Étant donnée un Utilisateur avec le ID 2 qui existe déjà, lorsqu'on exécute une requête POST alors on obtient un code d'erreur 401(conlit)`(){
+    fun `Étant donnée un Utilisateur avec le ID 2 qui existe déjà, lorsqu'on exécute une requête POST alors on obtient un code d'erreur 409(conlit)`(){
         TODO()
     }
 
@@ -65,7 +65,7 @@ class UtilisateurControleurTest{
     }
 
     @Test
-    fun `Étant donnée un Utilisateur avec le ID 2, lorsqu'on exécute la requete avec sans l'objet JSON on obtient alors un code d'erreur 422`(){
+    fun `Étant donnée un Utilisateur avec le ID 2, lorsqu'on exécute la requete avec sans l'objet JSON on obtient alors un code d'erreur 406`(){
         TODO()
     }
 }
