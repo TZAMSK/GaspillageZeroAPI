@@ -22,15 +22,25 @@ class CommandeControleurTest {
     val commande: Commande = Commande(3,1,2)
 
     @Test
-    fun `Étant donnée le client avec le code 2, lorsqu'on éffectue une requète GET alors on obtient une commande dans un format JSON avec le id 3 et un code 200 `(){
+    fun `Étant donnée la commande avec le code 3, lorsqu'on éffectue une requète GET alors on obtient une commande dans un format JSON avec le id 3 et un code 200 `(){
         TODO()
     }
     @Test
-    fun `Étant donnée le client avec le code 3 qui n'existe pas, lorsqu'on éffectue une requète GET alors on obtient un code de retour 404`(){
+    fun `Étant donnée la commande avec le code 4 qui n'existe pas, lorsqu'on éffectue une requète GET alors on obtient un code de retour 404`(){
         TODO()
     }
     @Test
-    fun `Étant donnée un client avec le code 3, lorsqu'on ajoute une commande à l'épicerie avec le code 1 l'aide d'une requète POST on obtient le code 201`(){
+    fun `Étant donnée une commande avec le code 4, lorsqu'on ajoute une commande à l'épicerie avec le code 1 l'aide d'une requète POST on obtient le code 201`(){
+        TODO()
+    }
+
+    @Test
+    fun `Étant donnée une commnde avec le code 3 qui existe déjà, lorsqu'on exécute une requête POST, alors on obtient un code d'erreur 401(conflit)`(){
+        TODO()
+    }
+
+    @Test
+    fun `Étant donnée une commande avec le code 3 qui existe déjà, lorsqu'on éffectue une requête POST, on obtient le code 401(conflit)`(){
         TODO()
     }
     @Test

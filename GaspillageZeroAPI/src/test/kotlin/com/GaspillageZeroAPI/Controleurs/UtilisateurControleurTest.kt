@@ -34,7 +34,12 @@ class UtilisateurControleurTest{
     }
 
     @Test
-    fun `Étant donnée un Utilisateur avec le ID 3 qui n'existe, lorsqu'on éffectue un requête POST alors on obtient un code 201`(){
+    fun `Étant donnée un Utilisateur avec le ID 3 qui n'existe pas, lorsqu'on éffectue un requête POST alors on obtient un code 201`(){
+        TODO()
+    }
+
+    @Test
+    fun `Étant donnée un Utilisateur avec le ID 2 qui existe déjà, lorsqu'on exécute une requête POST alors on obtient un code d'erreur 401(conlit)`(){
         TODO()
     }
 
