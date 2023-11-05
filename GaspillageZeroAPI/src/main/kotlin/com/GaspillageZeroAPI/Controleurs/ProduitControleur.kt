@@ -16,7 +16,7 @@ class ProduitControleur(val service: ProduitService) {
     fun obtenirProduitParCode(@PathVariable idProduit: Int) = service.chercherParCode(idProduit)
 
     @GetMapping("/épicerie/{idÉpicerie}/produits")
-    fun obtenirProduitÉpiceruie(@PathVariable idÉpicerie: Int) = service.chercherParÉpicerie(idÉpicerie)
+    fun obtenirProduitÉpicerie(@PathVariable idÉpicerie: Int) = service.chercherParÉpicerie(idÉpicerie)
 
     @GetMapping("/épicerie/{idÉpicerie}/produit/{idProduit}")
     fun obtenirProduitÉpicerieParCode(@PathVariable idÉpicerie: Int, @PathVariable idProduit: Int) = service.chercherParÉpicerieParCode(idÉpicerie, idProduit)
