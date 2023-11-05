@@ -4,6 +4,7 @@ import com.GaspillageZeroAPI.Modèle.Adresse
 import com.GaspillageZeroAPI.Services.AdresseService
 import org.springframework.web.bind.annotation.*
 
+@RestController
 class GabaritProduitController {
 
     // MÉTHODES
