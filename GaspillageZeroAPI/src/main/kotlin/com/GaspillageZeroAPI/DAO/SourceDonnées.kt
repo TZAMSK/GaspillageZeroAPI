@@ -38,7 +38,7 @@ class SourceDonnées {
                 Utilisateur(6, "Ligtas", "Audric", "audricligtas@gmail.com", adresses[4], "514 892-1903"),
         )
         val paniers = mutableListOf(
-                Panier(1, produits[0].idProduit, 1),
+                Panier(1, produits[0].idProduit, 3),
                 Panier(2, produits[1].idProduit, 4),
         )
         val commandes = mutableListOf(
@@ -48,6 +48,7 @@ class SourceDonnées {
                 Commande(4, épiceries[3].idÉpicerie, utilisateurs[3].idUtilisateur, paniers[1].idPanier),
                 Commande(5, épiceries[1].idÉpicerie, utilisateurs[0].idUtilisateur, paniers[1].idPanier),
                 Commande(6, épiceries[0].idÉpicerie, utilisateurs[4].idUtilisateur, paniers[1].idPanier),
+                Commande(7, épiceries[0].idÉpicerie, utilisateurs[0].idUtilisateur, paniers[1].idPanier),
         )
     }
 }
