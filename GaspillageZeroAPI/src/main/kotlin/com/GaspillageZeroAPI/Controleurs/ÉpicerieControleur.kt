@@ -17,6 +17,10 @@ class ÉpicerieControleur(val service: ÉpicerieService) {
     @GetMapping("/épicerie/{idÉpicerie}")
     fun obtenirÉpicerieparCode(@PathVariable idÉpicerie: Int) = service.chercherParCode(idÉpicerie)
 
+
+
+    // MÉTHODES QUI VONT PROBABLEMENT PAS ETRE UTILISÉ (AJOUTER, SUPPRIMER, MODIFIER)
+
     //@PostMapping("/épicerie")
     //fun ajouterÉpicerie(@RequestBody épicerie: Épicerie) {
     //    service.ajouter(épicerie)
