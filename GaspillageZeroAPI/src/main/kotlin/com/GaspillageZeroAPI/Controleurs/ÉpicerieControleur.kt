@@ -1,5 +1,6 @@
 package com.GaspillageZeroAPI.Controleurs
 
+import com.GaspillageZeroAPI.Exceptions.ÉpicerieIntrouvableException
 import com.GaspillageZeroAPI.Modèle.Épicerie
 import com.GaspillageZeroAPI.Services.ÉpicerieService
 import org.springframework.web.bind.annotation.*
@@ -15,7 +16,13 @@ class ÉpicerieControleur(val service: ÉpicerieService) {
 
     // MÉTHODE AFFICHAGES 2 - ÉPICERIE PAR CODE
     @GetMapping("/épicerie/{idÉpicerie}")
-    fun obtenirÉpicerieparCode(@PathVariable idÉpicerie: Int) = service.chercherParCode(idÉpicerie)
+    fun obtenirÉpicerieparCode(@PathVariable idÉpicerie: Int): Épicerie? {
+        val épicerie = service.chercherParCode(idÉpicerie)
+        if(épicerie == null){
+            throw ÉpicerieIntrouvableException("L'épicerie de code $idÉpicerie est introuvable")
+        }
+        return épicerie
+    }
 
 
 
@@ -26,10 +33,11 @@ class ÉpicerieControleur(val service: ÉpicerieService) {
     //    service.ajouter(épicerie)
     //}
 
-    //@DeleteMapping("/épicerie/delete/{idÉpicerie}")
-    //fun suppimerÉpicerie(@PathVariable idÉpicerie: Int) {
-    //    service.supprimer(idÉpicerie)
-    //}
+    //Pour le test des exceptions
+    @DeleteMapping("/épicerie/delete/{idÉpicerie}")
+    fun suppimerÉpicerie(@PathVariable idÉpicerie: Int) {
+        service.supprimer(idÉpicerie)
+    }
 
     //@PutMapping("/épicerie/save")
     //fun modifierÉpicerie(@PathVariable idÉpicerie: Int, @RequestBody épicerie: Épicerie){
