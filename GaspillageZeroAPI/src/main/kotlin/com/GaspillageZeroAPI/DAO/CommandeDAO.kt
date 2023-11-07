@@ -16,7 +16,14 @@ interface CommandeDAO : DAO<Commande> {
     fun chercherCommandesParÉpicerie(idÉpicerie: Int): List<Commande>
     fun chercherCommandeParUtilisateur(code_utilisateur: Int, code_commande: Int): Commande?
     fun chercherCommandeDetailParUtilisateur(code_utilisateur: Int, code_commande: Int): Produit?
-    fun chercherCommandeParÉpicerie(code_épicerie: Int, code_commande: Int): Commande?
+    fun chercherHistoriqueCommandesDetailParUtilisateur(code_utilisateur: Int): List<Produit?>
 
+    fun ArgentDépenséUtilisateur(code_utilisateur: Int): Double
+
+    fun chercherCommandeParÉpicerie(code_épicerie: Int, code_commande: Int): Commande?
     fun chercherCommandeDetailParÉpicerie(code_épicerie: Int, code_commande: Int): Produit?
+
+    fun chercherHistoriqueCommandesDetailParÉpicerie(code_épicerie: Int): List<Produit?>
+
+    fun ArgentGagnéÉpicerie(code_utilisateur: Int): Double
 }

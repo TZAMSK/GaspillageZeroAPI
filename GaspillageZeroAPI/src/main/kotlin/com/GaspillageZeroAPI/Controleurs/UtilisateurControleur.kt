@@ -20,7 +20,7 @@ class UtilisateurControleur(val service: UtilisateurService) {
     ])
     @Operation(summary = "permet d'obtenir l'utilisateur ayant le ID {idUtilisateur}")
     @GetMapping("/utilisateur/{idUtilisateur}")
-    fun obtenirUtilisateurparCode(@PathVariable idÉpicerie: Int) = service.chercherParCode(idÉpicerie)
+    fun obtenirUtilisateurparCode(@PathVariable idUtilisateur: Int) = service.chercherParCode(idUtilisateur)
 
     @ApiResponses(value = [
         ApiResponse(responseCode = "201", description = "La commande à été ajouter à la base de données"),

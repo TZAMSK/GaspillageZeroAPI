@@ -45,6 +45,12 @@ class CommandeControleur(val service: CommandeService) {
     @GetMapping("/commandeDetail/utilisateur/{idUtilisateur}/commande/{idCommande}")
     fun obtenirCommandeDetailParUtilisateur(@PathVariable idUtilisateur: Int, @PathVariable idCommande: Int) = service.chercherCommandeDetailParUtilisateur(idUtilisateur, idCommande)
 
+    @GetMapping("/historiqueCommande/utilisateur/{idUtilisateur}/commandes")
+    fun obtenirHistoriqueCommandesDetailParUtilisateur(@PathVariable idUtilisateur: Int) = service.chercherHistoriqueCommandesDetailParUtilisateur(idUtilisateur)
+
+    @GetMapping("/historiqueCommande/utilisateur/{idUtilisateur}/commandes/montant")
+    fun obtenirArgentDépenséUtilisateur(@PathVariable idUtilisateur: Int) = service.obtenirArgentDépenséUtilisateur(idUtilisateur)
+
     @ApiResponses(value = [
         ApiResponse(responseCode = "200", description = "Commande trouvée"),
         ApiResponse(responseCode = "404", description = "commande non trouvé")
@@ -66,6 +72,13 @@ class CommandeControleur(val service: CommandeService) {
 
     @GetMapping("/commandeDetail/épicerie/{idUtilisateur}/commande/{idCommande}")
     fun obtenirCommandeDetailParÉpicerie(@PathVariable idÉpicerie: Int, @PathVariable idCommande: Int) = service.chercherCommandeDetailParÉpicerie(idÉpicerie, idCommande)
+
+    @GetMapping("/historiqueCommande/épicerie/{idÉpicerie}/commandes")
+    fun obtenirHistoriqueCommandesDetailParÉpicerie(@PathVariable idÉpicerie: Int) = service.chercherHistoriqueCommandesDetailParÉpicerie(idÉpicerie)
+
+    @GetMapping("/historiqueCommande/épicerie/{idÉpicerie}/commandes/montant")
+    fun obtenirArgentGagnéÉpicerie(@PathVariable idÉpicerie: Int) = service.obtenirArgentGagnéÉpicerie(idÉpicerie)
+
     @ApiResponses(value = [
         ApiResponse(responseCode = "201", description = "La commande à été ajouter à la base de données"),
         ApiResponse(responseCode = "409", description = "Le produit existe déjà dans la base de données")

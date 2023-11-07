@@ -1,13 +1,13 @@
 package com.GaspillageZeroAPI.DAO
 
-import com.GaspillageZeroAPI.Modèle.Commande
-import com.GaspillageZeroAPI.Modèle.Panier
-import com.GaspillageZeroAPI.Modèle.Produit
-import com.GaspillageZeroAPI.Modèle.Épicerie
+import com.GaspillageZeroAPI.Modèle.*
 import org.springframework.stereotype.Repository
+
 
 @Repository
 class CommandeDAOImpl: CommandeDAO {
+
+    var argent = 0.0
 
     override fun chercherTous(): List<Commande> = SourceDonnées.commandes
     override fun chercherParCode(idCommande: Int): Commande? = SourceDonnées.commandes.find{it.idCommande == idCommande}
@@ -41,6 +41,36 @@ class CommandeDAOImpl: CommandeDAO {
         return produitDetail?.copy(quantité = panierQuantitéProduit ?: 0, prix = prixTotal)
     }
 
+    override fun chercherHistoriqueCommandesDetailParUtilisateur(idUtilisateur: Int): List<Produit?>{
+        val listeCommandesUtilisateur = SourceDonnées.commandes.filter { it.idUtilisateur == idUtilisateur}
+
+        val listeCommandesProduit = mutableListOf<Produit?>()
+
+        var argentDépensé = 0.0
+
+        for (commande in listeCommandesUtilisateur){
+            val idPanier = commande.idPanier
+            val idProduit = SourceDonnées.paniers.find { it.idPanier == idPanier }?.idProduit
+
+            val panierQuantitéProduit = SourceDonnées.paniers.find { it.idPanier == idPanier && it.idProduit == idProduit }?.Quantité
+            val panierPrixProduit = SourceDonnées.produits.find { it.idProduit == idProduit }?.prix ?: 0.0
+
+            // val prixTotal = panierQuantitéProduit * panierPrixProduit/
+            val prixTotal = panierQuantitéProduit?.times(panierPrixProduit) ?: 0.0
+
+            val produitDetail = SourceDonnées.produits.find { it.idProduit == idProduit }?.copy(quantité = panierQuantitéProduit ?: 0, prix = prixTotal)
+            listeCommandesProduit.add(produitDetail)
+            argentDépensé += prixTotal
+        }
+        argent = argentDépensé
+        return listeCommandesProduit
+    }
+
+    override fun ArgentDépenséUtilisateur(idUtilisateur: Int): Double{
+        chercherHistoriqueCommandesDetailParUtilisateur(idUtilisateur)
+        return argent
+    }
+
     override fun chercherCommandeDetailParÉpicerie(idÉpicerie: Int, idCommande: Int): Produit?{
         val idPanier = SourceDonnées.commandes.find { it.idÉpicerie == idÉpicerie && it.idCommande == idCommande }?.idPanier
         val idProduit = SourceDonnées.paniers.find { it.idPanier == idPanier }?.idProduit
@@ -54,6 +84,38 @@ class CommandeDAOImpl: CommandeDAO {
         val produitDetail = SourceDonnées.produits.find { it.idProduit == idProduit }
 
         return produitDetail?.copy(quantité = panierQuantitéProduit ?: 0, prix = prixTotal)
+    }
+
+    override fun chercherHistoriqueCommandesDetailParÉpicerie(idÉpicerie: Int): List<Produit?>{
+
+        val listeCommandesÉpicerie = SourceDonnées.commandes.filter { it.idÉpicerie == idÉpicerie }
+
+        val listeCommandesProduit = mutableListOf<Produit?>()
+
+        var argentDépensé = 0.0
+
+        for (commande in listeCommandesÉpicerie){
+            val idPanier = commande.idPanier
+            val idProduit = SourceDonnées.paniers.find { it.idPanier == idPanier }?.idProduit
+
+            val panierQuantitéProduit = SourceDonnées.paniers.find { it.idPanier == idPanier && it.idProduit == idProduit }?.Quantité
+            val panierPrixProduit = SourceDonnées.produits.find { it.idProduit == idProduit }?.prix ?: 0.0
+
+            // val prixTotal = panierQuantitéProduit * panierPrixProduit/
+            val prixTotal = panierQuantitéProduit?.times(panierPrixProduit) ?: 0.0
+
+            val produitDetail = SourceDonnées.produits.find { it.idProduit == idProduit }?.copy(quantité = panierQuantitéProduit ?: 0, prix = prixTotal)
+            listeCommandesProduit.add(produitDetail)
+            argentDépensé += prixTotal
+        }
+        argent = argentDépensé
+
+        return listeCommandesProduit
+    }
+
+    override fun ArgentGagnéÉpicerie(idÉpicerie: Int): Double{
+        chercherHistoriqueCommandesDetailParÉpicerie(idÉpicerie)
+        return argent
     }
 
     override fun ajouter(commande: Commande): Commande? {
