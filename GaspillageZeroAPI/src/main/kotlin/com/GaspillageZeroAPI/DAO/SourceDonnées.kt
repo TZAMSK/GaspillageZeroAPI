@@ -16,11 +16,15 @@ class SourceDonnées {
                 Produit(5, "Haricots", Date(2024, 5, 19), 31, 6.50),
                 Produit(6, "Riz", Date(2023, 12, 31), 13, 8.50),
         )
+        val gabariProduits = mutableListOf(
+                GabaritProduit(1, "Bla bla", "Bla bla bla", null, "Légumes", produits),
+                GabaritProduit(2, "Bla bla", "Bla bla bla", null, "Pains", emptyList()),
+        )
         val épiceries = mutableListOf(
-                Épicerie(1, "Metro", "metro@gmail.com", "514 231-6666", produits),
-                Épicerie(2, "IGA", "iga@gmail.com", "514 123-4567", emptyList()),
-                Épicerie(3, "Maxi", "maxi@gmail.com", "514 783-2759", emptyList()),
-                Épicerie(4, "Super C", "superc@gmail.com", "514 839-2987", emptyList()),
+                Épicerie(1, "Metro", "metro@gmail.com", "514 231-6666", produits, gabariProduits),
+                Épicerie(2, "IGA", "iga@gmail.com", "514 123-4567", emptyList(), emptyList()),
+                Épicerie(3, "Maxi", "maxi@gmail.com", "514 783-2759", emptyList(), emptyList()),
+                Épicerie(4, "Super C", "superc@gmail.com", "514 839-2987", emptyList(),emptyList()),
         )
         val adresses = mutableListOf(
                 Adresse(1, "1111", "Place Des Chocolats", "Québec", "H3A 0G4", "Canada"),
@@ -38,7 +42,7 @@ class SourceDonnées {
                 Utilisateur(6, "Ligtas", "Audric", "audricligtas@gmail.com", adresses[4], "514 892-1903"),
         )
         val paniers = mutableListOf(
-                Panier(1, produits[0].idProduit, 1),
+                Panier(1, produits[0].idProduit, 3),
                 Panier(2, produits[1].idProduit, 4),
         )
         val commandes = mutableListOf(
@@ -48,6 +52,7 @@ class SourceDonnées {
                 Commande(4, épiceries[3].idÉpicerie, utilisateurs[3].idUtilisateur, paniers[1].idPanier),
                 Commande(5, épiceries[1].idÉpicerie, utilisateurs[0].idUtilisateur, paniers[1].idPanier),
                 Commande(6, épiceries[0].idÉpicerie, utilisateurs[4].idUtilisateur, paniers[1].idPanier),
+                Commande(7, épiceries[0].idÉpicerie, utilisateurs[0].idUtilisateur, paniers[1].idPanier),
         )
     }
 }

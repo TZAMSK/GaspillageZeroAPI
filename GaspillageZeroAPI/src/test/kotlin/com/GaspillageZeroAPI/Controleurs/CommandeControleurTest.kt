@@ -22,7 +22,7 @@ class CommandeControleurTest {
     val commande: Commande = Commande(3,1,2, 2)
 
     @Test
-    fun `Étant donnée la commande avec le code 3, lorsqu'on éffectue une requète GET alors on obtient une commande dans un format JSON avec le id 3 et un code 200 `(){
+    fun `Étant donnée la commande avec le code 3, lorsqu'on éffectue une requète GET avec le id 3 alors on obtient une commande dans un format JSON avec le id 3 et un code 200 `(){
         TODO()
     }
     @Test
@@ -35,7 +35,7 @@ class CommandeControleurTest {
     }
 
     @Test
-    fun `Étant donnée une commnde avec le code 3 qui existe déjà, lorsqu'on exécute une requête POST, alors on obtient un code d'erreur 401(conflit)`(){
+    fun `Étant donnée une commnde avec le code 3 qui existe déjà, lorsqu'on exécute une requête POST, alors on obtient un code d'erreur 409(conflit)`(){
         TODO()
     }
 
