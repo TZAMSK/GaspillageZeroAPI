@@ -16,11 +16,15 @@ class SourceDonnées {
                 Produit(5, "Haricots", Date(2024, 5, 19), 31, 6.50),
                 Produit(6, "Riz", Date(2023, 12, 31), 13, 8.50),
         )
+        val gabariProduits = mutableListOf(
+                GabaritProduit(1, "Bla bla", "Bla bla bla", null, "Légumes", produits),
+                GabaritProduit(2, "Bla bla", "Bla bla bla", null, "Pains", emptyList()),
+        )
         val épiceries = mutableListOf(
-                Épicerie(1, "Metro", "metro@gmail.com", "514 231-6666", produits),
-                Épicerie(2, "IGA", "iga@gmail.com", "514 123-4567", emptyList()),
-                Épicerie(3, "Maxi", "maxi@gmail.com", "514 783-2759", emptyList()),
-                Épicerie(4, "Super C", "superc@gmail.com", "514 839-2987", emptyList()),
+                Épicerie(1, "Metro", "metro@gmail.com", "514 231-6666", produits, gabariProduits),
+                Épicerie(2, "IGA", "iga@gmail.com", "514 123-4567", emptyList(), emptyList()),
+                Épicerie(3, "Maxi", "maxi@gmail.com", "514 783-2759", emptyList(), emptyList()),
+                Épicerie(4, "Super C", "superc@gmail.com", "514 839-2987", emptyList(),emptyList()),
         )
         val adresses = mutableListOf(
                 Adresse(1, "1111", "Place Des Chocolats", "Québec", "H3A 0G4", "Canada"),

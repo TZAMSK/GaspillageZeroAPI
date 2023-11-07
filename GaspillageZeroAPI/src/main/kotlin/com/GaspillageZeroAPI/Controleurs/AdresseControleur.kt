@@ -13,6 +13,9 @@ class AdresseControleur(val service: AdresseService) {
     @GetMapping("/adresse/{idAdresse}")
     fun obtenirAdresseparCode(@PathVariable idAdresse: Int) = service.chercherParCode(idAdresse)
 
+    @GetMapping("/utilisateur/{idUtilisateur}/adresse")
+    fun obtenirAdresseUtilisateur(@PathVariable idUtilisateur: Int) = service.chercherParUtiliateur(idUtilisateur)
+
     @PostMapping("/adresse")
     fun ajouterAdresse(@RequestBody adresse: Adresse) {
         service.ajouter(adresse)
