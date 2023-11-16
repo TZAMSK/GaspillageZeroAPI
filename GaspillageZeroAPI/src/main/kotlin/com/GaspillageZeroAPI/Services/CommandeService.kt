@@ -13,7 +13,7 @@ class CommandeService(val dao: CommandeDAO) {
     fun chercherParCode(idCommande: Int): Commande? = dao.chercherParCode(idCommande)
 
     // Utilisateur
-    fun chercherCommandesParUtilisateur(idUtilisateur: Int): List<Commande> = dao.chercherCommandesParUtilisateur(idUtilisateur)
+    fun chercherCommandesParUtilisateur(idUtilisateur: Int): List<Commande>? = dao.chercherCommandesParUtilisateur(idUtilisateur)
 
     fun chercherCommandeParUtilisateur(idUtilisateur: Int, idCommande: Int): Commande? = dao.chercherCommandeParUtilisateur(idUtilisateur, idCommande)
     /**
@@ -22,7 +22,7 @@ class CommandeService(val dao: CommandeDAO) {
     fun chercherHistoriqueCommandesDetailParUtilisateur(idUtilisateur: Int): List<Produit?> = dao.chercherHistoriqueCommandesDetailParUtilisateur(idUtilisateur)
     **/
     // Épicerie
-    fun chercherCommandesParÉpicerie(idÉpicerie: Int): List<Commande> = dao.chercherCommandesParÉpicerie(idÉpicerie)
+    fun chercherCommandesParÉpicerie(idÉpicerie: Int): List<Commande>? = dao.chercherCommandesParÉpicerie(idÉpicerie)
 
     fun chercherCommandeParÉpicerie(idÉpicerie: Int, idCommande: Int): Commande? = dao.chercherCommandeParÉpicerie(idÉpicerie, idCommande)
     /**

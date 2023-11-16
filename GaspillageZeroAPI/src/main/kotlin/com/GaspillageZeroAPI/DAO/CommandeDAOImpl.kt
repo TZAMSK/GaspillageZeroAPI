@@ -12,12 +12,12 @@ class CommandeDAOImpl: CommandeDAO {
     override fun chercherTous(): List<Commande> = SourceDonnées.commandes
     override fun chercherParCode(idCommande: Int): Commande? = SourceDonnées.commandes.find{it.idCommande == idCommande}
 
-    override fun chercherCommandesParUtilisateur(idUtilisateur: Int): List<Commande>{
+    override fun chercherCommandesParUtilisateur(idUtilisateur: Int): List<Commande>?{
         val commandesParUtilisateur = SourceDonnées.commandes.filter{ it.idUtilisateur == idUtilisateur }
         return commandesParUtilisateur
     }
 
-    override fun chercherCommandesParÉpicerie(idÉpicerie: Int): List<Commande>{
+    override fun chercherCommandesParÉpicerie(idÉpicerie: Int): List<Commande>?{
         val commandesParÉpicerie = SourceDonnées.commandes.filter{ it.idÉpicerie == idÉpicerie }
         return commandesParÉpicerie
     }
