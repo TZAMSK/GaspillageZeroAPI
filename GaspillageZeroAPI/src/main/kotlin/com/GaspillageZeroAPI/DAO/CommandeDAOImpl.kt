@@ -25,7 +25,7 @@ class CommandeDAOImpl: CommandeDAO {
     override fun chercherCommandeParUtilisateur(idUtilisateur: Int, idCommande: Int): Commande? = SourceDonnées.commandes.find{it.idUtilisateur == idUtilisateur && it.idCommande == idCommande}
 
     override fun chercherCommandeParÉpicerie(idÉpicerie: Int, idCommande: Int): Commande? = SourceDonnées.commandes.find{it.idÉpicerie == idÉpicerie && it.idCommande == idCommande}
-
+    /**
     override fun chercherCommandeDetailParUtilisateur(idUtilisateur: Int, idCommande: Int): Produit?{
         val idPanier = SourceDonnées.commandes.find { it.idUtilisateur == idUtilisateur && it.idCommande == idCommande }?.idPanier
         val idProduit = SourceDonnées.paniers.find { it.idPanier == idPanier }?.idProduit
@@ -117,7 +117,7 @@ class CommandeDAOImpl: CommandeDAO {
         chercherHistoriqueCommandesDetailParÉpicerie(idÉpicerie)
         return argent
     }
-
+    **/
     override fun ajouter(commande: Commande): Commande? {
         SourceDonnées.commandes.add(commande)
         return commande

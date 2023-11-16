@@ -41,7 +41,7 @@ class CommandeControleur(val service: CommandeService) {
     @Operation(summary = "Permet d'obtenir d'obtenir la commande {idCommande} de l'utilisateur {idUtilisateur}")
     @GetMapping("/commandes/utilisateur/{idUtilisateur}/commande/{idCommande}")
     fun obtenirCommandeParUtilisateur(@PathVariable idUtilisateur: Int, @PathVariable idCommande: Int) = service.chercherCommandeParUtilisateur(idUtilisateur, idCommande)
-
+    /**
     @GetMapping("/commandeDetail/utilisateur/{idUtilisateur}/commande/{idCommande}")
     fun obtenirCommandeDetailParUtilisateur(@PathVariable idUtilisateur: Int, @PathVariable idCommande: Int) = service.chercherCommandeDetailParUtilisateur(idUtilisateur, idCommande)
 
@@ -50,7 +50,7 @@ class CommandeControleur(val service: CommandeService) {
 
     @GetMapping("/historiqueCommande/utilisateur/{idUtilisateur}/commandes/montant")
     fun obtenirArgentDépenséUtilisateur(@PathVariable idUtilisateur: Int) = service.obtenirArgentDépenséUtilisateur(idUtilisateur)
-
+    **/
     @ApiResponses(value = [
         ApiResponse(responseCode = "200", description = "Commande trouvée"),
         ApiResponse(responseCode = "404", description = "commande non trouvé")
@@ -69,7 +69,7 @@ class CommandeControleur(val service: CommandeService) {
     @GetMapping("/commandes/épicerie/{idÉpicerie}/commande/{idCommande}")
     fun obtenirCommandeParÉpicerie(@PathVariable idÉpicerie: Int, @PathVariable idCommande: Int) = service.chercherCommandeParÉpicerie(idÉpicerie, idCommande)
 
-
+    /**
     @GetMapping("/commandeDetail/épicerie/{idUtilisateur}/commande/{idCommande}")
     fun obtenirCommandeDetailParÉpicerie(@PathVariable idÉpicerie: Int, @PathVariable idCommande: Int) = service.chercherCommandeDetailParÉpicerie(idÉpicerie, idCommande)
 
@@ -78,7 +78,7 @@ class CommandeControleur(val service: CommandeService) {
 
     @GetMapping("/historiqueCommande/épicerie/{idÉpicerie}/commandes/montant")
     fun obtenirArgentGagnéÉpicerie(@PathVariable idÉpicerie: Int) = service.obtenirArgentGagnéÉpicerie(idÉpicerie)
-
+    **/
     @ApiResponses(value = [
         ApiResponse(responseCode = "201", description = "La commande à été ajouter à la base de données"),
         ApiResponse(responseCode = "409", description = "Le produit existe déjà dans la base de données")
