@@ -1,11 +1,13 @@
 package com.GaspillageZeroAPI.Controleurs
 
 import com.GaspillageZeroAPI.DAO.SourceDonnées
+import com.GaspillageZeroAPI.Exceptions.ExceptionConflitRessourceExistante
 import com.GaspillageZeroAPI.Exceptions.ExceptionRessourceIntrouvable
 import com.GaspillageZeroAPI.Modèle.Commande
 import com.GaspillageZeroAPI.Modèle.ItemsPanier
 import com.GaspillageZeroAPI.Modèle.Produit
 import com.GaspillageZeroAPI.Services.CommandeService
+import com.fasterxml.jackson.databind.ObjectMapper
 import org.junit.jupiter.api.Test
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import org.junit.jupiter.api.Assertions.*
@@ -16,8 +18,12 @@ import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.http.MediaType
 import org.springframework.test.web.servlet.MockMvc
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.*
 import java.util.*
+
+import org.hamcrest.CoreMatchers.containsString
+
 
 
 @SpringBootTest
@@ -26,6 +32,9 @@ class CommandeControleurTest {
 
     @MockBean
     lateinit var service: CommandeService
+
+    @Autowired
+    private lateinit var mapper: ObjectMapper
 
     @Autowired
     private lateinit var mockMvc: MockMvc
@@ -60,12 +69,40 @@ class CommandeControleurTest {
     }
     @Test
     fun `Étant donnée une commande avec le code 4, lorsqu'on ajoute une commande à l'épicerie avec le code 1 l'aide d'une requète POST on obtient le code 201`(){
-        TODO()
+        val commandeÀAjouter = Commande(11, 2, 1, mutableListOf<ItemsPanier>(
+                ItemsPanier(Produit(5, "carrotte", Date(), 11, 3.0), 3),
+                ItemsPanier(Produit(22, "chocolat", Date(), 11, 5.0), 2),
+                ItemsPanier(Produit(87, "Bleuet", Date(), 11, 8.0), 4),
+        ))
+
+        Mockito.`when`(service.ajouter(commandeÀAjouter)).thenReturn(commandeÀAjouter)
+
+        mockMvc.perform(post("/commande")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(mapper.writeValueAsString(commandeÀAjouter)))
+                .andExpect(status().isCreated)
+                .andExpect(header().string("location", containsString("/commande/11")))
+                .andExpect(jsonPath("$.idCommande").value("11"))
     }
 
     @Test
     fun `Étant donnée une commnde avec le code 3 qui existe déjà, lorsqu'on exécute une requête POST, alors on obtient un code d'erreur 409(conflit)`(){
-        TODO()
+        val commandeÀAjouter = Commande(11, 2, 1, mutableListOf<ItemsPanier>(
+                ItemsPanier(Produit(5, "carrotte", Date(), 11, 3.0), 3),
+                ItemsPanier(Produit(22, "chocolat", Date(), 11, 5.0), 2),
+                ItemsPanier(Produit(87, "Bleuet", Date(), 11, 8.0), 4),
+        ))
+
+        Mockito.`when`(service.ajouter(commandeÀAjouter)).thenThrow(ExceptionConflitRessourceExistante("La ressource avec ce id ${commandeÀAjouter.idCommande} existe déjà dans la base de données"))
+
+        mockMvc.perform(post("/commande")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(mapper.writeValueAsString(commandeÀAjouter)))
+                .andExpect(status().isConflict)
+                .andExpect {résultat ->
+                    assertTrue(résultat.resolvedException is ExceptionConflitRessourceExistante)
+                    assertEquals("La ressource avec ce id ${commandeÀAjouter.idCommande} existe déjà dans la base de données", résultat.resolvedException?.message)
+                }
     }
 
     @Test

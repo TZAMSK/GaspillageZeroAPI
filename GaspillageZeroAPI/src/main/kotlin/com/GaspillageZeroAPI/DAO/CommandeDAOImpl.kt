@@ -1,5 +1,6 @@
 package com.GaspillageZeroAPI.DAO
 
+import com.GaspillageZeroAPI.Exceptions.ExceptionConflitRessourceExistante
 import com.GaspillageZeroAPI.Modèle.*
 import org.springframework.stereotype.Repository
 
@@ -119,6 +120,9 @@ class CommandeDAOImpl: CommandeDAO {
     }
     **/
     override fun ajouter(commande: Commande): Commande? {
+        if(commande.idCommande != null && chercherParCode(commande.idCommande) != null){
+            throw ExceptionConflitRessourceExistante("La ressource existe déjà dans la base de donnée")
+        }
         SourceDonnées.commandes.add(commande)
         return commande
     }

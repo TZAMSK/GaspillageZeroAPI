@@ -81,21 +81,23 @@ class CommandeControleur(val service: CommandeService) {
     **/
     @ApiResponses(value = [
         ApiResponse(responseCode = "201", description = "La commande à été ajouter à la base de données"),
-        ApiResponse(responseCode = "409", description = "Le produit existe déjà dans la base de données")
+        ApiResponse(responseCode = "500", description = "Il y a eu un problème lors de l'ajout de la commande dans la base de données")
     ])
     @Operation(summary = "Permet d'ajouter une commande à la base de données")
     @PostMapping("/commande")
     fun ajouterCommande(@RequestBody commande: Commande): ResponseEntity<Commande> {
         val commande = service.ajouter(commande)
 
-        if(commande == null) return ResponseEntity.noContent().build()
+        if(commande != null) {
+            val location: URI = ServletUriComponentsBuilder
+                    .fromCurrentRequest()
+                    .path("/{idCommande}")
+                    .buildAndExpand(commande.idCommande)
+                    .toUri()
+            return ResponseEntity.created(location).body(commande)
+        }
 
-        val location: URI = ServletUriComponentsBuilder
-                .fromCurrentRequest()
-                .path("/{idCommande}")
-                .buildAndExpand(commande.idCommande)
-                .toUri()
-        return ResponseEntity.created(location).build()
+        return ResponseEntity.internalServerError().build()
     }
 
     @ApiResponses(value = [
