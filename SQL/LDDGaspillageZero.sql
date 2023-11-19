@@ -1,14 +1,14 @@
-drop database if exists GaspillageZeroBD;
-create database  GaspillageZeroBD;
+drop database if exists gaspillagealimentaire;
+create database  gaspillagealimentaire;
 
-use GaspillageZeroBD;
+use gaspillagealimentaire;
 
 create table adresse (
 	id int primary key auto_increment,
 	numéro_municipal varchar(255) not null,
 	rue varchar(255) not null,
 	ville varchar(255) not null,
-	état char(2),
+	province char(2),
 	code_postal varchar(255) not null,
 	pays char(2) not null
 );
