@@ -1,22 +1,26 @@
 package com.GaspillageZeroAPI.Controleurs
 
+import com.GaspillageZeroAPI.DAO.LivraisonDAO
+import com.GaspillageZeroAPI.Modèle.Livraison
+import com.GaspillageZeroAPI.Services.LivraisonService
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.responses.ApiResponse
 import org.springframework.web.bind.annotation.*
 
-class LivraisonControleur {
+@RestController
+class LivraisonControleur (private val livraisonService: LivraisonService) {
 
     //Pour accéder à la documentation OpenApi, visitez le lien suivant pour en savoir plus : http://localhost:8080/swagger-ui/index.html
-    @GetMapping("/listeLivraisons")
-    fun obtenirListeLivraisons() {
+    //@GetMapping("/listeLivraisons")
+    //fun obtenirListeLivraisons() {
 
-    }
+    //}
 
 
-    @GetMapping("/listeLivraisons/{code}")
-    fun obtenirGabaritProduitParCode(@PathVariable code: String)  {
+    //@GetMapping("/listeLivraisons/{code}")
+    //fun obtenirGabaritProduitParCode(@PathVariable code: String)  {
 
-    }
+    //}
 
 
     /*@PostMapping("/listeLivraisons")
@@ -24,8 +28,8 @@ class LivraisonControleur {
 
     }*/
 
-    @GetMapping("/épicerie/{idÉpicerie}/produit/{idProduit}")
-    fun obtenirCommandeÉpicParCode(@PathVariable idCommande : Int, @PathVariable idProduit: Int) {}
+    //@GetMapping("/épicerie/{idÉpicerie}/produit/{idProduit}")
+    //fun obtenirCommandeÉpicParCode(@PathVariable idCommande : Int, @PathVariable idProduit: Int) {}
 
     @GetMapping("/evaluations")
     @Operation(summary = "Obtenir la liste des évaluations")
@@ -62,8 +66,8 @@ class LivraisonControleur {
     @PostMapping("/livraisons")
     @Operation(summary = "Ajouté une livraison")
     @ApiResponse(responseCode = "201", description = "La livraison a été ajouté avec succès!")
-    fun inscrireLivraison() {
-        TODO("Méthode non-implémentée")
+    fun inscrireLivraison(@RequestBody livraison: Livraison): Int {
+        return livraisonService.ajouterLivraison(livraison)
     }
 
     @PutMapping("/livraisons/{code}")
