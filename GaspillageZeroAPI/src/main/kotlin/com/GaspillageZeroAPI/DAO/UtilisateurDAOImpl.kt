@@ -1,5 +1,6 @@
 package com.GaspillageZeroAPI.DAO
 
+import com.GaspillageZeroAPI.Exceptions.ExceptionRessourceIntrouvable
 import com.GaspillageZeroAPI.Modèle.Utilisateur
 import org.springframework.stereotype.Repository
 
@@ -18,6 +19,8 @@ class UtilisateurDAOImpl: UtilisateurDAO {
         val utilisateurSuppimer = SourceDonnées.utilisateurs.find { it.idUtilisateur == idUtilisateur }
         if (utilisateurSuppimer != null){
             SourceDonnées.utilisateurs.remove(utilisateurSuppimer)
+        }else{
+            throw ExceptionRessourceIntrouvable("L'utilisateur avec le ID $idUtilisateur est introuvable")
         }
         return utilisateurSuppimer
     }

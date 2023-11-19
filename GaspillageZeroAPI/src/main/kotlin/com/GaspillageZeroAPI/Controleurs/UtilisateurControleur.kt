@@ -1,11 +1,15 @@
 package com.GaspillageZeroAPI.Controleurs
 
+import com.GaspillageZeroAPI.Exceptions.ExceptionRessourceIntrouvable
 import com.GaspillageZeroAPI.Modèle.Utilisateur
 import com.GaspillageZeroAPI.Services.UtilisateurService
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.responses.ApiResponse
 import io.swagger.v3.oas.annotations.responses.ApiResponses
+import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder
+import java.net.URI
 
 @RestController
 class UtilisateurControleur(val service: UtilisateurService) {
@@ -20,7 +24,7 @@ class UtilisateurControleur(val service: UtilisateurService) {
     ])
     @Operation(summary = "permet d'obtenir l'utilisateur ayant le ID {idUtilisateur}")
     @GetMapping("/utilisateur/{idUtilisateur}")
-    fun obtenirUtilisateurparCode(@PathVariable idUtilisateur: Int) = service.chercherParCode(idUtilisateur)
+    fun obtenirUtilisateurparCode(@PathVariable idUtilisateur: Int) = service.chercherParCode(idUtilisateur) ?: throw ExceptionRessourceIntrouvable("L'utilisateur avec le id $idUtilisateur est introuvable")
 
     @ApiResponses(value = [
         ApiResponse(responseCode = "201", description = "La commande à été ajouter à la base de données"),
@@ -28,8 +32,19 @@ class UtilisateurControleur(val service: UtilisateurService) {
     ])
     @Operation(summary = "Permet d'ajouter un utilisateur à la base de données")
     @PostMapping("/utilisateur")
-    fun ajouterUtilisateur(@RequestBody utilisateur: Utilisateur) {
-        service.ajouter(utilisateur)
+    fun ajouterUtilisateur(@RequestBody utilisateur: Utilisateur): ResponseEntity<Utilisateur> {
+        val utilisateur = service.ajouter(utilisateur)
+
+        if(utilisateur != null) {
+            val location: URI = ServletUriComponentsBuilder
+                    .fromCurrentRequest()
+                    .path("/{idUtilisateur}")
+                    .buildAndExpand(utilisateur.idUtilisateur)
+                    .toUri()
+            return ResponseEntity.created(location).body(utilisateur)
+        }
+
+        return ResponseEntity.internalServerError().build()
     }
 
     @ApiResponses(value = [

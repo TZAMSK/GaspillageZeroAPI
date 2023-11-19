@@ -8,5 +8,6 @@ data class Utilisateur(
         val prénom: String,
         val courriel: String,
         val adresse: Adresse,
-        val téléphone: String) {
+        val téléphone: String,
+        val rôle: MutableList<Utilisateur_Rôle>) {
 }
