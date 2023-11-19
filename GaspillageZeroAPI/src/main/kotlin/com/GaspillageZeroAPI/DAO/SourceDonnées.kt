@@ -34,26 +34,68 @@ class SourceDonnées {
                 Adresse(5, "5555", "Rue WEst", "Toronto", "Ontario", "K1P 5Z9", "Canada"),
         )
         val utilisateurs = mutableListOf(
-                Utilisateur(1, "Montplaisir", "Samuel", "sammontplaisir@gmail.com", adresses[0], "514 123-9895"),
-                Utilisateur(2, "Khakimov", "Alikhan", "akhakimov@gmail.com", adresses[1], "514 676-9823"),
-                Utilisateur(3, "Tabti", "Lyazid", "lyatabti@gmail.com", adresses[2], "514 894-8268"),
-                Utilisateur(4, "Vienneau", "Joël", "joelvienneau@gmail.com", adresses[3], "514 181-9135"),
-                Utilisateur(5, "Lerouge", "Jean-Gabriel", "gabriellerouge@gmail.com", adresses[4], "514 112-8391"),
-                Utilisateur(6, "Ligtas", "Audric", "audricligtas@gmail.com", adresses[4], "514 892-1903"),
+                Utilisateur(1, "Montplaisir", "Samuel", "sammontplaisir@gmail.com", adresses[0], "514 123-9895", mutableListOf(
+                        Utilisateur_Rôle(1, "client", Date())
+                )),
+                Utilisateur(2, "Khakimov", "Alikhan", "akhakimov@gmail.com", adresses[1], "514 676-9823", mutableListOf(
+                        Utilisateur_Rôle(2, "client", Date())
+                )),
+                Utilisateur(3, "Tabti", "Lyazid", "lyatabti@gmail.com", adresses[2], "514 894-8268", mutableListOf(
+                        Utilisateur_Rôle(3, "client", Date())
+                )),
+                Utilisateur(4, "Vienneau", "Joël", "joelvienneau@gmail.com", adresses[3], "514 181-9135", mutableListOf(
+                        Utilisateur_Rôle(4, "client", Date())
+                )),
+                Utilisateur(5, "Lerouge", "Jean-Gabriel", "gabriellerouge@gmail.com", adresses[4], "514 112-8391", mutableListOf(
+                        Utilisateur_Rôle(5, "client", Date())
+                )),
+                Utilisateur(6, "Ligtas", "Audric", "audricligtas@gmail.com", adresses[4], "514 892-1903", mutableListOf(
+                        Utilisateur_Rôle(6, "client", Date())
+                ))
         )
-        val paniers = mutableListOf(
-                Panier(1, produits[0].idProduit, 3),
-                Panier(2, produits[1].idProduit, 4),
-        )
+
         val commandes = mutableListOf(
-                Commande(1, épiceries[0].idÉpicerie, utilisateurs[0].idUtilisateur, paniers[0].idPanier),
-                Commande(2, épiceries[1].idÉpicerie, utilisateurs[1].idUtilisateur, paniers[0].idPanier),
-                Commande(3, épiceries[2].idÉpicerie, utilisateurs[2].idUtilisateur, paniers[1].idPanier),
-                Commande(4, épiceries[3].idÉpicerie, utilisateurs[3].idUtilisateur, paniers[1].idPanier),
-                Commande(5, épiceries[1].idÉpicerie, utilisateurs[0].idUtilisateur, paniers[1].idPanier),
-                Commande(6, épiceries[0].idÉpicerie, utilisateurs[4].idUtilisateur, paniers[1].idPanier),
-                Commande(7, épiceries[0].idÉpicerie, utilisateurs[0].idUtilisateur, paniers[1].idPanier),
-                Commande(8, épiceries[1].idÉpicerie, utilisateurs[0].idUtilisateur, paniers[1].idPanier),
+                Commande(1, épiceries[0].idÉpicerie, utilisateurs[0].idUtilisateur, mutableListOf<ItemsPanier>(
+                        ItemsPanier(produits[1], 2),
+                        ItemsPanier(produits[2], 2),
+                        ItemsPanier(produits[4], 3),
+                )),
+                Commande(2, épiceries[1].idÉpicerie, utilisateurs[1].idUtilisateur, mutableListOf<ItemsPanier>(
+                        ItemsPanier(produits[1], 2),
+                        ItemsPanier(produits[2], 2),
+                        ItemsPanier(produits[4], 3),
+                )),
+                Commande(3, épiceries[2].idÉpicerie, utilisateurs[2].idUtilisateur, mutableListOf<ItemsPanier>(
+                        ItemsPanier(produits[1], 2),
+                        ItemsPanier(produits[2], 2),
+                        ItemsPanier(produits[4], 3),
+                )),
+                Commande(4, épiceries[3].idÉpicerie, utilisateurs[3].idUtilisateur, mutableListOf<ItemsPanier>(
+                        ItemsPanier(produits[1], 2),
+                        ItemsPanier(produits[2], 2),
+                        ItemsPanier(produits[4], 3),
+                )),
+                Commande(5, épiceries[1].idÉpicerie, utilisateurs[0].idUtilisateur, mutableListOf<ItemsPanier>(
+                        ItemsPanier(produits[1], 2),
+                        ItemsPanier(produits[2], 2),
+                        ItemsPanier(produits[4], 3),
+                )),
+                Commande(6, épiceries[0].idÉpicerie, utilisateurs[4].idUtilisateur, mutableListOf<ItemsPanier>(
+                        ItemsPanier(produits[1], 2),
+                        ItemsPanier(produits[2], 2),
+                        ItemsPanier(produits[4], 3),
+                )),
+                Commande(7, épiceries[0].idÉpicerie, utilisateurs[0].idUtilisateur, mutableListOf<ItemsPanier>(
+                        ItemsPanier(produits[1], 2),
+                        ItemsPanier(produits[2], 2),
+                        ItemsPanier(produits[4], 3),
+                )),
+                Commande(8, épiceries[1].idÉpicerie, utilisateurs[0].idUtilisateur, mutableListOf<ItemsPanier>(
+                        ItemsPanier(produits[1], 2),
+                        ItemsPanier(produits[2], 2),
+                        ItemsPanier(produits[4], 3),
+                ))
         )
+
     }
 }

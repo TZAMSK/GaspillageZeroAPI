@@ -1,5 +1,6 @@
 package com.GaspillageZeroAPI.DAO
 
+import com.GaspillageZeroAPI.Exceptions.ExceptionConflitRessourceExistante
 import com.GaspillageZeroAPI.Modèle.*
 import org.springframework.stereotype.Repository
 
@@ -12,12 +13,12 @@ class CommandeDAOImpl: CommandeDAO {
     override fun chercherTous(): List<Commande> = SourceDonnées.commandes
     override fun chercherParCode(idCommande: Int): Commande? = SourceDonnées.commandes.find{it.idCommande == idCommande}
 
-    override fun chercherCommandesParUtilisateur(idUtilisateur: Int): List<Commande>{
+    override fun chercherCommandesParUtilisateur(idUtilisateur: Int): List<Commande>?{
         val commandesParUtilisateur = SourceDonnées.commandes.filter{ it.idUtilisateur == idUtilisateur }
         return commandesParUtilisateur
     }
 
-    override fun chercherCommandesParÉpicerie(idÉpicerie: Int): List<Commande>{
+    override fun chercherCommandesParÉpicerie(idÉpicerie: Int): List<Commande>?{
         val commandesParÉpicerie = SourceDonnées.commandes.filter{ it.idÉpicerie == idÉpicerie }
         return commandesParÉpicerie
     }
@@ -25,7 +26,7 @@ class CommandeDAOImpl: CommandeDAO {
     override fun chercherCommandeParUtilisateur(idUtilisateur: Int, idCommande: Int): Commande? = SourceDonnées.commandes.find{it.idUtilisateur == idUtilisateur && it.idCommande == idCommande}
 
     override fun chercherCommandeParÉpicerie(idÉpicerie: Int, idCommande: Int): Commande? = SourceDonnées.commandes.find{it.idÉpicerie == idÉpicerie && it.idCommande == idCommande}
-
+    /**
     override fun chercherCommandeDetailParUtilisateur(idUtilisateur: Int, idCommande: Int): Produit?{
         val idPanier = SourceDonnées.commandes.find { it.idUtilisateur == idUtilisateur && it.idCommande == idCommande }?.idPanier
         val idProduit = SourceDonnées.paniers.find { it.idPanier == idPanier }?.idProduit
@@ -117,8 +118,11 @@ class CommandeDAOImpl: CommandeDAO {
         chercherHistoriqueCommandesDetailParÉpicerie(idÉpicerie)
         return argent
     }
-
+    **/
     override fun ajouter(commande: Commande): Commande? {
+        if(commande.idCommande != null && chercherParCode(commande.idCommande) != null){
+            throw ExceptionConflitRessourceExistante("La ressource existe déjà dans la base de donnée")
+        }
         SourceDonnées.commandes.add(commande)
         return commande
     }
