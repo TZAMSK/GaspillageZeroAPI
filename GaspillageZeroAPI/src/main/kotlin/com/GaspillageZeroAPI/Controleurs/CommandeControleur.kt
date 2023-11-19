@@ -33,7 +33,7 @@ class CommandeControleur(val service: CommandeService) {
     ])
 
     @Operation(summary = "Permet d'ajouter une commande à la BD")
-    @GetMapping("/commandes/utilisateur/{idUtilisateur}")
+    @GetMapping("/utilisateur/{idUtilisateur}/commandes/")
     fun obtenirCommandesParUtilisateur(@PathVariable idUtilisateur: Int) = service.chercherCommandesParUtilisateur(idUtilisateur) ?: throw ExceptionRessourceIntrouvable("Les commandes de l'utilisateur avec le code $idUtilisateur sont introuvables")
 
     @ApiResponses(value = [

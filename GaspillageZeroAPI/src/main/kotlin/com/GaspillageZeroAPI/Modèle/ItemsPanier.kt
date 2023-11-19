@@ -1,6 +1,6 @@
 package com.GaspillageZeroAPI.Modèle
 
 data class ItemsPanier(
-        val produit: Produit?,
+        val produit: Int,
         val quantité: Int) {
 }
