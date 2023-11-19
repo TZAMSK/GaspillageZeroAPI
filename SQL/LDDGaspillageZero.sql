@@ -36,14 +36,14 @@ create table rôle_utilisateur (
 create table épicerie(
 	id int primary key auto_increment,
 	adresse_id int not null,
-	utilisateur_id int not null,
+	utilisateur_code int not null,
 	nom varchar(255),
 	courriel varchar(255) not null unique,
 	téléphone varchar(255) not null,
 	logo BLOB,
 	constraint fk_épicerie_adresse_adresseID foreign key (adresse_id)
 	references adresse(id),
-	constraint fk_épicerie_utilisateur_utilisateurID foreign key (utilisateur_id)
+	constraint fk_épicerie_utilisateur_utilisateurCode foreign key (utilisateur_code)
 	references utilisateur(code)
 );
 
