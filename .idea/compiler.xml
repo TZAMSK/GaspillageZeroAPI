@@ -3,6 +3,9 @@
   <component name="CompilerConfiguration">
     <bytecodeTargetLevel>
       <module name="com.example.gaspillage_alimentaire_api" target="17" />
+      <module name="gaspillage_alimentaire_api.gaspillage_alimentaire_api" target="17" />
+      <module name="gaspillage_alimentaire_api.gaspillage_alimentaire_api.main~1" target="17" />
+      <module name="gaspillage_alimentaire_api.gaspillage_alimentaire_api.test~1" target="17" />
     </bytecodeTargetLevel>
   </component>
 </project>

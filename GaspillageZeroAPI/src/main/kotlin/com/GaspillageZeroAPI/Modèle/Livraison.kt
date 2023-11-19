@@ -1,3 +1,13 @@
 package com.GaspillageZeroAPI.Modèle
 
-data class Livraison(val code: Int)
+import org.springframework.data.annotation.Id
+import org.springframework.data.relational.core.mapping.Table
+
+@Table("Livraison")
+class Livraison (
+    @Id
+    val code: Int?,
+    val commande_code: Int?,
+    val utilisateur_code: Int?,
+    val adresse_id: Int?
+)
