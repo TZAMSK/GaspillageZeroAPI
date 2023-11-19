@@ -27,11 +27,11 @@ class SourceDonnées {
                 Épicerie(4, "Super C", "superc@gmail.com", "514 839-2987", emptyList(),emptyList()),
         )
         val adresses = mutableListOf(
-                Adresse(1, "1111", "Place Des Chocolats", "Québec", "H3A 0G4", "Canada"),
-                Adresse(2, "2222", "Longue Rue", "Québec", "H1B 0N4", "Canada"),
-                Adresse(3, "3333", "Rue Addison", "Ontario", "M5H 2N2", "Canada"),
-                Adresse(4, "4444", "Rue Est", "Ontario", "M9B 3N4", "Canada"),
-                Adresse(5, "5555", "Rue WEst", "Ontario", "K1P 5Z9", "Canada"),
+                Adresse(1, "1111", "Place Des Chocolats", "Montreal", "Québec", "H3A 0G4", "Canada"),
+                Adresse(2, "2222", "Longue Rue", "Montreal", "Québec", "H1B 0N4", "Canada"),
+                Adresse(3, "3333", "Rue Addison", "Toronto", "Ontario", "M5H 2N2", "Canada"),
+                Adresse(4, "4444", "Rue Est", "Toronto", "Ontario", "M9B 3N4", "Canada"),
+                Adresse(5, "5555", "Rue WEst", "Toronto", "Ontario", "K1P 5Z9", "Canada"),
         )
         val utilisateurs = mutableListOf(
                 Utilisateur(1, "Montplaisir", "Samuel", "sammontplaisir@gmail.com", adresses[0], "514 123-9895", mutableListOf(
