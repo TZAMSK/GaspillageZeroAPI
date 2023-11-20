@@ -109,11 +109,21 @@ class LivraisonControleur (private val livraisonService: LivraisonService, val c
         }
     }
 
-    @PutMapping("/livraisons/{code}")
+    @PutMapping("/utilisateur/{idUtilisateur}/commande/{idCommande}/livraisons/{code}")
     @Operation(summary = "Modifier une livraison")
-    @ApiResponse(responseCode = "200", description = "La livraison a été modifiée avec succès!")
-    fun majLivraison(@PathVariable code: String) {
-        TODO("Méthode non-implémentée")
+    @ApiResponse(responseCode = "204", description = "La livraison a été modifiée avec succès!")
+    fun majLivraison(@PathVariable idUtilisateur: Int, @PathVariable idCommande: Int,
+                     @PathVariable code: Int, @RequestBody livraison: Livraison): ResponseEntity<Int> {
+        val utilisateur = utilisateurService.chercherParCode(idUtilisateur)
+        val commande = commandeService.chercherParCode(idCommande)
+        val livraison_existante = livraisonService.obtenirLivraisonParCode(code)
+
+        return if (utilisateur != null && commande != null && livraison_existante != null) {
+            livraisonService.modifierLivraison(code, livraison)
+            ResponseEntity.status(HttpStatus.NO_CONTENT).build()
+        } else {
+            ResponseEntity.status(HttpStatus.NOT_FOUND).build()
+        }
     }
 
     @DeleteMapping("/livraisons/{code}")

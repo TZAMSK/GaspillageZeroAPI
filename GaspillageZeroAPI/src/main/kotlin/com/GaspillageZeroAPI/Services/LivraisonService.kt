@@ -18,4 +18,8 @@ class LivraisonService (private val livraisonDAO: LivraisonDAO){
     fun ajouterLivraison(livraison: Livraison): Int {
         return livraisonDAO.ajouter(livraison)
     }
+
+    fun modifierLivraison(code: Int, livraison: Livraison): Int {
+        return livraisonDAO.modifier(code, livraison)
+    }
 }

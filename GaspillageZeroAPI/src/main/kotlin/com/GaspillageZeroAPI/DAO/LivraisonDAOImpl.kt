@@ -25,6 +25,11 @@ class LivraisonDAOImpl(private val jdbcTemplate: JdbcTemplate): LivraisonDAO {
             livraison.code, livraison.commande_code, livraison.utilisateur_code, livraison.adresse_id)
     }
 
+    override fun modifier(code: Int, livraison: Livraison): Int {
+        return jdbcTemplate.update("UPDATE Livraison SET commande_code = ?, utilisateur_code = ?, adresse_id = ? WHERE code = ?",
+            livraison.code, livraison.commande_code, livraison.utilisateur_code, livraison.adresse_id)
+    }
+
     private fun mapRowToLivraison(rs: ResultSet): Livraison {
         return Livraison(
             code = rs.getInt("code"),
