@@ -79,10 +79,10 @@ class LivraisonControleur (private val livraisonService: LivraisonService, val c
                                 @PathVariable idCommande: Int, @PathVariable code: Int): ResponseEntity<Livraison> {
         val utilisateur = utilisateurService.chercherParCode(idUtilisateur)
         val commande = commandeService.chercherParCode(idCommande)
-        val livraison = livraisonService.obtenirLivraisonParCode(code)
+        val livraison_existante = livraisonService.obtenirLivraisonParCode(code)
 
-        return if (utilisateur != null && commande != null && livraison != null) {
-            ResponseEntity.ok(livraison)
+        return if (utilisateur != null && commande != null && livraison_existante != null) {
+            ResponseEntity.ok(livraison_existante)
         } else {
             ResponseEntity.notFound().build()
         }
@@ -126,11 +126,20 @@ class LivraisonControleur (private val livraisonService: LivraisonService, val c
         }
     }
 
-    @DeleteMapping("/livraisons/{code}")
+    @DeleteMapping("/utilisateur/{idUtilisateur}/commande/{idCommande}/livraisons/{code}")
     @Operation(summary = "Supprimer une livraison")
     @ApiResponse(responseCode = "204", description = "La livraison a été supprimée avec succès!")
-    fun supprimerLivraison(@PathVariable code: String){
-        TODO("Méthode non-implémentée")
-    }
+    fun supprimerLivraison(@PathVariable idUtilisateur: Int, @PathVariable idCommande: Int,
+        @PathVariable code: Int): ResponseEntity<Int> {
+        val utilisateur = utilisateurService.chercherParCode(idUtilisateur)
+        val commande = commandeService.chercherParCode(idCommande)
+        val livraison_existante = livraisonService.obtenirLivraisonParCode(code)
 
+        return if (utilisateur != null && commande != null && livraison_existante != null) {
+            livraisonService.supprimerLivraison(code)
+            ResponseEntity.status(HttpStatus.NO_CONTENT).build()
+        } else {
+            ResponseEntity.status(HttpStatus.NOT_FOUND).build()
+        }
+    }
 }

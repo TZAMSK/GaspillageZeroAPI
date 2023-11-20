@@ -30,6 +30,10 @@ class LivraisonDAOImpl(private val jdbcTemplate: JdbcTemplate): LivraisonDAO {
             livraison.code, livraison.commande_code, livraison.utilisateur_code, livraison.adresse_id)
     }
 
+    override fun supprimer(code: Int): Int {
+        return jdbcTemplate.update("DELETE FROM Livraison WHERE code = ?", code)
+    }
+
     private fun mapRowToLivraison(rs: ResultSet): Livraison {
         return Livraison(
             code = rs.getInt("code"),

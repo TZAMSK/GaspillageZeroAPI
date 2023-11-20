@@ -22,4 +22,8 @@ class LivraisonService (private val livraisonDAO: LivraisonDAO){
     fun modifierLivraison(code: Int, livraison: Livraison): Int {
         return livraisonDAO.modifier(code, livraison)
     }
+
+    fun supprimerLivraison(code: Int) {
+        livraisonDAO.supprimer(code)
+    }
 }
