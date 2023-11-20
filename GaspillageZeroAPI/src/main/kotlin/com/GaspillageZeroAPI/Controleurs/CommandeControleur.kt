@@ -105,7 +105,7 @@ class CommandeControleur(val service: CommandeService) {
         ApiResponse(responseCode = "404", description = "La commande est introuvable")
     ])
     @Operation(summary = "Permet de retirer une commande de la base de données")
-    @DeleteMapping("/commande/delete/{idCommande}")
+    @DeleteMapping("/commande/{idCommande}")
     fun suppimerCommande(@PathVariable idCommande: Int) {
         service.supprimer(idCommande)
     }
@@ -116,7 +116,7 @@ class CommandeControleur(val service: CommandeService) {
     ])
 
     @Operation(summary = "Permet de modifier les informations d'une commande")
-    @PutMapping("/commande/modifier/{idCommande}")
+    @PutMapping("/commande/{idCommande}")
     fun modifierCommande(@PathVariable idCommande: Int, @RequestBody commande: Commande){
         service.modifier(idCommande, commande)
     }

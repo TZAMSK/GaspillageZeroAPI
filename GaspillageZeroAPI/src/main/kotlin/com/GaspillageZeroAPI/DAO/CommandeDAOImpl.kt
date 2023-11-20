@@ -179,15 +179,23 @@ class CommandeDAOImpl(private val jdbcTemplate: JdbcTemplate): CommandeDAO {
 
     override fun supprimer(idCommande: Int): Commande? {
         val commandeSuppimer = SourceDonnées.commandes.find { it.idCommande == idCommande }
-        if (commandeSuppimer != null){
-            SourceDonnées.commandes.remove(commandeSuppimer)
-        }
+
+        try{
+            jdbcTemplate.update("DELETE FROM commande WHERE code=?", idCommande)
+        }catch(e: Exception){}
+
         return commandeSuppimer
     }
 
     override fun modifier(idCommande: Int, commande: Commande): Commande? {
-        val indexModifierCommande = SourceDonnées.commandes.indexOf(SourceDonnées.commandes.find { it.idCommande == idCommande })
-        SourceDonnées.commandes.set(indexModifierCommande, commande)
+        try{
+            jdbcTemplate.update("UPDATE commande SET épicerie_id=?, utilisateur_code=? WHERE code=?",
+                    commande.idÉpicerie, commande.idUtilisateur, idCommande)
+            for(itemPanier in commande.panier){
+                jdbcTemplate.update("UPDATE commande_produits SET  quantité=? WHERE commande_code=? AND produit_id=?",
+                        itemPanier.quantité, idCommande, itemPanier.produit)
+            }
+        }catch (e: Exception){throw e}
         return commande
     }
 
