@@ -43,7 +43,7 @@ class LivraisonControleur (private val livraisonService: LivraisonService, val c
     @ApiResponse(responseCode = "200", description = "Liste des évaluations trouvées")
     @ApiResponse(responseCode = "404", description = "Liste des évaluations non-trouvées, veuillez réessayez...")
     fun obtenirEvaluations() {
-        TODO("Méthode non-implémentée")
+
     }
 
     @GetMapping("/evaluations/{code}")

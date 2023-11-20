@@ -54,5 +54,20 @@ class SourceDonnées {
                 Commande(6, épiceries[0].idÉpicerie, utilisateurs[4].idUtilisateur, paniers[1].idPanier),
                 Commande(7, épiceries[0].idÉpicerie, utilisateurs[0].idUtilisateur, paniers[1].idPanier),
         )
+        val livraison = mutableListOf(
+            Livraison(1,commandes[0].idCommande, utilisateurs[0].idUtilisateur, adresses[0].idAdresse) ,
+            Livraison(2,commandes[1].idCommande, utilisateurs[1].idUtilisateur, adresses[1].idAdresse),
+            Livraison(3,commandes[2].idCommande, utilisateurs[1].idUtilisateur, adresses[2].idAdresse),
+
+        )
+
+
+
+        val avis = mutableListOf(
+            Évaluation(1,2,"La nourriture est froide", livraison[1].code),
+            Évaluation(2,5,"Impeccable", livraison[2].code),
+            Évaluation(3,4,"Livraison rapide et sastifait", livraison[3].code),
+
+        )
     }
 }
