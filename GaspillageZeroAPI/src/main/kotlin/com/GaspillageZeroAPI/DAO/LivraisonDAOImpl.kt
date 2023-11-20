@@ -15,7 +15,7 @@ class LivraisonDAOImpl(private val jdbcTemplate: JdbcTemplate): LivraisonDAO {
     }
 
     override fun chercherParCode(code: Int): Livraison? {
-        return jdbcTemplate.query("SELECT * FROM Livraison WHERE id = ?", arrayOf(code)) { rs, _ ->
+        return jdbcTemplate.query("SELECT * FROM Livraison WHERE code = ?", arrayOf(code)) { rs, _ ->
             mapRowToLivraison(rs)
         }.firstOrNull()
     }

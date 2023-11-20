@@ -1,14 +1,21 @@
 package com.GaspillageZeroAPI.Controleurs
 
 import com.GaspillageZeroAPI.DAO.LivraisonDAO
+import com.GaspillageZeroAPI.Modèle.Commande
 import com.GaspillageZeroAPI.Modèle.Livraison
+import com.GaspillageZeroAPI.Modèle.Utilisateur
+import com.GaspillageZeroAPI.Services.CommandeService
 import com.GaspillageZeroAPI.Services.LivraisonService
+import com.GaspillageZeroAPI.Services.UtilisateurService
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.responses.ApiResponse
+import org.springframework.http.HttpStatus
+import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 
 @RestController
-class LivraisonControleur (private val livraisonService: LivraisonService) {
+class LivraisonControleur (private val livraisonService: LivraisonService, val commandeService: CommandeService,
+                           val utilisateurService: UtilisateurService) {
 
     //Pour accéder à la documentation OpenApi, visitez le lien suivant pour en savoir plus : http://localhost:8080/swagger-ui/index.html
     //@GetMapping("/listeLivraisons")
@@ -47,27 +54,59 @@ class LivraisonControleur (private val livraisonService: LivraisonService) {
         TODO("Méthode non-implémentée")
     }
 
-    @GetMapping("/livraisons")
+    @GetMapping("/utilisateur/{idUtilisateur}/commande/{idCommande}/livraisons")
     @Operation(summary = "Obtenir la liste des livraisons")
     @ApiResponse(responseCode = "200", description = "Liste des livraisons trouvées")
     @ApiResponse(responseCode = "404", description = "Liste des livraisons non-trouvées, veuillez réessayez...")
-    fun obtenirLivraisons() {
-        TODO("Méthode non-implémentée")
+    fun obtenirLivraisons(@PathVariable idUtilisateur: Int,
+                          @PathVariable idCommande: Int): ResponseEntity<List<Livraison>> {
+        val utilisateur = utilisateurService.chercherParCode(idUtilisateur)
+        val commande = commandeService.chercherParCode(idCommande)
+
+        return if (utilisateur != null && commande != null) {
+            val livraisons = livraisonService.obtenirLivraisons()
+            ResponseEntity.status(HttpStatus.OK).body(livraisons)
+        } else {
+            ResponseEntity.status(HttpStatus.NOT_FOUND).build()
+        }
     }
 
-    @GetMapping("/livraisons/{code}")
+    @GetMapping("/utilisateur/{idUtilisateur}/commande/{idCommande}/livraisons/{code}")
     @Operation(summary = "Obtenir une livraison en cherchant par code")
     @ApiResponse(responseCode = "200", description = "Livraison trouvée")
     @ApiResponse(responseCode = "404", description = "Livraison non-trouvée, veuillez réessayez...")
-    fun obtenirLivraisonParCode(@PathVariable code: String) {
-        TODO("Méthode non-implémentée")
+    fun obtenirLivraisonParCode(@PathVariable idUtilisateur: Int,
+                                @PathVariable idCommande: Int, @PathVariable code: Int): ResponseEntity<Livraison> {
+        val utilisateur = utilisateurService.chercherParCode(idUtilisateur)
+        val commande = commandeService.chercherParCode(idCommande)
+        val livraison = livraisonService.obtenirLivraisonParCode(code)
+
+        return if (utilisateur != null && commande != null && livraison != null) {
+            ResponseEntity.ok(livraison)
+        } else {
+            ResponseEntity.notFound().build()
+        }
     }
 
-    @PostMapping("/livraisons")
+    @PostMapping("/utilisateur/{idUtilisateur}/commande/{idCommande}/livraison")
     @Operation(summary = "Ajouté une livraison")
     @ApiResponse(responseCode = "201", description = "La livraison a été ajouté avec succès!")
-    fun inscrireLivraison(@RequestBody livraison: Livraison): Int {
-        return livraisonService.ajouterLivraison(livraison)
+    fun inscrireLivraison(@PathVariable idUtilisateur: Int,
+        @PathVariable idCommande: Int, @RequestBody livraison: Livraison): ResponseEntity<String> {
+        try {
+            val utilisateur = utilisateurService.chercherParCode(idUtilisateur)
+            val commande = commandeService.chercherParCode(idCommande)
+
+            if (utilisateur != null && commande != null) {
+                livraisonService.ajouterLivraison(livraison)
+                return ResponseEntity.status(HttpStatus.CREATED).body("La livraison a été ajouté avec succès")
+            } else {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("L'id de l'utilisateur ou de la commande non trouvée.")
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Erreur lors de l'ajout d'une livraison.")
+        }
     }
 
     @PutMapping("/livraisons/{code}")
