@@ -56,44 +56,44 @@ class SourceDonnées {
 
         val commandes = mutableListOf(
                 Commande(1, épiceries[0].idÉpicerie, utilisateurs[0].idUtilisateur, mutableListOf<ItemsPanier>(
-                        ItemsPanier(produits[1], 2),
-                        ItemsPanier(produits[2], 2),
-                        ItemsPanier(produits[4], 3),
+                        ItemsPanier(1, 2),
+                        ItemsPanier(2, 2),
+                        ItemsPanier(4, 3),
                 )),
                 Commande(2, épiceries[1].idÉpicerie, utilisateurs[1].idUtilisateur, mutableListOf<ItemsPanier>(
-                        ItemsPanier(produits[1], 2),
-                        ItemsPanier(produits[2], 2),
-                        ItemsPanier(produits[4], 3),
+                        ItemsPanier(1, 2),
+                        ItemsPanier(2, 2),
+                        ItemsPanier(4, 3),
                 )),
                 Commande(3, épiceries[2].idÉpicerie, utilisateurs[2].idUtilisateur, mutableListOf<ItemsPanier>(
-                        ItemsPanier(produits[1], 2),
-                        ItemsPanier(produits[2], 2),
-                        ItemsPanier(produits[4], 3),
+                        ItemsPanier(1, 2),
+                        ItemsPanier(2, 2),
+                        ItemsPanier(4, 3),
                 )),
                 Commande(4, épiceries[3].idÉpicerie, utilisateurs[3].idUtilisateur, mutableListOf<ItemsPanier>(
-                        ItemsPanier(produits[1], 2),
-                        ItemsPanier(produits[2], 2),
-                        ItemsPanier(produits[4], 3),
+                        ItemsPanier(1, 2),
+                        ItemsPanier(2, 2),
+                        ItemsPanier(4, 3),
                 )),
                 Commande(5, épiceries[1].idÉpicerie, utilisateurs[0].idUtilisateur, mutableListOf<ItemsPanier>(
-                        ItemsPanier(produits[1], 2),
-                        ItemsPanier(produits[2], 2),
-                        ItemsPanier(produits[4], 3),
+                        ItemsPanier(1, 2),
+                        ItemsPanier(2, 2),
+                        ItemsPanier(4, 3),
                 )),
                 Commande(6, épiceries[0].idÉpicerie, utilisateurs[4].idUtilisateur, mutableListOf<ItemsPanier>(
-                        ItemsPanier(produits[1], 2),
-                        ItemsPanier(produits[2], 2),
-                        ItemsPanier(produits[4], 3),
+                        ItemsPanier(1, 2),
+                        ItemsPanier(2, 2),
+                        ItemsPanier(4, 3),
                 )),
                 Commande(7, épiceries[0].idÉpicerie, utilisateurs[0].idUtilisateur, mutableListOf<ItemsPanier>(
-                        ItemsPanier(produits[1], 2),
-                        ItemsPanier(produits[2], 2),
-                        ItemsPanier(produits[4], 3),
+                        ItemsPanier(1, 2),
+                        ItemsPanier(2, 2),
+                        ItemsPanier(4, 3),
                 )),
                 Commande(8, épiceries[1].idÉpicerie, utilisateurs[0].idUtilisateur, mutableListOf<ItemsPanier>(
-                        ItemsPanier(produits[1], 2),
-                        ItemsPanier(produits[2], 2),
-                        ItemsPanier(produits[4], 3),
+                        ItemsPanier(1, 2),
+                        ItemsPanier(2, 2),
+                        ItemsPanier(4, 3),
                 ))
         )
 

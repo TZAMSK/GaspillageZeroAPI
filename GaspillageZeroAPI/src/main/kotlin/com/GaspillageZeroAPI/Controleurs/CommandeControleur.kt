@@ -33,7 +33,7 @@ class CommandeControleur(val service: CommandeService) {
     ])
 
     @Operation(summary = "Permet d'ajouter une commande à la BD")
-    @GetMapping("/commandes/utilisateur/{idUtilisateur}")
+    @GetMapping("/utilisateur/{idUtilisateur}/commandes/")
     fun obtenirCommandesParUtilisateur(@PathVariable idUtilisateur: Int) = service.chercherCommandesParUtilisateur(idUtilisateur) ?: throw ExceptionRessourceIntrouvable("Les commandes de l'utilisateur avec le code $idUtilisateur sont introuvables")
 
     @ApiResponses(value = [
@@ -105,7 +105,7 @@ class CommandeControleur(val service: CommandeService) {
         ApiResponse(responseCode = "404", description = "La commande est introuvable")
     ])
     @Operation(summary = "Permet de retirer une commande de la base de données")
-    @DeleteMapping("/commande/delete/{idCommande}")
+    @DeleteMapping("/commande/{idCommande}")
     fun suppimerCommande(@PathVariable idCommande: Int) {
         service.supprimer(idCommande)
     }
@@ -116,7 +116,7 @@ class CommandeControleur(val service: CommandeService) {
     ])
 
     @Operation(summary = "Permet de modifier les informations d'une commande")
-    @PutMapping("/commande/modifier/{idCommande}")
+    @PutMapping("/commande/{idCommande}")
     fun modifierCommande(@PathVariable idCommande: Int, @RequestBody commande: Commande){
         service.modifier(idCommande, commande)
     }
