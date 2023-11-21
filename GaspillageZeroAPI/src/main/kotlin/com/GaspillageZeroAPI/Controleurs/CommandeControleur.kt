@@ -83,7 +83,7 @@ class CommandeControleur(val service: CommandeService) {
 
     @Operation(summary = "Permet de retirer une commande de la base de données")
     @DeleteMapping("/commande/delete/{idCommande}")
-    fun suppimerCommande(@PathVariable idCommande: Int) {
+    fun supprimerCommande(@PathVariable idCommande: Int) {
         service.supprimer(idCommande)
     }
 
