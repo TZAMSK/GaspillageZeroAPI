@@ -19,16 +19,16 @@ class UtilisateurControleur(val service: UtilisateurService) {
     fun obtenirUtilisateurs() = service.chercherTous()
 
     @ApiResponses(value = [
-        ApiResponse(responseCode = "200", description = "Commande trouvée"),
-        ApiResponse(responseCode = "404", description = "commande non trouvé")
+        ApiResponse(responseCode = "200", description = "Utilisateur trouvée"),
+        ApiResponse(responseCode = "404", description = "Utilisateur non trouvé")
     ])
     @Operation(summary = "permet d'obtenir l'utilisateur ayant le ID {idUtilisateur}")
     @GetMapping("/utilisateur/{idUtilisateur}")
     fun obtenirUtilisateurparCode(@PathVariable idUtilisateur: Int) = service.chercherParCode(idUtilisateur) ?: throw ExceptionRessourceIntrouvable("L'utilisateur avec le id $idUtilisateur est introuvable")
 
     @ApiResponses(value = [
-        ApiResponse(responseCode = "201", description = "La commande à été ajouter à la base de données"),
-        ApiResponse(responseCode = "409", description = "Le produit existe déjà dans la base de données")
+        ApiResponse(responseCode = "201", description = "L'utilisateur à été ajouter à la base de données"),
+        ApiResponse(responseCode = "409", description = "L'utilisateur existe déjà dans la base de données")
     ])
     @Operation(summary = "Permet d'ajouter un utilisateur à la base de données")
     @PostMapping("/utilisateur")
@@ -48,21 +48,21 @@ class UtilisateurControleur(val service: UtilisateurService) {
     }
 
     @ApiResponses(value = [
-        ApiResponse(responseCode = "200", description = "Commande trouvée"),
-        ApiResponse(responseCode = "404", description = "commande non trouvé")
+        ApiResponse(responseCode = "200", description = "Utilisateur trouvée"),
+        ApiResponse(responseCode = "404", description = "Utilisateur non trouvé")
     ])
     @Operation(summary = "Permet de supprimer un utilisateur de la base de données")
-    @DeleteMapping("/utilisateur/delete/{idUtilisateur}")
+    @DeleteMapping("/utilisateur/{idUtilisateur}")
     fun suppimerUtilisateur(@PathVariable idUtilisateur: Int) {
         service.supprimer(idUtilisateur)
     }
 
     @ApiResponses(value = [
-        ApiResponse(responseCode = "200", description = "Commande trouvée"),
-        ApiResponse(responseCode = "404", description = "commande non trouvé")
+        ApiResponse(responseCode = "200", description = "Utilisateur trouvée"),
+        ApiResponse(responseCode = "404", description = "Utilisateur non trouvé")
     ])
     @Operation(summary = "Permet de modifier les informations d'un utilisateur")
-    @PutMapping("/utilisateur/modifier/{idUtilisateur}")
+    @PutMapping("/utilisateur/{idUtilisateur}")
     fun modifierUtilisateur(@PathVariable idUtilisateur: Int, @RequestBody utilisateur: Utilisateur){
         service.modifier(idUtilisateur, utilisateur)
     }
