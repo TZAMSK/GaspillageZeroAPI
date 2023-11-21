@@ -1,9 +1,6 @@
 package com.GaspillageZeroAPI.Controleurs
 
-import com.GaspillageZeroAPI.DAO.LivraisonDAO
-import com.GaspillageZeroAPI.Modèle.Commande
 import com.GaspillageZeroAPI.Modèle.Livraison
-import com.GaspillageZeroAPI.Modèle.Utilisateur
 import com.GaspillageZeroAPI.Services.CommandeService
 import com.GaspillageZeroAPI.Services.LivraisonService
 import com.GaspillageZeroAPI.Services.UtilisateurService
@@ -11,6 +8,7 @@ import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.responses.ApiResponse
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
+import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.bind.annotation.*
 
 @RestController
@@ -56,13 +54,13 @@ class LivraisonControleur (private val livraisonService: LivraisonService, val c
         TODO("Méthode non-implémentée")
     }
 
-    @GetMapping("/utilisateur/{idUtilisateur}/commande/{idCommande}/livraisons")
+    @GetMapping("/utilisateur/{code_utilisateur}/commande/{idCommande}/livraisons")
     @Operation(summary = "Obtenir la liste des livraisons")
     @ApiResponse(responseCode = "200", description = "Liste des livraisons trouvées")
     @ApiResponse(responseCode = "404", description = "Liste des livraisons non-trouvées, veuillez réessayez...")
-    fun obtenirLivraisons(@PathVariable idUtilisateur: Int,
+    fun obtenirLivraisons(@PathVariable code_utilisateur: Int,
                           @PathVariable idCommande: Int): ResponseEntity<List<Livraison>> {
-        val utilisateur = utilisateurService.chercherParCode(idUtilisateur)
+        val utilisateur = utilisateurService.chercherParCodeBD(code_utilisateur)
         val commande = commandeService.chercherParCode(idCommande)
 
         return if (utilisateur != null && commande != null) {
@@ -73,13 +71,13 @@ class LivraisonControleur (private val livraisonService: LivraisonService, val c
         }
     }
 
-    @GetMapping("/utilisateur/{idUtilisateur}/commande/{idCommande}/livraisons/{code}")
+    @GetMapping("/utilisateur/{code_utilisateur}/commande/{idCommande}/livraisons/{code}")
     @Operation(summary = "Obtenir une livraison en cherchant par code")
     @ApiResponse(responseCode = "200", description = "Livraison trouvée")
     @ApiResponse(responseCode = "404", description = "Livraison non-trouvée, veuillez réessayez...")
-    fun obtenirLivraisonParCode(@PathVariable idUtilisateur: Int,
+    fun obtenirLivraisonParCode(@PathVariable code_utilisateur: Int,
                                 @PathVariable idCommande: Int, @PathVariable code: Int): ResponseEntity<Livraison> {
-        val utilisateur = utilisateurService.chercherParCode(idUtilisateur)
+        val utilisateur = utilisateurService.chercherParCodeBD(code_utilisateur)
         val commande = commandeService.chercherParCode(idCommande)
         val livraison_existante = livraisonService.obtenirLivraisonParCode(code)
 
@@ -90,20 +88,20 @@ class LivraisonControleur (private val livraisonService: LivraisonService, val c
         }
     }
 
-    @PostMapping("/utilisateur/{idUtilisateur}/commande/{idCommande}/livraison")
+    @PostMapping("/utilisateur/{code_utilisateur}/commande/{idCommande}/livraison")
     @Operation(summary = "Ajouté une livraison")
     @ApiResponse(responseCode = "201", description = "La livraison a été ajouté avec succès!")
-    fun inscrireLivraison(@PathVariable idUtilisateur: Int,
+    fun inscrireLivraison(@PathVariable code_utilisateur: Int,
         @PathVariable idCommande: Int, @RequestBody livraison: Livraison): ResponseEntity<String> {
         try {
-            val utilisateur = utilisateurService.chercherParCode(idUtilisateur)
+            val utilisateur = utilisateurService.chercherParCodeBD(code_utilisateur)
             val commande = commandeService.chercherParCode(idCommande)
 
             if (utilisateur != null && commande != null) {
                 livraisonService.ajouterLivraison(livraison)
-                return ResponseEntity.status(HttpStatus.CREATED).body("La livraison a été ajouté avec succès")
+                return ResponseEntity.status(HttpStatus.CREATED).body("La livraison a été ajouté avec succès!")
             } else {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("L'id de l'utilisateur ou de la commande non trouvée.")
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("L'id de l'utilisateur ou de la commande est invalide.")
             }
         } catch (e: Exception) {
             e.printStackTrace()
@@ -111,12 +109,12 @@ class LivraisonControleur (private val livraisonService: LivraisonService, val c
         }
     }
 
-    @PutMapping("/utilisateur/{idUtilisateur}/commande/{idCommande}/livraisons/{code}")
+    @PutMapping("/utilisateur/{code_utilisateur}/commande/{idCommande}/livraisons/{code}")
     @Operation(summary = "Modifier une livraison")
     @ApiResponse(responseCode = "204", description = "La livraison a été modifiée avec succès!")
-    fun majLivraison(@PathVariable idUtilisateur: Int, @PathVariable idCommande: Int,
+    fun majLivraison(@PathVariable code_utilisateur: Int, @PathVariable idCommande: Int,
                      @PathVariable code: Int, @RequestBody livraison: Livraison): ResponseEntity<Int> {
-        val utilisateur = utilisateurService.chercherParCode(idUtilisateur)
+        val utilisateur = utilisateurService.chercherParCodeBD(code_utilisateur)
         val commande = commandeService.chercherParCode(idCommande)
         val livraison_existante = livraisonService.obtenirLivraisonParCode(code)
 
@@ -128,12 +126,12 @@ class LivraisonControleur (private val livraisonService: LivraisonService, val c
         }
     }
 
-    @DeleteMapping("/utilisateur/{idUtilisateur}/commande/{idCommande}/livraisons/{code}")
+    @DeleteMapping("/utilisateur/{code_utilisateur}/commande/{idCommande}/livraisons/{code}")
     @Operation(summary = "Supprimer une livraison")
     @ApiResponse(responseCode = "204", description = "La livraison a été supprimée avec succès!")
-    fun supprimerLivraison(@PathVariable idUtilisateur: Int, @PathVariable idCommande: Int,
+    fun supprimerLivraison(@PathVariable code_utilisateur: Int, @PathVariable idCommande: Int,
         @PathVariable code: Int): ResponseEntity<Int> {
-        val utilisateur = utilisateurService.chercherParCode(idUtilisateur)
+        val utilisateur = utilisateurService.chercherParCodeBD(code_utilisateur)
         val commande = commandeService.chercherParCode(idCommande)
         val livraison_existante = livraisonService.obtenirLivraisonParCode(code)
 
