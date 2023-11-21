@@ -40,9 +40,10 @@ class CommandeControleurTest {
     private lateinit var mockMvc: MockMvc
 
     val commande: Commande = Commande(3,1,2, mutableListOf<ItemsPanier>(
-            ItemsPanier(Produit(1, "patate", Date(), 10, 2.50), 2),
-            ItemsPanier(Produit(2, "choux", Date(), 10, 2.50), 2),
-            ItemsPanier(Produit(4, "onion", Date(), 10, 2.50), 2)
+            //ItemsPanier(Produit(1, "patate", Date(), 10, 2.50), 2),
+            ItemsPanier(1, 10),
+            ItemsPanier(2, 2),
+            ItemsPanier(4, 2)
     ))
 
     @Test
@@ -70,9 +71,9 @@ class CommandeControleurTest {
     @Test
     fun `Étant donnée une commande avec le code 4, lorsqu'on ajoute une commande à l'épicerie avec le code 1 l'aide d'une requète POST on obtient le code 201`(){
         val commandeÀAjouter = Commande(11, 2, 1, mutableListOf<ItemsPanier>(
-                ItemsPanier(Produit(5, "carrotte", Date(), 11, 3.0), 3),
-                ItemsPanier(Produit(22, "chocolat", Date(), 11, 5.0), 2),
-                ItemsPanier(Produit(87, "Bleuet", Date(), 11, 8.0), 4),
+                ItemsPanier(5, 3),
+                ItemsPanier(22, 2),
+                ItemsPanier(87, 4),
         ))
 
         Mockito.`when`(service.ajouter(commandeÀAjouter)).thenReturn(commandeÀAjouter)
@@ -88,9 +89,9 @@ class CommandeControleurTest {
     @Test
     fun `Étant donnée une commnde avec le code 3 qui existe déjà, lorsqu'on exécute une requête POST, alors on obtient un code d'erreur 409(conflit)`(){
         val commandeÀAjouter = Commande(11, 2, 1, mutableListOf<ItemsPanier>(
-                ItemsPanier(Produit(5, "carrotte", Date(), 11, 3.0), 3),
-                ItemsPanier(Produit(22, "chocolat", Date(), 11, 5.0), 2),
-                ItemsPanier(Produit(87, "Bleuet", Date(), 11, 8.0), 4),
+                ItemsPanier(5, 3),
+                ItemsPanier(22, 2),
+                ItemsPanier(87, 4),
         ))
 
         Mockito.`when`(service.ajouter(commandeÀAjouter)).thenThrow(ExceptionConflitRessourceExistante("La ressource avec ce id ${commandeÀAjouter.idCommande} existe déjà dans la base de données"))
