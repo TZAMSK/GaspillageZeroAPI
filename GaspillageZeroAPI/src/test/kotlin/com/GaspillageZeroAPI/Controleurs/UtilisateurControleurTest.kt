@@ -2,6 +2,7 @@ package com.GaspillageZeroAPI.Controleurs
 
 import com.GaspillageZeroAPI.Modèle.Adresse
 import com.GaspillageZeroAPI.Modèle.Utilisateur
+import com.GaspillageZeroAPI.Modèle.Utilisateur_Rôle
 import com.GaspillageZeroAPI.Services.UtilisateurService
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
@@ -10,6 +11,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.test.web.servlet.MockMvc
+import java.util.*
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -21,7 +23,7 @@ class UtilisateurControleurTest{
     @Autowired
     private lateinit var mockMvc: MockMvc
 
-    val utilisateur: Utilisateur = Utilisateur(2, "Africa", "Toto", "toto@afri.ca", Adresse(3,"123", "Saint-chose", "Québec", "B1B 1B1", "Canada"),"(123)456-7890")
+    val utilisateur: Utilisateur = Utilisateur(2, "Africa", "Toto", "toto@afri.ca", Adresse(3,"123", "Saint-chose", "Montreal", "Québec", "B1B 1B1", "Canada"),"(123)456-7890", mutableListOf(Utilisateur_Rôle(2,"client", Date())))
 
     @Test
     fun `Étant donnée un utilisateur avec le id 2, lorsqu'on éffectue un requète GET alors on obtien un JSON qui contient un objet Utilisateur avec le ID 2 et le code 200`(){
