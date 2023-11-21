@@ -1,6 +1,8 @@
 package com.GaspillageZeroAPI.DAO
 
 import com.GaspillageZeroAPI.Exceptions.ExceptionConflitRessourceExistante
+import com.GaspillageZeroAPI.Exceptions.ExceptionErreurServeur
+import com.GaspillageZeroAPI.Exceptions.ExceptionRessourceIntrouvable
 import com.GaspillageZeroAPI.Modèle.*
 import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.stereotype.Repository
@@ -85,13 +87,15 @@ class CommandeDAOImpl(private val jdbcTemplate: JdbcTemplate): CommandeDAO {
     }
 
     override fun supprimer(idCommande: Int): Commande? {
-        val commandeSuppimer = SourceDonnées.commandes.find { it.idCommande == idCommande }
-
+        if(chercherParCode(idCommande)==null){
+            throw ExceptionRessourceIntrouvable("La commande avec le ID $idCommande est introuvable")
+        }
         try{
+            jdbcTemplate.update("DELETE FROM commande_produits WHERE commande_code=?", idCommande)
             jdbcTemplate.update("DELETE FROM commande WHERE code=?", idCommande)
-        }catch(e: Exception){}
+        }catch(e: Exception){ throw ExceptionErreurServeur("erreur: " + e.message) }
 
-        return commandeSuppimer
+        return null
     }
 
     override fun modifier(idCommande: Int, commande: Commande): Commande? {
