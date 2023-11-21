@@ -33,7 +33,7 @@ class ÉpicerieControleur(val service: ÉpicerieService) {
     //    service.ajouter(épicerie)
     //}
 
-    //Pour le test des exceptions
+    // MÉTHODE POUR TESTER L'EXCEPTION
     @DeleteMapping("/épicerie/delete/{idÉpicerie}")
     fun suppimerÉpicerie(@PathVariable idÉpicerie: Int) {
         service.supprimer(idÉpicerie)
