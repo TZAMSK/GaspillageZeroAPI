@@ -8,5 +8,6 @@ data class GabaritProduit (
         val description: String,
         val image: Blob?,
         val categorie: String,
-        val produits: List<Produit> = mutableListOf()) {
+        val idÉpicerie: Int?
+){
 }
