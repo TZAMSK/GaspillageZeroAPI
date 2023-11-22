@@ -32,7 +32,7 @@ class UtilisateurControleurTest{
     @Autowired
     private lateinit var mockMvc: MockMvc
 
-    val utilisateur: Utilisateur = Utilisateur(2, "Africa", "Toto", "toto@afri.ca", Adresse(3,"123", "Saint-chose", "Québec", "B1B 1B1", "Canada"),"(123)456-7890")
+    val utilisateur: Utilisateur = Utilisateur(2, "Africa", "Toto", "toto@afri.ca", Adresse(3,"123", "Saint-chose", "Québec", "Montréal", "HJS 890","Canada"),"(123)456-7890", mutableListOf())
 
     @Test
     fun `Étant donnée un utilisateur avec le id 2, lorsqu'on éffectue un requète GET alors on obtien un JSON qui contient un objet Utilisateur avec le ID 2 et le code 200`(){
@@ -118,7 +118,7 @@ class UtilisateurControleurTest{
     @Test
     fun `Étant donnée un Utilisateur avec le ID 2, lorsqu'on exécute une requête PUT avec une objet Utilisateur en JSON, on obtient alors le code 202 pour accepted`(){
         val utilisateurModifie = Utilisateur(2, "Modified", "Name", "modified@gmail.com",
-                Adresse(1, "123", "Street", "City", "Province", "PostalCode", "Country"), "123-456-7890")
+                Adresse(1, "123", "Street", "City", "Province", "PostalCode", "Country"), "123-456-7890", mutableListOf())
 
         Mockito.`when`(service.modifier(2, utilisateurModifie)).thenReturn(utilisateurModifie)
 
@@ -132,7 +132,7 @@ class UtilisateurControleurTest{
     @Test
     fun `Étant donnée un Utilisateur avec le ID 3 qui n'existe pas, lorsqu'on exécute une requete PUT avec un objet Utilisateur en JSON, on obtient alors le code d'erreur 404`(){
         val utilisateurModifie = Utilisateur(3, "Modified", "Name", "modified@gmail.com",
-                Adresse(1, "123", "Street", "City", "Province", "PostalCode", "Country"), "123-456-7890")
+                Adresse(1, "123", "Street", "City", "Province", "PostalCode", "Country"), "123-456-7890", mutableListOf())
 
         Mockito.`when`(service.modifier(3, utilisateurModifie))
                 .thenThrow(ExceptionRessourceIntrouvable("L'utilisateur avec le code 3 est introuvable"))

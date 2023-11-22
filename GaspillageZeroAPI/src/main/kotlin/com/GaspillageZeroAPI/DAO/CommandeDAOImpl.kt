@@ -1,6 +1,5 @@
 package com.GaspillageZeroAPI.DAO
 
-import com.GaspillageZeroAPI.Exceptions.ExceptionConflitRessourceExistante
 import com.GaspillageZeroAPI.Exceptions.ExceptionErreurServeur
 import com.GaspillageZeroAPI.Exceptions.ExceptionRessourceIntrouvable
 import com.GaspillageZeroAPI.Modèle.*

@@ -9,7 +9,7 @@ class ProduitService(val dao: ProduitDAO) {
 
     fun chercherTous(): List<Produit> = dao.chercherTous()
     fun chercherParCode(idProduit: Int): Produit? = dao.chercherParCode(idProduit)
-    fun chercherParÉpicerie(idProduit: Int): List<Produit> = dao.chercherParÉpicerie(idProduit)
+    fun chercherParÉpicerie(idProduit: Int): List<Produit>? = dao.chercherParÉpicerie(idProduit)
     fun chercherParÉpicerieParCode(code_épicerie: Int, code_produit: Int): Produit? = dao.chercherParÉpicerieParCode(code_épicerie, code_produit)
     fun ajouter(produit: Produit): Produit? = dao.ajouter(produit)
     fun supprimer(idProduit: Int): Produit? = dao.supprimer(idProduit)
