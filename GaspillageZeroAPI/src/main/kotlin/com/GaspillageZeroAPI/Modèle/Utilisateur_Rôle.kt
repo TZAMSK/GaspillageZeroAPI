@@ -1,4 +1,10 @@
 package com.GaspillageZeroAPI.Modèle
 
-class Utilisateur_Rôle {
+import java.util.*
+
+class Utilisateur_Rôle(
+        val idUtilisateur: Int,
+        val rôle: String,
+        val horodatage: Date = Date()
+) {
 }

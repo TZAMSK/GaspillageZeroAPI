@@ -9,6 +9,6 @@ interface ProduitDAO : DAO<Produit> {
     override fun supprimer(idProduit: Int): Produit?
     override fun modifier(idProduit: Int, produit: Produit): Produit?
 
-    fun chercherParÉpicerie(idProduit: Int): List<Produit>
+    fun chercherParÉpicerie(idProduit: Int): List<Produit>?
     fun chercherParÉpicerieParCode(code_épicerie: Int, code_produit: Int): Produit?
 }

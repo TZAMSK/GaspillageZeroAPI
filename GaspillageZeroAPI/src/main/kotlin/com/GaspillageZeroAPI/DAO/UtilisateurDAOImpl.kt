@@ -1,6 +1,6 @@
 package com.GaspillageZeroAPI.DAO
 
-import com.GaspillageZeroAPI.Modèle.Livraison
+import com.GaspillageZeroAPI.Exceptions.ExceptionRessourceIntrouvable
 import com.GaspillageZeroAPI.Modèle.Utilisateur
 import com.GaspillageZeroAPI.Modèle.UtilisateursTable
 import org.springframework.jdbc.core.JdbcTemplate
@@ -26,6 +26,8 @@ class UtilisateurDAOImpl(private val jdbcTemplate: JdbcTemplate): UtilisateurDAO
         val utilisateurSuppimer = SourceDonnées.utilisateurs.find { it.idUtilisateur == idUtilisateur }
         if (utilisateurSuppimer != null){
             SourceDonnées.utilisateurs.remove(utilisateurSuppimer)
+        }else{
+            throw ExceptionRessourceIntrouvable("L'utilisateur avec le ID $idUtilisateur est introuvable")
         }
         return utilisateurSuppimer
     }

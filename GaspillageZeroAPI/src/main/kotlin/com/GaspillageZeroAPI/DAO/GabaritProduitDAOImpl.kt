@@ -1,31 +1,82 @@
 package com.GaspillageZeroAPI.DAO
 
+import com.GaspillageZeroAPI.Exceptions.ExceptionErreurServeur
+import com.GaspillageZeroAPI.Exceptions.ExceptionRessourceIntrouvable
 import com.GaspillageZeroAPI.Modèle.GabaritProduit
+import com.GaspillageZeroAPI.Modèle.Produit
+import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.stereotype.Repository
+import java.lang.Exception
+import java.sql.ResultSet
 
 @Repository
-class GabaritProduitDAOImpl: GabaritProduitDAO {
+class GabaritProduitDAOImpl(private val jdbcTemplate: JdbcTemplate): GabaritProduitDAO {
 
-    override fun chercherTous(): List<GabaritProduit> = SourceDonnées.gabariProduits
-    override fun chercherParCode(idGabaritProduit: Int): GabaritProduit? = SourceDonnées.gabariProduits.find{it.idGabaritProduit == idGabaritProduit}
+    override fun chercherTous(): List<GabaritProduit> {
+        return jdbcTemplate.query("SELECT * FROM gabaritproduit"){resultat, _ ->
+            mapRowToGabaritProduit(resultat)
+        }
+    }
 
-    override fun ajouter(gabaritProduit: GabaritProduit): GabaritProduit? {
-        SourceDonnées.gabariProduits.add(gabaritProduit)
+    override fun chercherParCode(idGabaritProduit: Int): GabaritProduit?{
+        var gabaritProduit : GabaritProduit? = null
+
+        try {
+            gabaritProduit = jdbcTemplate.queryForObject<GabaritProduit>("SELECT * FROM gabaritproduit WHERE id=?", arrayOf(idGabaritProduit)){resultat, _ ->
+                mapRowToGabaritProduit(resultat)
+            }
+        }catch (e: Exception){}
+
         return gabaritProduit
+    }
+
+    private fun obtenirProchaineIncrementationIDGabaritProduit():Int?{
+        return jdbcTemplate.queryForObject("SELECT `auto_increment` FROM INFORMATION_SCHEMA.TABLES\n" +
+                "WHERE table_name = 'gabaritproduit'"){ resultat, _ ->
+            resultat.getInt("auto_increment")
+        }
+    }
+
+    override fun ajouter(gabaritProduit: GabaritProduit): GabaritProduit?{
+        val id = obtenirProchaineIncrementationIDGabaritProduit()
+        try{
+            jdbcTemplate.update("INSERT INTO gabaritproduit(id,nom,description,image,catégorie,idÉpicerie) VALUES (?,?,?,?,?,?)",
+                    id,gabaritProduit.nom,gabaritProduit.description,gabaritProduit.image,gabaritProduit.categorie,gabaritProduit.idÉpicerie)
+        }catch(e: Exception){throw e}
+        SourceDonnées.gabariProduits.add(gabaritProduit)
+        if(id!=null){
+            return chercherParCode(id)
+        }else{
+            return null
+        }
     }
 
     override fun supprimer(idGabaritProduit: Int): GabaritProduit? {
-        val gabaritProduitSuppimer = SourceDonnées.gabariProduits.find { it.idGabaritProduit == idGabaritProduit }
-        if (gabaritProduitSuppimer != null){
-            SourceDonnées.gabariProduits.remove(gabaritProduitSuppimer)
+        if(chercherParCode(idGabaritProduit)==null){
+            throw ExceptionRessourceIntrouvable("Le gabaritproduit avec le ID $idGabaritProduit est introuvable")
         }
-        return gabaritProduitSuppimer
+        try{
+            jdbcTemplate.update("DELETE FROM gabaritproduit WHERE id=?", idGabaritProduit)
+        }catch (e: Exception){throw ExceptionErreurServeur("erreur: " + e.message) }
+        return null
     }
 
     override fun modifier(idGabaritProduit: Int, gabaritProduit: GabaritProduit): GabaritProduit? {
-        val indexModifierGabaritProduit = SourceDonnées.gabariProduits.indexOf(SourceDonnées.gabariProduits.find { it.idGabaritProduit == idGabaritProduit })
-        SourceDonnées.gabariProduits.set(indexModifierGabaritProduit, gabaritProduit)
+        try {
+            jdbcTemplate.update("UPDATE gabaritproduit SET nom=?,description=?,image=?,catégorie=?,idÉpicerie=? WHERE id=?",
+                    gabaritProduit.nom,gabaritProduit.description,gabaritProduit.image,gabaritProduit.categorie,gabaritProduit.idÉpicerie,idGabaritProduit)
+        }catch (e: Exception){throw e}
         return gabaritProduit
     }
 
+    private fun mapRowToGabaritProduit(resultat: ResultSet):GabaritProduit{
+        return GabaritProduit(
+                resultat.getInt("id"),
+                resultat.getString("nom"),
+                resultat.getString("description"),
+                resultat.getBlob("image"),
+                resultat.getString("catégorie"),
+                resultat.getInt("idÉpicerie")
+        )
+    }
 }

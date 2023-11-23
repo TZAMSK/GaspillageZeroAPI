@@ -7,5 +7,7 @@ data class Produit(
         val nom: String,
         val date_expiration: Date,
         var quantité: Int,
-        val prix: Double) {
+        val prix: Double,
+        val idÉpicerie: Int,
+        val idGabaritProduit: Int) {
 }

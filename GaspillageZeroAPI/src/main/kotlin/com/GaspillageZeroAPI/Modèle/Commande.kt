@@ -4,6 +4,6 @@ data class Commande(
         val idCommande: Int?,
         val idÉpicerie: Int?,
         val idUtilisateur: Int?,
-        val idPanier: Int?
+        val panier: MutableList<ItemsPanier>
 ) {
 }
