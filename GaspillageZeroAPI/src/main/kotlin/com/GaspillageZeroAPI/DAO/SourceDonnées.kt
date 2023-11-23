@@ -35,24 +35,12 @@ class SourceDonnées {
                 Adresse(5, "5555", "Rue WEst", "Toronto", "Ontario", "K1P 5Z9", "Canada"),
         )
         val utilisateurs = mutableListOf(
-                Utilisateur(1, "Montplaisir", "Samuel", "sammontplaisir@gmail.com", adresses[0], "514 123-9895", mutableListOf(
-                        Utilisateur_Rôle(1, "client", Date())
-                )),
-                Utilisateur(2, "Khakimov", "Alikhan", "akhakimov@gmail.com", adresses[1], "514 676-9823", mutableListOf(
-                        Utilisateur_Rôle(2, "client", Date())
-                )),
-                Utilisateur(3, "Tabti", "Lyazid", "lyatabti@gmail.com", adresses[2], "514 894-8268", mutableListOf(
-                        Utilisateur_Rôle(3, "client", Date())
-                )),
-                Utilisateur(4, "Vienneau", "Joël", "joelvienneau@gmail.com", adresses[3], "514 181-9135", mutableListOf(
-                        Utilisateur_Rôle(4, "client", Date())
-                )),
-                Utilisateur(5, "Lerouge", "Jean-Gabriel", "gabriellerouge@gmail.com", adresses[4], "514 112-8391", mutableListOf(
-                        Utilisateur_Rôle(5, "client", Date())
-                )),
-                Utilisateur(6, "Ligtas", "Audric", "audricligtas@gmail.com", adresses[4], "514 892-1903", mutableListOf(
-                        Utilisateur_Rôle(6, "client", Date())
-                ))
+               Utilisateur(1, "Montplaisir", "Samuel", "sammontplaisir@gmail.com", adresses[0], "514 123-9895"),
+               Utilisateur(2, "Khakimov", "Alikhan", "akhakimov@gmail.com", adresses[1], "514 676-9823"),
+               Utilisateur(3, "Tabti", "Lyazid", "lyatabti@gmail.com", adresses[2], "514 894-8268"),
+               Utilisateur(4, "Vienneau", "Joël", "joelvienneau@gmail.com", adresses[3], "514 181-9135"),
+               Utilisateur(5, "Lerouge", "Jean-Gabriel", "gabriellerouge@gmail.com", adresses[4], "514 112-8391"),
+               Utilisateur(6, "Ligtas", "Audric", "audricligtas@gmail.com", adresses[4], "514 892-1903"),
         )
 
         val commandes = mutableListOf(
@@ -97,6 +85,21 @@ class SourceDonnées {
                         ItemsPanier(4, 3),
                 ))
         )
+        val livraison = mutableListOf(
+            Livraison(1,commandes[0].idCommande, utilisateurs[0].idUtilisateur, adresses[0].idAdresse) ,
+            Livraison(2,commandes[1].idCommande, utilisateurs[1].idUtilisateur, adresses[1].idAdresse),
+            Livraison(3,commandes[2].idCommande, utilisateurs[1].idUtilisateur, adresses[2].idAdresse),
+
+        )
+
+
+
+       // val avis = mutableListOf(
+         //   Évaluation(1,2,"La nourriture est froide", livraison[1].code),
+        //    Évaluation(2,5,"Impeccable", livraison[2].code),
+         //   Évaluation(3,4,"Livraison rapide et sastifait", livraison[3].code),
+
+       // )
 
     }
 }
