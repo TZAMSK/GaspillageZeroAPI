@@ -2,21 +2,27 @@ package com.GaspillageZeroAPI.Controleurs
 
 import com.GaspillageZeroAPI.Modèle.Livraison
 import com.GaspillageZeroAPI.Services.LivraisonService
+import com.fasterxml.jackson.databind.ObjectMapper
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
+import org.junit.runner.RunWith
 import org.mockito.Mockito
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.test.context.junit.jupiter.SpringExtension
 import org.springframework.test.web.servlet.MockMvc
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.*
 import org.springframework.http.MediaType
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*
+import org.springframework.test.web.servlet.result.MockMvcResultHandlers
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers
 
-@SpringBootTest(classes = [LivraisonControleur::class])
-@ExtendWith(SpringExtension::class)
+@SpringBootTest
 @AutoConfigureMockMvc
 class LivraisonControleur {
 
@@ -26,7 +32,8 @@ class LivraisonControleur {
     @Autowired
     private lateinit var mockMvc: MockMvc
 
-    val livraison = Livraison(1, 1, 1, 1)
+    @Autowired
+    private lateinit var mapper: ObjectMapper
 
     /*  @Test
     fun `Étant donnée la livraison avec le code 1, lorsqu'on éffectue une requète GET alors on obtient une livraison  dans un format JSON avec le id 3 et un code 200 `(){
@@ -74,7 +81,8 @@ class LivraisonControleur {
 
     @Test
     //@GetMapping("/utilisateur/{code_utilisateur}/commande/{idCommande}/livraisons/{codeCommande}")
-    fun `Étant donné une livraison dont le code est '4' et qui n'est pas inscrit au service lorsqu'on effectue une requête GET de recherche par code alors on obtient un code de retour 404` (){
+    fun `Étant donné une livraison dont le code est '1' et qui n'est pas inscrit au service lorsqu'on effectue une requête GET de recherche par code alors on obtient un code de retour 404` (){
+
         Mockito.`when`(service.obtenirLivraisonParCode(1)).thenReturn(null)
 
         mockMvc.perform(get("/utilisateur/1/commande/1/livraisons/1", "not_found")
@@ -83,14 +91,26 @@ class LivraisonControleur {
     }
 
     @Test
-    //@PutMapping("/livraisons/{code}")
-    fun `Étant donnée le numéro de livraison dont le code est '04590' et qui est inscrit au service et dont l'état est 'en route' lorsqu'on effectue une requête PUT pour modifier l'état pour « livrée » alors on obtient un JSON qui contient un numéro de livraison dont le code est '04590' et l'état est « livrée » ainsi qu'un code de retour 200` (){
-        TODO("Méthode non-implémentée")
+    //@PostMapping("/utilisateur/{code_utilisateur}/commande/{idCommande}/livraison")
+    fun `Étant donnée une livraison dont le code est '3' et qui n'est pas inscrit au service lorsqu'on effectue une requête POST pour l'ajouter alors on obtient un JSON qui contient une livraison dont le code est '3' et un code de retour 201` (){
+
+        val livraison = Livraison(3, 3, 3, 3)
+        Mockito.`when`(service.ajouterLivraison(livraison)).thenReturn(3)
+
+        mockMvc.perform(
+            post("/utilisateur/{code_utilisateur}/commande/{idCommande}/livraison", 3,3)
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(mapper.writeValueAsString(livraison)))
+            .andExpect(status().isCreated)
     }
 
     @Test
     //@DeleteMapping("/livraisons/{code}")
     fun `Étant donnée le numéro de livraison dont le code est '04590' et qui est inscrit au service lorsqu'on effectue une requête DELETE alors on obtient un code de retour 204` (){
-        TODO("Méthode non-implémentée")
+
+        Mockito.doNothing().`when`(service).supprimerLivraison(2)
+
+        mockMvc.perform(delete("/utilisateur/{code_utilisateur}/commande/{idCommande}/livraisons/{code}", 2,2,2))
+            .andExpect(status().isNoContent)
     }
 }

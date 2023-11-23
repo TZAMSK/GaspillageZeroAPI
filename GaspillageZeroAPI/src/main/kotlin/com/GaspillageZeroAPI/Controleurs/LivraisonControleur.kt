@@ -50,7 +50,7 @@ class LivraisonControleur (val livraisonService: LivraisonService, val commandeS
     @Operation(summary = "Obtenir une évaluation en cherchant par code")
     @ApiResponse(responseCode = "200", description = "Évaluation trouvée")
     @ApiResponse(responseCode = "404", description = "Évaluation non-trouvée, veuillez réessayez...")
-    fun obtenirEvaluationParCode(@PathVariable code: String) {
+    fun obtenirEvaluationParCode(@PathVariable code: Int) {
         TODO("Méthode non-implémentée")
     }
 
@@ -99,8 +99,10 @@ class LivraisonControleur (val livraisonService: LivraisonService, val commandeS
 
             if (utilisateur != null && commande != null) {
                 livraisonService.ajouterLivraison(livraison)
+
                 return ResponseEntity.status(HttpStatus.CREATED).body("La livraison a été ajouté avec succès!")
             } else {
+
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("L'id de l'utilisateur ou de la commande est invalide.")
             }
         } catch (e: Exception) {
