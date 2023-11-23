@@ -15,7 +15,7 @@ class ProduitDAOImpl(private val jdbcTemplate: JdbcTemplate): ProduitDAO {
 
 
     override fun chercherTous(): List<Produit> {
-        return jdbcTemplate.query("SELECT * FROM Produit") { resultat, _ ->
+        return jdbcTemplate.query("SELECT * FROM produits") { resultat, _ ->
             mapRowToProduit(resultat)
         }
     }
@@ -24,7 +24,7 @@ class ProduitDAOImpl(private val jdbcTemplate: JdbcTemplate): ProduitDAO {
         var produit: Produit? = null
 
         try {
-            produit = jdbcTemplate.queryForObject<Produit>("SELECT * FROM produit WHERE code=?", arrayOf(idProduit)){resultat, _ ->
+            produit = jdbcTemplate.queryForObject<Produit>("SELECT * FROM produits WHERE id=?", arrayOf(idProduit)){resultat, _ ->
                 mapRowToProduit(resultat)
             }
         }catch (e: Exception){}
@@ -33,8 +33,9 @@ class ProduitDAOImpl(private val jdbcTemplate: JdbcTemplate): ProduitDAO {
     }
 
     private fun obtenirProchaineIncrementationIDProduit():Int?{
-        return jdbcTemplate.queryForObject("SELECT `auto_increment` FROM INFORMATION_SCHEMA.TABLES\n" +
-        "WHERE table_name = 'produit'"){ resultat, _ ->
+        return jdbcTemplate.queryForObject(
+            "SELECT auto_increment FROM INFORMATION_SCHEMA.TABLES WHERE table_schema = 'gaspillagealimentaire' AND table_name = 'produits'"
+        ) { resultat, _ ->
             resultat.getInt("auto_increment")
         }
     }
@@ -42,8 +43,8 @@ class ProduitDAOImpl(private val jdbcTemplate: JdbcTemplate): ProduitDAO {
     override fun ajouter(produit: Produit): Produit? {
         val id = obtenirProchaineIncrementationIDProduit()
         try{
-            jdbcTemplate.update("INSERT INTO produit(nom,date_expiration,quantité,prix) VALUES (?,?,?,?)",
-                    produit.nom,produit.date_expiration,produit.quantité,produit.prix)
+            jdbcTemplate.update("INSERT INTO produits(id, nom, date_expiration, quantité, prix, idÉpicerie, idGabarit) VALUES (?,?,?,?,?,?,?)",
+                    id,produit.nom,produit.date_expiration,produit.quantité,produit.prix,produit.idÉpicerie,produit.idGabaritProduit)
         }catch(e: Exception){throw e}
         SourceDonnées.produits.add(produit)
         if(id!=null) {
@@ -58,7 +59,7 @@ class ProduitDAOImpl(private val jdbcTemplate: JdbcTemplate): ProduitDAO {
             throw ExceptionRessourceIntrouvable("Le produit avec le ID $idProduit est introuvable")
         }
         try{
-            jdbcTemplate.update("DELETE FROM produit WHERE id=?",idProduit)
+            jdbcTemplate.update("DELETE FROM produits WHERE id=?",idProduit)
         }catch (e:Exception){throw ExceptionErreurServeur("erreur: " + e.message)}
 
         return null
@@ -66,7 +67,7 @@ class ProduitDAOImpl(private val jdbcTemplate: JdbcTemplate): ProduitDAO {
 
     override fun modifier(idProduit: Int, produit: Produit): Produit? {
         try{
-            jdbcTemplate.update("UPDATE produit SET nom=?,date_expiration=?,quantité=?,prix=? WHERE id=?",
+            jdbcTemplate.update("UPDATE produits SET nom=?,date_expiration=?,quantité=?,prix=? WHERE id=?",
                     produit.nom,produit.date_expiration,produit.quantité,produit.prix,idProduit)
         }catch (e:Exception){throw e}
         return produit
@@ -76,7 +77,7 @@ class ProduitDAOImpl(private val jdbcTemplate: JdbcTemplate): ProduitDAO {
         var produitParÉpicerie: List<Produit>? = null
 
         try{
-            produitParÉpicerie = jdbcTemplate.query("SELECT * FROM produit WHERE idÉpicerie=?", arrayOf(idÉpicerie)) { resultat, _ ->
+            produitParÉpicerie = jdbcTemplate.query("SELECT * FROM produits WHERE idÉpicerie=?", arrayOf(idÉpicerie)) { resultat, _ ->
                 mapRowToProduit(resultat)
             }
         }catch (e:Exception){}
@@ -88,7 +89,7 @@ class ProduitDAOImpl(private val jdbcTemplate: JdbcTemplate): ProduitDAO {
         var produitParCodeParÉpicerie: Produit? = null
 
         try {
-            produitParCodeParÉpicerie = jdbcTemplate.queryForObject<Produit>("SELECT * FROM produit WHERE idÉpicerie=? AND idProduit=?", arrayOf(idProduit)) { resultat, _ ->
+            produitParCodeParÉpicerie = jdbcTemplate.queryForObject<Produit>("SELECT * FROM produits WHERE idÉpicerie=? AND id=?", arrayOf(idÉpicerie,idProduit)) { resultat, _ ->
                 mapRowToProduit(resultat)
             }
         }catch (e: Exception){}
@@ -99,11 +100,13 @@ class ProduitDAOImpl(private val jdbcTemplate: JdbcTemplate): ProduitDAO {
 
     private fun mapRowToProduit(resultat: ResultSet): Produit {
         return Produit(
-                resultat.getInt("code"),
+                resultat.getInt("id"),
                 resultat.getString("nom"),
                 resultat.getDate("date_expiration"),
                 resultat.getInt("quantité"),
                 resultat.getDouble("prix"),
+                resultat.getInt("idÉpicerie"),
+                resultat.getInt("idGabarit")
         )
     }
 }

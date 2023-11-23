@@ -32,10 +32,10 @@ class GabaritProduitControleurTest {
 
     private fun créationÉchantillonGabaritProduit(id: Int, nom: String, description: String, categorie: String): GabaritProduit {
         val produits = listOf(
-            Produit(1, "Produit1", Date(), 10, 2.5),
-            Produit(2, "Produit2", Date(), 20, 5.0)
+            Produit(1, "Produit1", Date(), 10, 2.5, 1, 1),
+            Produit(2, "Produit2", Date(), 20, 5.0, 1, 1)
         )
-        return GabaritProduit(id, nom, description, null, categorie, produits)
+        return GabaritProduit(id, nom, description, null, categorie, 1)
     }
 
     @Test

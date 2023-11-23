@@ -13,14 +13,19 @@ class ÉpicerieControleur(val service: ÉpicerieService) {
 
     // MÉTHODES
 
+    @ApiResponses(value = [
+        ApiResponse(responseCode = "200", description = "Épiceries trouvées"),
+        ApiResponse(responseCode = "404", description = "Épiceries non trouvées")
+    ])
+
     // MÉTHODE AFFICHAGES - LISTE ÉPICERIES
     @Operation(summary = "Obtenir la liste de toutes les épiceries")
     @GetMapping("/épiceries")
     fun obtenirÉpiceries() = service.chercherTous()
 
     @ApiResponses(value = [
-        ApiResponse(responseCode = "200", description = "Commande trouvée"),
-        ApiResponse(responseCode = "404", description = "Commande non trouvé")
+        ApiResponse(responseCode = "200", description = "Épicerie trouvée"),
+        ApiResponse(responseCode = "404", description = "Épicerie non trouvée")
     ])
 
     // MÉTHODE AFFICHAGES 2 - ÉPICERIE PAR CODE
@@ -34,11 +39,6 @@ class ÉpicerieControleur(val service: ÉpicerieService) {
         return épicerie
     }
 
-    @ApiResponses(value = [
-        ApiResponse(responseCode = "200", description = "Commande trouvée"),
-        ApiResponse(responseCode = "404", description = "Commande non trouvé")
-    ])
-
     // MÉTHODES QUI VONT PROBABLEMENT PAS ETRE UTILISÉ (AJOUTER, SUPPRIMER, MODIFIER)
 
     //@PostMapping("/épicerie")
@@ -47,15 +47,11 @@ class ÉpicerieControleur(val service: ÉpicerieService) {
     //}
 
     // MÉTHODE POUR TESTER L'EXCEPTION
-    @Operation(summary = "Permet de retirer une épicerie de la base de données")
-    @DeleteMapping("/épicerie/delete/{idÉpicerie}")
-    fun suppimerÉpicerie(@PathVariable idÉpicerie: Int) {
-        val épicerie = service.supprimer(idÉpicerie)
-        if(épicerie == null){
-            throw ÉpicerieIntrouvableException("L'épicerie de code $idÉpicerie est introuvable")
-        }
-        service.supprimer(idÉpicerie)
-    }
+    //@Operation(summary = "Permet de retirer une épicerie de la base de données")
+    //@DeleteMapping("/épicerie/{idÉpicerie}")
+    //fun suppimerÉpicerie(@PathVariable idÉpicerie: Int) {
+    //    service.supprimer(idÉpicerie)
+    //}
 
     //@PutMapping("/épicerie/save")
     //fun modifierÉpicerie(@PathVariable idÉpicerie: Int, @RequestBody épicerie: Épicerie){

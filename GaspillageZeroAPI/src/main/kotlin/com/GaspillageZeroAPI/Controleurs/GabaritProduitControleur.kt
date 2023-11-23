@@ -42,8 +42,8 @@ class GabaritProduitController(val service: GabaritProduitService) {
     ])
 
     // MÉTHODE AJOUTER - AJOUTER GABARIT PRODUIT
-    @Operation(summary = "Permet d'ajouter une gabarit à la base de données")
-    @PostMapping("/gabaritproduits")
+    @Operation(summary = "Permet d'ajouter un gabarit à la base de données")
+    @PostMapping("/gabaritproduit")
     fun ajouterGabarit(@RequestBody gabaritProduit: GabaritProduit){
         service.ajouter(gabaritProduit)
     }
@@ -54,13 +54,10 @@ class GabaritProduitController(val service: GabaritProduitService) {
     ])
 
     //MÉTHODE SUPPRIMER - SUPPRIMER GABARIT PRODUIT PAR CODE
-    @Operation(summary = "Permet de retirer une gabarit de la base de données")
+    @Operation(summary = "Permet de retirer un gabarit de la base de données")
     @DeleteMapping("/gabaritproduit/{idGabaritProduit}")
     fun supprimerGabarit(@PathVariable idGabaritProduit: Int){
-        val gabarit = service.supprimer(idGabaritProduit)
-        if(gabarit == null){
-            throw GabaritProduitIntrouvableException("Le gabarit de code $idGabaritProduit est introuvable")
-        }
+        service.supprimer(idGabaritProduit)
     }
 
     @ApiResponses(value = [
@@ -72,10 +69,6 @@ class GabaritProduitController(val service: GabaritProduitService) {
     @Operation(summary = "Permet de modifier les informations d'une gabarit")
     @PutMapping("/gabaritproduit/{idGabaritProduit}")
     fun modifierGabarit(@PathVariable idGabaritProduit: Int, @RequestBody gabaritProduit: GabaritProduit){
-        val gabarit = service.modifier(idGabaritProduit,gabaritProduit)
-        if(gabarit == null){
-            throw GabaritProduitIntrouvableException("Le gabarit de code $idGabaritProduit est introuvable")
-        }
         service.modifier(idGabaritProduit,gabaritProduit)
     }
 

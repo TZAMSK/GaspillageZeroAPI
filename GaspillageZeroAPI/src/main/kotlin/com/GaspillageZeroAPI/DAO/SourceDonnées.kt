@@ -10,12 +10,12 @@ class SourceDonnées {
 
     companion object {
         val produits = mutableListOf(
-                Produit(1, "Tomates", Date(2024,3,5), 230, 4.99),
-                Produit(2, "Patate", Date(2024,5,16), 24, 12.00),
-                Produit(3, "Vinaigre", Date(2024,9,23), 12, 7.00),
-                Produit(4, "Miel", Date(2024, 2,12), 24, 6.00),
-                Produit(5, "Haricots", Date(2024, 5, 19), 31, 6.50),
-                Produit(6, "Riz", Date(2023, 12, 31), 13, 8.50),
+                Produit(1, "Tomates", Date(2024,3,5), 230, 4.99,1,1),
+                Produit(2, "Patate", Date(2024,5,16), 24, 12.00,1,1),
+                Produit(3, "Vinaigre", Date(2024,9,23), 12, 7.00,2,2),
+                Produit(4, "Miel", Date(2024, 2,12), 24, 6.00,3,2),
+                Produit(5, "Haricots", Date(2024, 5, 19), 31, 6.50,4,1),
+                Produit(6, "Riz", Date(2023, 12, 31), 13, 8.50,4,2),
         )
         val gabariProduits = mutableListOf(
                 GabaritProduit(1, "Bla bla", "Bla bla bla", null, "Légumes", 1),

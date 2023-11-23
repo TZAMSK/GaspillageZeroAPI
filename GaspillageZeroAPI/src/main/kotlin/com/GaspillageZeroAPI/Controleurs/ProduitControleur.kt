@@ -19,8 +19,8 @@ class ProduitControleur(val service: ProduitService) {
     fun obtenirProduits() = service.chercherTous()
 
     @ApiResponses(value = [
-        ApiResponse(responseCode = "200", description = "Commande trouvée"),
-        ApiResponse(responseCode = "404", description = "Commande non trouvé")
+        ApiResponse(responseCode = "200", description = "Produits trouvés"),
+        ApiResponse(responseCode = "404", description = "Produits non trouvés")
     ])
 
     @Operation(summary = "Obtenir le produit par le ID de celui-ci")
@@ -34,35 +34,37 @@ class ProduitControleur(val service: ProduitService) {
     }
 
     @ApiResponses(value = [
-        ApiResponse(responseCode = "200", description = "Commande trouvée"),
-        ApiResponse(responseCode = "404", description = "Commande non trouvé")
+        ApiResponse(responseCode = "200", description = "Produit trouvé"),
+        ApiResponse(responseCode = "404", description = "Produit non trouvé")
     ])
 
     @Operation(summary = "Obtenir la liste de toutes les produits par le ID de l'épicerie")
     @GetMapping("/épicerie/{idÉpicerie}/produits")
     fun obtenirProduitÉpicerie(@PathVariable idÉpicerie: Int): List<Produit> {
-        val épicerie = service.chercherParÉpicerie(idÉpicerie)
-        if(épicerie == null){
-            throw ÉpicerieIntrouvableException("L'épicerie de code $idÉpicerie est introuvable")
+        val produits = service.chercherParÉpicerie(idÉpicerie)
+        if(produits == null){
+            throw ÉpicerieIntrouvableException("Les produits l'épicerie de code $idÉpicerie sont introuvables")
         }
-        return épicerie
+        return produits
     }
     @ApiResponses(value = [
-        ApiResponse(responseCode = "200", description = "Commande trouvée"),
-        ApiResponse(responseCode = "404", description = "Commande non trouvé")
+        ApiResponse(responseCode = "200", description = "Produits trouvés"),
+        ApiResponse(responseCode = "404", description = "Produits non trouvés")
     ])
-
     @Operation(summary = "Obtenir le produit par son ID et l'id de l'épicerie")
     @GetMapping("/épicerie/{idÉpicerie}/produit/{idProduit}")
     fun obtenirProduitÉpicerieParCode(@PathVariable idÉpicerie: Int, @PathVariable idProduit: Int): Produit? {
         val produit = service.chercherParÉpicerieParCode(idÉpicerie, idProduit)
         if(produit == null){
-            throw ProduitIntrouvableException("Le produit de code $idProduit est introuvable")
+            throw ProduitIntrouvableException("Le produit de code $idProduit avec épicerie code $idÉpicerie est introuvable")
         }
         return produit
     }
 
-
+    @ApiResponses(value = [
+        ApiResponse(responseCode = "201", description = "Produits trouvés"),
+        ApiResponse(responseCode = "404", description = "Produits non trouvés")
+    ])
     @Operation(summary = "Permet d'ajouter une produit à la base de données")
     @PostMapping("/produit")
     fun ajouterProduit(@RequestBody produit: Produit) {
@@ -70,32 +72,24 @@ class ProduitControleur(val service: ProduitService) {
     }
 
     @ApiResponses(value = [
-        ApiResponse(responseCode = "200", description = "la commande à été retiré avec succès!"),
-        ApiResponse(responseCode = "404", description = "La commande est introuvable")
+        ApiResponse(responseCode = "200", description = "le Produit à été retiré avec succès!"),
+        ApiResponse(responseCode = "404", description = "Le Produit est introuvable")
     ])
 
-    @Operation(summary = "Permet de retirer une produit de la base de données")
-    @DeleteMapping("/produit/delete/{idProduit}")
+    @Operation(summary = "Permet de retirer un produit de la base de données")
+    @DeleteMapping("/produit/{idProduit}")
     fun supprimerProduit(@PathVariable idProduit: Int) {
-        val produit = service.supprimer(idProduit)
-        if(produit == null){
-            throw ProduitIntrouvableException("Le produit de code $idProduit est introuvable")
-        }
         service.supprimer(idProduit)
     }
 
     @ApiResponses(value = [
-        ApiResponse(responseCode = "200", description = "Commande trouvée"),
-        ApiResponse(responseCode = "404", description = "Commande non trouvé")
+        ApiResponse(responseCode = "200", description = "Produit trouvé"),
+        ApiResponse(responseCode = "404", description = "Produit non trouvé")
     ])
 
-    @Operation(summary = "Permet de modifier les informations d'une produit")
-    @PutMapping("/produit/save/{idProduit}")
+    @Operation(summary = "Permet de modifier les informations d'un produit")
+    @PutMapping("/produit/{idProduit}")
     fun modifierProduit(@PathVariable idProduit: Int, @RequestBody produit: Produit) {
-        val modproduit = service.modifier(idProduit,produit)
-        if(modproduit == null){
-            throw ProduitIntrouvableException("Le produit de code $idProduit est introuvable")
-        }
         service.modifier(idProduit, produit)
     }
 

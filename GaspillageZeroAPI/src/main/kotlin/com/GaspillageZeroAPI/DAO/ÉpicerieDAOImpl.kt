@@ -21,7 +21,7 @@ class ÉpicerieDAOImpl(private val jdbcTemplate: JdbcTemplate): ÉpicerieDAO {
         var épicerie: Épicerie? = null
 
         try{
-            épicerie = jdbcTemplate.queryForObject<Épicerie>("SELECT * FROM épicerie WHERE code=?", arrayOf(idÉpicerie)){resultat, _ ->
+            épicerie = jdbcTemplate.queryForObject<Épicerie>("SELECT * FROM épicerie WHERE id=?", arrayOf(idÉpicerie)){resultat, _ ->
                 mapRowToÉpicerie(resultat)
             }
         }catch (e: Exception){}

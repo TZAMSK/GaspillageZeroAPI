@@ -3,6 +3,7 @@ package com.GaspillageZeroAPI.DAO
 import com.GaspillageZeroAPI.Exceptions.ExceptionErreurServeur
 import com.GaspillageZeroAPI.Exceptions.ExceptionRessourceIntrouvable
 import com.GaspillageZeroAPI.Modèle.GabaritProduit
+import com.GaspillageZeroAPI.Modèle.Produit
 import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.stereotype.Repository
 import java.lang.Exception
@@ -12,7 +13,7 @@ import java.sql.ResultSet
 class GabaritProduitDAOImpl(private val jdbcTemplate: JdbcTemplate): GabaritProduitDAO {
 
     override fun chercherTous(): List<GabaritProduit> {
-        return jdbcTemplate.query("SELECT * FROM GabaritProduit"){resultat, _ ->
+        return jdbcTemplate.query("SELECT * FROM gabaritproduit"){resultat, _ ->
             mapRowToGabaritProduit(resultat)
         }
     }
@@ -39,8 +40,8 @@ class GabaritProduitDAOImpl(private val jdbcTemplate: JdbcTemplate): GabaritProd
     override fun ajouter(gabaritProduit: GabaritProduit): GabaritProduit?{
         val id = obtenirProchaineIncrementationIDGabaritProduit()
         try{
-            jdbcTemplate.update("INSERT INTO gabaritproduit(nom,description,image,categorie,idÉpicerie) VALUES (?,?,?,?,?)",
-                    gabaritProduit.nom,gabaritProduit.description,gabaritProduit.image,gabaritProduit.categorie,gabaritProduit.idÉpicerie)
+            jdbcTemplate.update("INSERT INTO gabaritproduit(id,nom,description,image,catégorie,idÉpicerie) VALUES (?,?,?,?,?,?)",
+                    id,gabaritProduit.nom,gabaritProduit.description,gabaritProduit.image,gabaritProduit.categorie,gabaritProduit.idÉpicerie)
         }catch(e: Exception){throw e}
         SourceDonnées.gabariProduits.add(gabaritProduit)
         if(id!=null){
@@ -62,7 +63,7 @@ class GabaritProduitDAOImpl(private val jdbcTemplate: JdbcTemplate): GabaritProd
 
     override fun modifier(idGabaritProduit: Int, gabaritProduit: GabaritProduit): GabaritProduit? {
         try {
-            jdbcTemplate.update("UPDATE gabaritproduit SET nom=?,description=?,image=?,categorie=?,idÉpicerie=? WHERE id=?",
+            jdbcTemplate.update("UPDATE gabaritproduit SET nom=?,description=?,image=?,catégorie=?,idÉpicerie=? WHERE id=?",
                     gabaritProduit.nom,gabaritProduit.description,gabaritProduit.image,gabaritProduit.categorie,gabaritProduit.idÉpicerie,idGabaritProduit)
         }catch (e: Exception){throw e}
         return gabaritProduit
@@ -74,7 +75,7 @@ class GabaritProduitDAOImpl(private val jdbcTemplate: JdbcTemplate): GabaritProd
                 resultat.getString("nom"),
                 resultat.getString("description"),
                 resultat.getBlob("image"),
-                resultat.getString("categorie"),
+                resultat.getString("catégorie"),
                 resultat.getInt("idÉpicerie")
         )
     }
