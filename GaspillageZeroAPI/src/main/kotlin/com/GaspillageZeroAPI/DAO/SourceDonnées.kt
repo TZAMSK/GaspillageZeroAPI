@@ -63,11 +63,11 @@ class SourceDonnées {
 
 
 
-        val avis = mutableListOf(
-            Évaluation(1,2,"La nourriture est froide", livraison[1].code),
-            Évaluation(2,5,"Impeccable", livraison[2].code),
-            Évaluation(3,4,"Livraison rapide et sastifait", livraison[3].code),
+       // val avis = mutableListOf(
+         //   Évaluation(1,2,"La nourriture est froide", livraison[1].code),
+        //    Évaluation(2,5,"Impeccable", livraison[2].code),
+         //   Évaluation(3,4,"Livraison rapide et sastifait", livraison[3].code),
 
-        )
+       // )
     }
 }

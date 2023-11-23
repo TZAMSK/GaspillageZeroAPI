@@ -12,7 +12,7 @@ import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.bind.annotation.*
 
 @RestController
-class LivraisonControleur (private val livraisonService: LivraisonService, val commandeService: CommandeService,
+class LivraisonControleur (val livraisonService: LivraisonService, val commandeService: CommandeService,
                            val utilisateurService: UtilisateurService) {
 
     //Pour accéder à la documentation OpenApi, visitez le lien suivant pour en savoir plus : http://localhost:8080/swagger-ui/index.html
@@ -58,9 +58,9 @@ class LivraisonControleur (private val livraisonService: LivraisonService, val c
     @Operation(summary = "Obtenir la liste des livraisons")
     @ApiResponse(responseCode = "200", description = "Liste des livraisons trouvées")
     @ApiResponse(responseCode = "404", description = "Liste des livraisons non-trouvées, veuillez réessayez...")
-    fun obtenirLivraisons(@PathVariable code_utilisateur: Int,
+    fun obtenirLivraisons(@PathVariable codeUtilisateur: Int, @PathVariable idÉpicerie: Int,
                           @PathVariable idCommande: Int): ResponseEntity<List<Livraison>> {
-        val utilisateur = utilisateurService.chercherParCodeBD(code_utilisateur)
+        val utilisateur = utilisateurService.chercherParCode(codeUtilisateur)
         val commande = commandeService.chercherParCode(idCommande)
 
         return if (utilisateur != null && commande != null) {
@@ -71,20 +71,20 @@ class LivraisonControleur (private val livraisonService: LivraisonService, val c
         }
     }
 
-    @GetMapping("/utilisateur/{code_utilisateur}/commande/{idCommande}/livraisons/{code}")
-    @Operation(summary = "Obtenir une livraison en cherchant par code")
-    @ApiResponse(responseCode = "200", description = "Livraison trouvée")
-    @ApiResponse(responseCode = "404", description = "Livraison non-trouvée, veuillez réessayez...")
+    @GetMapping("/utilisateur/{code_utilisateur}/commande/{idCommande}/livraisons/{codeCommande}")
+    //@Operation(summary = "Obtenir une livraison en cherchant par code")
+    //@ApiResponse(responseCode = "200", description = "Livraison trouvée")
+    //@ApiResponse(responseCode = "404", description = "Livraison non-trouvée, veuillez réessayez...")
     fun obtenirLivraisonParCode(@PathVariable code_utilisateur: Int,
-                                @PathVariable idCommande: Int, @PathVariable code: Int): ResponseEntity<Livraison> {
-        val utilisateur = utilisateurService.chercherParCodeBD(code_utilisateur)
+                                @PathVariable idCommande: Int, @PathVariable codeCommande: Int): ResponseEntity<Livraison> {
+        val utilisateur = utilisateurService.chercherParCode(code_utilisateur)
         val commande = commandeService.chercherParCode(idCommande)
-        val livraison_existante = livraisonService.obtenirLivraisonParCode(code)
+        val livraison_existante = livraisonService.obtenirLivraisonParCode(codeCommande)
 
-        return if (utilisateur != null && commande != null && livraison_existante != null) {
-            ResponseEntity.ok(livraison_existante)
+        if (utilisateur != null && commande != null && livraison_existante != null) {
+            return ResponseEntity.status(HttpStatus.OK).body(livraison_existante)
         } else {
-            ResponseEntity.notFound().build()
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build()
         }
     }
 

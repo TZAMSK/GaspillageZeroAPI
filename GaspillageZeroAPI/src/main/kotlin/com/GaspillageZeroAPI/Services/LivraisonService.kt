@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
 @Service
-class LivraisonService (private val livraisonDAO: LivraisonDAO){
+class LivraisonService (val livraisonDAO: LivraisonDAO){
 
     fun obtenirLivraisons(): List<Livraison> {
         return livraisonDAO.chercherTous()

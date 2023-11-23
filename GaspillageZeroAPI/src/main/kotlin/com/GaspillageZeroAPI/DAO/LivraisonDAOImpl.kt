@@ -7,7 +7,7 @@ import org.springframework.stereotype.Repository
 import java.sql.ResultSet
 
 @Repository
-class LivraisonDAOImpl(private val jdbcTemplate: JdbcTemplate): LivraisonDAO {
+class LivraisonDAOImpl(val jdbcTemplate: JdbcTemplate): LivraisonDAO {
 
     override fun chercherTous(): List<Livraison> {
         return jdbcTemplate.query("SELECT * FROM Livraison") { rs, _ ->
