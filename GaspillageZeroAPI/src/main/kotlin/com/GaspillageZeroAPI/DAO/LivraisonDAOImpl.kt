@@ -1,5 +1,7 @@
 package com.GaspillageZeroAPI.DAO
 
+import com.GaspillageZeroAPI.Exceptions.ExceptionRessourceIntrouvable
+import com.GaspillageZeroAPI.Modèle.Commande
 import com.GaspillageZeroAPI.Modèle.Livraison
 import com.GaspillageZeroAPI.Modèle.Évaluation
 import org.springframework.jdbc.core.JdbcTemplate
@@ -16,24 +18,53 @@ class LivraisonDAOImpl(val jdbcTemplate: JdbcTemplate): LivraisonDAO {
     }
 
     override fun chercherParCode(code: Int): Livraison? {
-        return jdbcTemplate.query("SELECT * FROM Livraison WHERE code = ?", arrayOf(code)) { rs, _ ->
+
+        return jdbcTemplate.queryForObject<Livraison>("SELECT * FROM Livraison WHERE code = ?", arrayOf(code)) { rs, _ ->
             mapRowToLivraison(rs)
-        }.firstOrNull()
+        }
     }
 
-    override fun ajouter(livraison: Livraison): Int {
-        return jdbcTemplate.update("INSERT INTO Livraison(code, commande_code, utilisateur_code, adresse_id) VALUES (?, ?, ?, ?)",
-            livraison.code, livraison.commande_code, livraison.utilisateur_code, livraison.adresse_id)
+    private fun obtenirProchaineIncrementationIDLivraison(): Int? {
+        return jdbcTemplate.queryForObject("SELECT auto_increment FROM INFORMATION_SCHEMA.TABLES WHERE table_schema = 'gaspillagealimentaire' AND table_name = 'livraison'")
+        { resultat, _ ->
+            resultat.getInt("auto_increment")
+        }
     }
 
-    override fun modifier(code: Int, livraison: Livraison): Int {
-        return jdbcTemplate.update("UPDATE Livraison SET commande_code = ?, utilisateur_code = ?, adresse_id = ? WHERE code = ?",
-            livraison.code, livraison.commande_code, livraison.utilisateur_code, livraison.adresse_id)
+    override fun ajouter(livraison: Livraison): Livraison? {
+        var id = obtenirProchaineIncrementationIDLivraison()
+        try {
+            jdbcTemplate.update("INSERT INTO Livraison(code, commande_code, utilisateur_code, adresse_id) VALUES (?, ?, ?, ?)",
+            id, livraison.commande_code, livraison.utilisateur_code, livraison.adresse_id)
+        } catch (e:Exception){ throw e }
+            SourceDonnées.livraison.add(livraison)
+        if(id != null){
+            return chercherParCode(id)
+        } else {
+            return null
+        }
+    }
+
+    override fun modifier(code: Int, livraison: Livraison): Livraison? {
+        try {
+            jdbcTemplate.update(
+                "UPDATE Livraison SET commande_code = ?, utilisateur_code = ?, adresse_id = ? WHERE code = ?",
+                livraison.commande_code, livraison.utilisateur_code, livraison.adresse_id, code)
+        } catch (e:Exception){throw e}
+
+        return livraison
     }
     //override fun chercherLivraisonParÉvaluation(idÉvaluation: Int, idLivrainson: Int): Évaluation? = SourceDonnées.avis.find{it.idÉvaluation == idÉvaluation && it.idLivraison == idLivrainson}
 
-    override fun supprimer(code: Int): Int {
-        return jdbcTemplate.update("DELETE FROM Livraison WHERE code = ?", code)
+    override fun supprimer(code: Int): Livraison? {
+        if(chercherParCode(code) == null){
+            throw ExceptionRessourceIntrouvable("La commande avec le code $code est introuvable")
+        }
+        try{
+            jdbcTemplate.update("DELETE FROM Livraison WHERE code = ?", code)
+        } catch (e:Exception){throw e}
+
+        return null
     }
 
     override fun chercherParCodeÉvaluation(code: Int,): Livraison? {
@@ -65,6 +96,4 @@ class LivraisonDAOImpl(val jdbcTemplate: JdbcTemplate): LivraisonDAO {
             adresse_id = rs.getInt("adresse_id")
         )
     }
-
-
 }
