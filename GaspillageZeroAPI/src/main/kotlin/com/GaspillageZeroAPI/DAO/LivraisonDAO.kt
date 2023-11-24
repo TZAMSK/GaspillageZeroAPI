@@ -3,12 +3,12 @@ package com.GaspillageZeroAPI.DAO
 import com.GaspillageZeroAPI.Modèle.Livraison
 import com.GaspillageZeroAPI.Modèle.Évaluation
 
-interface LivraisonDAO {
-    fun chercherTous(): List<Livraison>
-    fun chercherParCode(code: Int): Livraison?
-    fun ajouter(livraison: Livraison): Int
-    fun modifier(code: Int, livraison: Livraison): Int
-    fun supprimer(code: Int): Int
+interface LivraisonDAO: DAO<Livraison> {
+    override fun chercherTous(): List<Livraison>
+    override fun chercherParCode(code: Int): Livraison?
+    override fun ajouter(livraison: Livraison): Livraison?
+    override fun modifier(code: Int, livraison: Livraison): Livraison?
+    override fun supprimer(code: Int): Livraison?
     fun chercherParCodeÉvaluation(code: Int): Livraison?
 
     fun modifierÉvaluation(code: Int, avis: Évaluation): Int
