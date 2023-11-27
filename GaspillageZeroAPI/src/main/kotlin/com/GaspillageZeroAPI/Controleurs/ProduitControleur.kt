@@ -1,97 +1,94 @@
 package com.GaspillageZeroAPI.Controleurs
 
-import com.GaspillageZeroAPI.Exceptions.ProduitIntrouvableException
-import com.GaspillageZeroAPI.Exceptions.ÉpicerieIntrouvableException
+import com.GaspillageZeroAPI.Exceptions.ExceptionRessourceIntrouvable
 import com.GaspillageZeroAPI.Modèle.Produit
-import com.GaspillageZeroAPI.Modèle.Épicerie
 import com.GaspillageZeroAPI.Services.ProduitService
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.responses.ApiResponse
 import io.swagger.v3.oas.annotations.responses.ApiResponses
+import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
-
 
 @RestController
 class ProduitControleur(val service: ProduitService) {
 
-    @Operation(summary = "Obtenir la liste de toutes les produits")
+    @ApiResponses(value = [
+        ApiResponse(responseCode = "200", description = "produits trouvés"),
+        ApiResponse(responseCode = "404", description = "produits non trouvés")
+    ])
+    @Operation(summary = "Obtenir la liste des produits")
     @GetMapping("/produits")
-    fun obtenirProduits() = service.chercherTous()
+    fun obtenirProduits(): ResponseEntity<List<Produit>> {
+        val produits = service.chercherTous()
+        return ResponseEntity.ok(produits)
+    }
 
     @ApiResponses(value = [
-        ApiResponse(responseCode = "200", description = "Produits trouvés"),
-        ApiResponse(responseCode = "404", description = "Produits non trouvés")
+        ApiResponse(responseCode = "200", description = "produit trouvé"),
+        ApiResponse(responseCode = "404", description = "produit non trouvé")
     ])
-
-    @Operation(summary = "Obtenir le produit par le ID de celui-ci")
+    @Operation(summary = "Obtenir un produit par son code")
     @GetMapping("/produit/{idProduit}")
-    fun obtenirProduitParCode(@PathVariable idProduit: Int): Produit?{
+    fun obtenirProduitParCode(@PathVariable idProduit: Int): ResponseEntity<Produit> {
         val produit = service.chercherParCode(idProduit)
-        if(produit == null){
-            throw ProduitIntrouvableException("Le produit de code $idProduit est introuvable")
-        }
-        return produit
+            ?: throw ExceptionRessourceIntrouvable("Le produit de code $idProduit est introuvable")
+        return ResponseEntity.ok(produit)
     }
 
     @ApiResponses(value = [
-        ApiResponse(responseCode = "200", description = "Produit trouvé"),
-        ApiResponse(responseCode = "404", description = "Produit non trouvé")
+        ApiResponse(responseCode = "200", description = "produits trouvés"),
+        ApiResponse(responseCode = "404", description = "produits non trouvés")
     ])
-
-    @Operation(summary = "Obtenir la liste de toutes les produits par le ID de l'épicerie")
+    @Operation(summary = "Obtenir la liste des produits avec le code de l'épicerie")
     @GetMapping("/épicerie/{idÉpicerie}/produits")
-    fun obtenirProduitÉpicerie(@PathVariable idÉpicerie: Int): List<Produit> {
+    fun obtenirProduitÉpicerie(@PathVariable idÉpicerie: Int): ResponseEntity<List<Produit>> {
         val produits = service.chercherParÉpicerie(idÉpicerie)
-        if(produits == null){
-            throw ÉpicerieIntrouvableException("Les produits l'épicerie de code $idÉpicerie sont introuvables")
-        }
-        return produits
+            ?: throw ExceptionRessourceIntrouvable("Les produits de l'épicerie de code $idÉpicerie sont introuvables")
+        return ResponseEntity.ok(produits)
     }
+
     @ApiResponses(value = [
-        ApiResponse(responseCode = "200", description = "Produits trouvés"),
-        ApiResponse(responseCode = "404", description = "Produits non trouvés")
+        ApiResponse(responseCode = "200", description = "produit trouvé"),
+        ApiResponse(responseCode = "404", description = "produit non trouvé")
     ])
-    @Operation(summary = "Obtenir le produit par son ID et l'id de l'épicerie")
+    @Operation(summary = "Obtenir un produit avec le code de l'épicerie et le code du produit")
     @GetMapping("/épicerie/{idÉpicerie}/produit/{idProduit}")
-    fun obtenirProduitÉpicerieParCode(@PathVariable idÉpicerie: Int, @PathVariable idProduit: Int): Produit? {
+    fun obtenirProduitÉpicerieParCode(@PathVariable idÉpicerie: Int, @PathVariable idProduit: Int): ResponseEntity<Produit> {
         val produit = service.chercherParÉpicerieParCode(idÉpicerie, idProduit)
-        if(produit == null){
-            throw ProduitIntrouvableException("Le produit de code $idProduit avec épicerie code $idÉpicerie est introuvable")
-        }
-        return produit
+            ?: throw ExceptionRessourceIntrouvable("Le produit de code $idProduit avec épicerie code $idÉpicerie est introuvable")
+        return ResponseEntity.ok(produit)
     }
 
     @ApiResponses(value = [
-        ApiResponse(responseCode = "201", description = "Produits trouvés"),
-        ApiResponse(responseCode = "404", description = "Produits non trouvés")
+        ApiResponse(responseCode = "200", description = "produit trouvé"),
+        ApiResponse(responseCode = "404", description = "produit non trouvé")
     ])
-    @Operation(summary = "Permet d'ajouter une produit à la base de données")
+    @Operation(summary = "Ajouter un produit")
     @PostMapping("/produit")
-    fun ajouterProduit(@RequestBody produit: Produit) {
+    fun ajouterProduit(@RequestBody produit: Produit): ResponseEntity<Void> {
         service.ajouter(produit)
+        return ResponseEntity.ok().build()
     }
 
     @ApiResponses(value = [
-        ApiResponse(responseCode = "200", description = "le Produit à été retiré avec succès!"),
-        ApiResponse(responseCode = "404", description = "Le Produit est introuvable")
+        ApiResponse(responseCode = "200", description = "produit trouvé"),
+        ApiResponse(responseCode = "404", description = "produit non trouvé")
     ])
-
-    @Operation(summary = "Permet de retirer un produit de la base de données")
+    @Operation(summary = "Supprimer un produit par son code")
     @DeleteMapping("/produit/{idProduit}")
-    fun supprimerProduit(@PathVariable idProduit: Int) {
+    fun supprimerProduit(@PathVariable idProduit: Int): ResponseEntity<Void> {
         service.supprimer(idProduit)
+        return ResponseEntity.ok().build()
     }
 
     @ApiResponses(value = [
-        ApiResponse(responseCode = "200", description = "Produit trouvé"),
-        ApiResponse(responseCode = "404", description = "Produit non trouvé")
+        ApiResponse(responseCode = "200", description = "produit trouvé"),
+        ApiResponse(responseCode = "404", description = "produit non trouvé")
     ])
-
-    @Operation(summary = "Permet de modifier les informations d'un produit")
+    @Operation(summary = "Modifier un produit par son code")
     @PutMapping("/produit/{idProduit}")
-    fun modifierProduit(@PathVariable idProduit: Int, @RequestBody produit: Produit) {
+    fun modifierProduit(@PathVariable idProduit: Int, @RequestBody produit: Produit): ResponseEntity<Void> {
         service.modifier(idProduit, produit)
+        return ResponseEntity.ok().build()
     }
-
-
 }
