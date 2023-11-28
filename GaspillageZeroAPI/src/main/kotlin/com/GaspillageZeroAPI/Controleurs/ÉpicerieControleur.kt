@@ -1,60 +1,56 @@
 package com.GaspillageZeroAPI.Controleurs
 
-import com.GaspillageZeroAPI.Exceptions.ÉpicerieIntrouvableException
+import com.GaspillageZeroAPI.Exceptions.ExceptionRessourceIntrouvable
+import com.GaspillageZeroAPI.Exceptions.ExceptionErreurServeur
+import com.GaspillageZeroAPI.Exceptions.ExceptionRequeteInvalide
 import com.GaspillageZeroAPI.Modèle.Épicerie
 import com.GaspillageZeroAPI.Services.ÉpicerieService
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.responses.ApiResponse
 import io.swagger.v3.oas.annotations.responses.ApiResponses
+import org.springframework.dao.DataIntegrityViolationException
+import org.springframework.http.HttpStatus
+import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 
 @RestController
 class ÉpicerieControleur(val service: ÉpicerieService) {
 
-    // MÉTHODES
-
     @ApiResponses(value = [
         ApiResponse(responseCode = "200", description = "Épiceries trouvées"),
-        ApiResponse(responseCode = "404", description = "Épiceries non trouvées")
+        ApiResponse(responseCode = "404", description = "Épiceries non trouvées"),
+        ApiResponse(responseCode = "500", description = "Erreur interne du serveur")
     ])
-
-    // MÉTHODE AFFICHAGES - LISTE ÉPICERIES
-    @Operation(summary = "Obtenir la liste de toutes les épiceries")
+    @Operation(summary = "Obtenir la liste des épiceries")
     @GetMapping("/épiceries")
-    fun obtenirÉpiceries() = service.chercherTous()
-
+    fun obtenirÉpiceries(): ResponseEntity<List<Épicerie>> {
+        return try {
+            val épiceries = service.chercherTous()
+            if (épiceries.isNotEmpty()) {
+                ResponseEntity.ok(épiceries)
+            } else {
+                throw ExceptionRessourceIntrouvable("Épiceries non trouvées")
+            }
+        } catch (e: Exception) {
+            throw ExceptionErreurServeur("Erreur interne du serveur", e)
+        }
+    }
     @ApiResponses(value = [
         ApiResponse(responseCode = "200", description = "Épicerie trouvée"),
-        ApiResponse(responseCode = "404", description = "Épicerie non trouvée")
+        ApiResponse(responseCode = "404", description = "Épicerie non trouvée"),
+        ApiResponse(responseCode = "400", description = "Requête invalide ou données mal formées")
     ])
-
-    // MÉTHODE AFFICHAGES 2 - ÉPICERIE PAR CODE
-    @Operation(summary = "Obtenir l'épicerie par le ID de celui-ci")
+    @Operation(summary = "Obtenir une épicerie par son ID")
     @GetMapping("/épicerie/{idÉpicerie}")
-    fun obtenirÉpicerieparCode(@PathVariable idÉpicerie: Int): Épicerie? {
-        val épicerie = service.chercherParCode(idÉpicerie)
-        if(épicerie == null){
-            throw ÉpicerieIntrouvableException("L'épicerie de code $idÉpicerie est introuvable")
+    fun obtenirÉpicerieparCode(@PathVariable idÉpicerie: Int): ResponseEntity<Épicerie> {
+        return try {
+            val épicerie = service.chercherParCode(idÉpicerie)
+                ?: throw ExceptionRessourceIntrouvable("L'épicerie avec l'ID $idÉpicerie est introuvable")
+            ResponseEntity.ok(épicerie)
+        } catch (e: IllegalArgumentException) {
+            throw ExceptionRequeteInvalide("Requête invalide : ${e.message}")
+        } catch (e: Exception) {
+            throw ExceptionRessourceIntrouvable("L'épicerie avec l'ID $idÉpicerie est introuvable")
         }
-        return épicerie
     }
-
-    // MÉTHODES QUI VONT PROBABLEMENT PAS ETRE UTILISÉ (AJOUTER, SUPPRIMER, MODIFIER)
-
-    //@PostMapping("/épicerie")
-    //fun ajouterÉpicerie(@RequestBody épicerie: Épicerie) {
-    //    service.ajouter(épicerie)
-    //}
-
-    // MÉTHODE POUR TESTER L'EXCEPTION
-    //@Operation(summary = "Permet de retirer une épicerie de la base de données")
-    //@DeleteMapping("/épicerie/{idÉpicerie}")
-    //fun suppimerÉpicerie(@PathVariable idÉpicerie: Int) {
-    //    service.supprimer(idÉpicerie)
-    //}
-
-    //@PutMapping("/épicerie/save")
-    //fun modifierÉpicerie(@PathVariable idÉpicerie: Int, @RequestBody épicerie: Épicerie){
-    //    service.modifier(idÉpicerie, épicerie)
-    //}
 }

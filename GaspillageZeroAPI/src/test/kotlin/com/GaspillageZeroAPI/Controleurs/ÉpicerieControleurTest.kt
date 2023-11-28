@@ -1,9 +1,6 @@
 package com.GaspillageZeroAPI.Controleurs
 
-import com.GaspillageZeroAPI.Exceptions.ÉpicerieIntrouvableException
 import com.GaspillageZeroAPI.Modèle.Épicerie
-import com.GaspillageZeroAPI.Modèle.Produit
-import com.GaspillageZeroAPI.Modèle.GabaritProduit
 import com.GaspillageZeroAPI.Services.ÉpicerieService
 import com.fasterxml.jackson.databind.ObjectMapper
 import org.junit.jupiter.api.Test
@@ -17,7 +14,6 @@ import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.*
 import java.sql.Blob
-import java.util.Date
 
 @SpringBootTest
 @AutoConfigureMockMvc

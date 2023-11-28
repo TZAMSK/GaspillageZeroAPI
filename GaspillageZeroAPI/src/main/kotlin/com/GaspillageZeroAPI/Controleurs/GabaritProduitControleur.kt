@@ -1,77 +1,128 @@
 package com.GaspillageZeroAPI.Controleurs
 
-import com.GaspillageZeroAPI.Exceptions.GabaritProduitIntrouvableException
-import com.GaspillageZeroAPI.Modèle.Adresse
+import com.GaspillageZeroAPI.Exceptions.ExceptionConflitRessourceExistante
+import com.GaspillageZeroAPI.Exceptions.ExceptionErreurServeur
+import com.GaspillageZeroAPI.Exceptions.ExceptionRequeteInvalide
+import com.GaspillageZeroAPI.Exceptions.ExceptionRessourceIntrouvable
 import com.GaspillageZeroAPI.Modèle.GabaritProduit
-import com.GaspillageZeroAPI.Services.AdresseService
 import com.GaspillageZeroAPI.Services.GabaritProduitService
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.responses.ApiResponse
 import io.swagger.v3.oas.annotations.responses.ApiResponses
+import org.springframework.dao.DataIntegrityViolationException
+import org.springframework.dao.EmptyResultDataAccessException
+import org.springframework.http.HttpStatus
+import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 
 @RestController
 class GabaritProduitController(val service: GabaritProduitService) {
 
-    // MÉTHODES
-
-    // MÉTHODE AFFICHAGES - LISTE GABARITS PRODUITS
-    @Operation(summary = "Obtenir la liste de toutes les gabarits des produits")
+    @ApiResponses(value = [
+        ApiResponse(responseCode = "200", description = "Gabaritproduits trouvés"),
+        ApiResponse(responseCode = "404", description = "Gabaritproduits non trouvés"),
+        ApiResponse(responseCode = "500", description = "Erreur interne du serveur")
+    ])
+    @Operation(summary = "Obtenir la liste des gabaritproduits")
     @GetMapping("/gabaritproduits")
-    fun obtenirGabaritProduits() = service.chercherTous()
-
-    @ApiResponses(value = [
-        ApiResponse(responseCode = "200", description = "Commande trouvée"),
-        ApiResponse(responseCode = "404", description = "Commande non trouvé")
-    ])
-
-    // MÉTHODE AFFICHAGES 2 - GABARIT PRODUIT PAR CODE
-    @Operation(summary = "Obtenir le gabarit par le ID de celui-ci")
-    @GetMapping("/gabaritproduit/{idGabaritProduit}")
-    fun obtenirGabaritProduitParCode(@PathVariable idGabaritProduit: Int): GabaritProduit?{
-        val gabarit = service.chercherParCode(idGabaritProduit)
-        if(gabarit == null){
-            throw GabaritProduitIntrouvableException("Le gabarit de code $idGabaritProduit est introuvable")
+    fun obtenirGabaritProduits(): ResponseEntity<List<GabaritProduit>> {
+        try {
+            val gabarits = service.chercherTous()
+            if (gabarits.isNotEmpty()) {
+                return ResponseEntity.ok(gabarits)
+            } else {
+                throw ExceptionRessourceIntrouvable("Gabaritproduits non trouvés")
+            }
+        } catch (e: Exception) {
+            throw ExceptionErreurServeur("Erreur interne du serveur", e)
         }
-        return gabarit
     }
 
     @ApiResponses(value = [
-        ApiResponse(responseCode = "200", description = "Commande trouvée"),
-        ApiResponse(responseCode = "404", description = "Commande non trouvé")
+        ApiResponse(responseCode = "200", description = "Gabaritproduit trouvé"),
+        ApiResponse(responseCode = "404", description = "Gabaritproduit non trouvé"),
+        ApiResponse(responseCode = "400", description = "Requête invalide ou données mal formées")
     ])
+    @Operation(summary = "Obtenir un gabaritproduit par son ID")
+    @GetMapping("/gabaritproduit/{idGabaritProduit}")
+    fun obtenirGabaritProduitParCode(@PathVariable idGabaritProduit: Int): ResponseEntity<GabaritProduit> {
+        return try {
+            val gabarit = service.chercherParCode(idGabaritProduit)
+            gabarit?.let { ResponseEntity.ok(it) }
+                ?: throw ExceptionRessourceIntrouvable("Gabaritproduit avec l'ID $idGabaritProduit non trouvé")
+        } catch (e: IllegalArgumentException) {
+            throw ExceptionRequeteInvalide("Requête invalide : ${e.message}")
+        }  catch (e: Exception) {
+            throw ExceptionRessourceIntrouvable("Gabaritproduit avec l'ID $idGabaritProduit non trouvé")
+        }
+    }
 
-    // MÉTHODE AJOUTER - AJOUTER GABARIT PRODUIT
-    @Operation(summary = "Permet d'ajouter un gabarit à la base de données")
+    @ApiResponses(value = [
+        ApiResponse(responseCode = "201", description = "Gabaritproduit créé"),
+        ApiResponse(responseCode = "400", description = "Requête invalide ou données mal formées"),
+        ApiResponse(responseCode = "409", description = "Conflit: Violation de contrainte"),
+        ApiResponse(responseCode = "500", description = "Erreur interne du serveur")
+    ])
+    @Operation(summary = "Ajouter un gabaritproduit")
     @PostMapping("/gabaritproduit")
-    fun ajouterGabarit(@RequestBody gabaritProduit: GabaritProduit){
-        service.ajouter(gabaritProduit)
+    fun ajouterGabarit(@RequestBody gabaritProduit: GabaritProduit): ResponseEntity<Void> {
+        return try {
+            service.ajouter(gabaritProduit)
+            ResponseEntity.status(HttpStatus.CREATED).build()
+        } catch (e: DataIntegrityViolationException) {
+            throw ExceptionConflitRessourceExistante("Conflit: Violation de contrainte")
+        } catch (e: IllegalArgumentException) {
+            throw ExceptionRequeteInvalide("Requête invalide ou données mal formées")
+        } catch (e: Exception) {
+            throw ExceptionErreurServeur("Erreur interne du serveur lors de l'ajout du gabaritproduit")
+        }
     }
 
     @ApiResponses(value = [
-        ApiResponse(responseCode = "200", description = "la commande à été retiré avec succès!"),
-        ApiResponse(responseCode = "404", description = "La commande est introuvable")
+        ApiResponse(responseCode = "200", description = "Gabaritproduit supprimé"),
+        ApiResponse(responseCode = "404", description = "Gabaritproduit non trouvé"),
+        ApiResponse(responseCode = "400", description = "Requête invalide")
     ])
-
-    //MÉTHODE SUPPRIMER - SUPPRIMER GABARIT PRODUIT PAR CODE
-    @Operation(summary = "Permet de retirer un gabarit de la base de données")
+    @Operation(summary = "Supprimer un gabaritproduit par son ID")
     @DeleteMapping("/gabaritproduit/{idGabaritProduit}")
-    fun supprimerGabarit(@PathVariable idGabaritProduit: Int){
-        service.supprimer(idGabaritProduit)
+    fun supprimerGabarit(@PathVariable idGabaritProduit: Int): ResponseEntity<Void> {
+        return try {
+            if (service.supprimer(idGabaritProduit)) {
+                ResponseEntity.ok().build()
+            } else {
+                throw ExceptionRessourceIntrouvable("Gabaritproduit avec l'ID $idGabaritProduit non trouvé")
+            }
+        } catch (e: IllegalArgumentException) {
+            throw ExceptionRequeteInvalide("Requête invalide : ${e.message}")
+        } catch (e: Exception) {
+            throw ExceptionRessourceIntrouvable("Gabaritproduit avec l'ID $idGabaritProduit non trouvé")
+        }
     }
+
 
     @ApiResponses(value = [
-        ApiResponse(responseCode = "200", description = "la commande à été retiré avec succès!"),
-        ApiResponse(responseCode = "404", description = "La commande est introuvable")
+        ApiResponse(responseCode = "200", description = "Gabaritproduit modifié"),
+        ApiResponse(responseCode = "404", description = "Gabaritproduit non trouvé"),
+        ApiResponse(responseCode = "400", description = "Requête invalide ou données mal formées"),
+        ApiResponse(responseCode = "409", description = "Conflit: Violation de contrainte")
     ])
-
-    // MÉTHODE MODIFICATION - MODIFIER GABARIT PRODUIT PAR CODE
-    @Operation(summary = "Permet de modifier les informations d'une gabarit")
+    @Operation(summary = "Modifier un gabaritproduit par son ID")
     @PutMapping("/gabaritproduit/{idGabaritProduit}")
-    fun modifierGabarit(@PathVariable idGabaritProduit: Int, @RequestBody gabaritProduit: GabaritProduit){
-        service.modifier(idGabaritProduit,gabaritProduit)
+    fun modifierGabarit(@PathVariable idGabaritProduit: Int, @RequestBody gabaritProduit: GabaritProduit): ResponseEntity<Void> {
+        return try {
+            if (service.modifier(idGabaritProduit, gabaritProduit)) {
+                ResponseEntity.ok().build()
+            } else {
+                throw ExceptionRessourceIntrouvable("Gabaritproduit avec l'ID $idGabaritProduit non trouvé")
+            }
+        } catch (e: DataIntegrityViolationException) {
+            throw ExceptionConflitRessourceExistante("Conflit: Violation de contrainte pour l'ID $idGabaritProduit")
+        } catch (e: IllegalArgumentException) {
+            throw ExceptionRequeteInvalide("Requête invalide ou données mal formées : ${e.message}")
+        } catch (e: Exception) {
+            throw ExceptionRessourceIntrouvable("Gabaritproduit avec l'ID $idGabaritProduit non trouvé")
+        }
     }
-
 
 
 }

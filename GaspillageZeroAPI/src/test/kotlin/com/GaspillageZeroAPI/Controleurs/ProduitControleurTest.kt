@@ -1,6 +1,5 @@
 package com.GaspillageZeroAPI.Controleurs
 
-import com.GaspillageZeroAPI.Exceptions.ProduitIntrouvableException
 import com.GaspillageZeroAPI.Modèle.Produit
 import com.GaspillageZeroAPI.Services.ProduitService
 import com.fasterxml.jackson.databind.ObjectMapper

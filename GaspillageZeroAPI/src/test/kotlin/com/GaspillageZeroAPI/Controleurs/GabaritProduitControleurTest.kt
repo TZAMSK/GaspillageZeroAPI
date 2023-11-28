@@ -1,6 +1,5 @@
 package com.GaspillageZeroAPI.Controleurs
 
-import com.GaspillageZeroAPI.Exceptions.GabaritProduitIntrouvableException
 import com.GaspillageZeroAPI.Modèle.GabaritProduit
 import com.GaspillageZeroAPI.Modèle.Produit
 import com.GaspillageZeroAPI.Services.GabaritProduitService
