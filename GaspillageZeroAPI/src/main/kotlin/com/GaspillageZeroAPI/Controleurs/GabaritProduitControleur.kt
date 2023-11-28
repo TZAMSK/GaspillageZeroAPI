@@ -41,8 +41,7 @@ class GabaritProduitController(val service: GabaritProduitService) {
     @ApiResponses(value = [
         ApiResponse(responseCode = "200", description = "Gabaritproduit trouvé"),
         ApiResponse(responseCode = "404", description = "Gabaritproduit non trouvé"),
-        ApiResponse(responseCode = "400", description = "Requête invalide ou données mal formées"),
-        ApiResponse(responseCode = "500", description = "Erreur interne du serveur")
+        ApiResponse(responseCode = "400", description = "Requête invalide ou données mal formées")
     ])
     @Operation(summary = "Obtenir un gabaritproduit par son ID")
     @GetMapping("/gabaritproduit/{idGabaritProduit}")
@@ -53,17 +52,15 @@ class GabaritProduitController(val service: GabaritProduitService) {
                 ?: throw ExceptionRessourceIntrouvable("Gabaritproduit avec l'ID $idGabaritProduit non trouvé")
         } catch (e: IllegalArgumentException) {
             throw ExceptionRequeteInvalide("Requête invalide : ${e.message}")
-        } catch (e: EmptyResultDataAccessException) {
+        }  catch (e: Exception) {
             throw ExceptionRessourceIntrouvable("Gabaritproduit avec l'ID $idGabaritProduit non trouvé")
-        } catch (e: Exception) {
-            throw ExceptionErreurServeur("Erreur interne du serveur lors de la recherche du gabaritproduit avec l'ID $idGabaritProduit", e)
         }
     }
 
     @ApiResponses(value = [
         ApiResponse(responseCode = "201", description = "Gabaritproduit créé"),
         ApiResponse(responseCode = "400", description = "Requête invalide ou données mal formées"),
-        ApiResponse(responseCode = "409", description = "Conflit: gabaritproduit déjà existant ou violation de contrainte"),
+        ApiResponse(responseCode = "409", description = "Conflit: Violation de contrainte"),
         ApiResponse(responseCode = "500", description = "Erreur interne du serveur")
     ])
     @Operation(summary = "Ajouter un gabaritproduit")
@@ -73,7 +70,7 @@ class GabaritProduitController(val service: GabaritProduitService) {
             service.ajouter(gabaritProduit)
             ResponseEntity.status(HttpStatus.CREATED).build()
         } catch (e: DataIntegrityViolationException) {
-            throw ExceptionConflitRessourceExistante("Conflit: gabaritproduit déjà existant ou violation de contrainte")
+            throw ExceptionConflitRessourceExistante("Conflit: Violation de contrainte")
         } catch (e: IllegalArgumentException) {
             throw ExceptionRequeteInvalide("Requête invalide ou données mal formées")
         } catch (e: Exception) {
@@ -84,8 +81,7 @@ class GabaritProduitController(val service: GabaritProduitService) {
     @ApiResponses(value = [
         ApiResponse(responseCode = "200", description = "Gabaritproduit supprimé"),
         ApiResponse(responseCode = "404", description = "Gabaritproduit non trouvé"),
-        ApiResponse(responseCode = "400", description = "Requête invalide"),
-        ApiResponse(responseCode = "500", description = "Erreur interne du serveur")
+        ApiResponse(responseCode = "400", description = "Requête invalide")
     ])
     @Operation(summary = "Supprimer un gabaritproduit par son ID")
     @DeleteMapping("/gabaritproduit/{idGabaritProduit}")
@@ -99,7 +95,7 @@ class GabaritProduitController(val service: GabaritProduitService) {
         } catch (e: IllegalArgumentException) {
             throw ExceptionRequeteInvalide("Requête invalide : ${e.message}")
         } catch (e: Exception) {
-            throw ExceptionErreurServeur("Erreur interne du serveur lors de la suppression du gabaritproduit avec l'ID $idGabaritProduit")
+            throw ExceptionRessourceIntrouvable("Gabaritproduit avec l'ID $idGabaritProduit non trouvé")
         }
     }
 
@@ -108,8 +104,7 @@ class GabaritProduitController(val service: GabaritProduitService) {
         ApiResponse(responseCode = "200", description = "Gabaritproduit modifié"),
         ApiResponse(responseCode = "404", description = "Gabaritproduit non trouvé"),
         ApiResponse(responseCode = "400", description = "Requête invalide ou données mal formées"),
-        ApiResponse(responseCode = "409", description = "Conflit: Violation de contrainte"),
-        ApiResponse(responseCode = "500", description = "Erreur interne du serveur")
+        ApiResponse(responseCode = "409", description = "Conflit: Violation de contrainte")
     ])
     @Operation(summary = "Modifier un gabaritproduit par son ID")
     @PutMapping("/gabaritproduit/{idGabaritProduit}")
@@ -125,7 +120,7 @@ class GabaritProduitController(val service: GabaritProduitService) {
         } catch (e: IllegalArgumentException) {
             throw ExceptionRequeteInvalide("Requête invalide ou données mal formées : ${e.message}")
         } catch (e: Exception) {
-            throw ExceptionErreurServeur("Erreur interne du serveur lors de la modification du gabaritproduit avec l'ID $idGabaritProduit")
+            throw ExceptionRessourceIntrouvable("Gabaritproduit avec l'ID $idGabaritProduit non trouvé")
         }
     }
 
