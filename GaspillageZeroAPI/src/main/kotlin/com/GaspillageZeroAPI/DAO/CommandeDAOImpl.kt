@@ -23,7 +23,7 @@ class CommandeDAOImpl(private val jdbcTemplate: JdbcTemplate): CommandeDAO {
         var commande: Commande? = null
 
         try {
-            commande = jdbcTemplate.queryForObject<Commande>("SELECT * FROM commande WHERE code=?", arrayOf(idCommande)){ resultat, _ ->
+            commande = jdbcTemplate.queryForObject<Commande>("SELECT * FROM commande WHERE code=?", arrayOf(idCommande)) { resultat, _ ->
                 mapRowToCommande(resultat)
             }
         }catch (e: Exception){}
@@ -111,13 +111,11 @@ class CommandeDAOImpl(private val jdbcTemplate: JdbcTemplate): CommandeDAO {
 
     fun chercherItemsPanierParCodeCommande(code: Int): MutableList<ItemsPanier>?{
         var panier: MutableList<ItemsPanier>? = null
-
         try{
-            panier = jdbcTemplate.query("SELECT produit_id, quantité FROM commande_produits WHERE commande_code=?", arrayOf(code)) {resultat, _ ->
+            panier = jdbcTemplate.query("select produits.id, produits.nom, produits.date_expiration, produits.quantité, produits.prix, produits.idÉpicerie, produits.idGabarit from commande_produits join produits on commande_produits.produit_id = produits.id where commande_code = ?", arrayOf(code) ) {resultat, _ ->
                 mapRowToItemPanier(resultat)
             }
         }catch (e: Exception){}
-
         return panier
     }
 
@@ -131,9 +129,17 @@ class CommandeDAOImpl(private val jdbcTemplate: JdbcTemplate): CommandeDAO {
     }
 
     private fun mapRowToItemPanier(resultat: ResultSet):ItemsPanier{
-        return ItemsPanier(
-                resultat.getInt("produit_id"),
+        var produit = ItemsPanier(
+                Produit(resultat.getInt("id"),
+                        resultat.getString("nom"),
+                        resultat.getDate("date_expiration"),
+                        resultat.getInt("quantité"),
+                        resultat.getDouble("prix"),
+                        resultat.getInt("idÉpicerie"),
+                        resultat.getInt("idGabarit")
+                ),
                 resultat.getInt("quantité")
         )
+        return produit
     }
 }
