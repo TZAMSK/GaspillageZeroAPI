@@ -38,7 +38,7 @@ class ÉpicerieControleur(val service: ÉpicerieService) {
     @ApiResponses(value = [
         ApiResponse(responseCode = "200", description = "Épicerie trouvée"),
         ApiResponse(responseCode = "404", description = "Épicerie non trouvée"),
-        ApiResponse(responseCode = "500", description = "Erreur interne du serveur")
+        ApiResponse(responseCode = "400", description = "Requête invalide ou données mal formées")
     ])
     @Operation(summary = "Obtenir une épicerie par son ID")
     @GetMapping("/épicerie/{idÉpicerie}")
