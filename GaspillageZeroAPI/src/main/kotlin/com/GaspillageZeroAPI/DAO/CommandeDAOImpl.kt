@@ -111,7 +111,7 @@ class CommandeDAOImpl(private val jdbcTemplate: JdbcTemplate): CommandeDAO {
     fun chercherItemsPanierParCodeCommande(code: Int): MutableList<ItemsPanier>?{
         var panier: MutableList<ItemsPanier>? = null
         try{
-            panier = jdbcTemplate.query("select produits.nom, produits.date_expiration, produits.quantité, produits.prix, produits.idÉpicerie, produits.idGabarit from commande_produits join produits on commande_produits.produit_id = produits.id where commande_code = ?", arrayOf(code) ) {resultat, _ ->
+            panier = jdbcTemplate.query("select produits.id, produits.nom, produits.date_expiration, produits.quantité, produits.prix, produits.idÉpicerie, produits.idGabarit from commande_produits join produits on commande_produits.produit_id = produits.id where commande_code = ?", arrayOf(code) ) {resultat, _ ->
                 mapRowToItemPanier(resultat)
             }
         }catch (e: Exception){}
@@ -122,27 +122,34 @@ class CommandeDAOImpl(private val jdbcTemplate: JdbcTemplate): CommandeDAO {
         val épicerieDAO = ÉpicerieDAOImpl(jdbcTemplate)
         val utilisateurDAO = UtilisateurDAOImpl(jdbcTemplate)
 
-        return Commande(
+        val commande = Commande(
                 resultat.getInt("code"),
                 épicerieDAO.chercherParCode(resultat.getInt("épicerie_id")),
                 utilisateurDAO.chercherParCode(resultat.getInt("utilisateur_code")),
                 chercherItemsPanierParCodeCommande(resultat.getInt("code")) ?: mutableListOf()
         )
+        return commande
     }
 
-    private fun mapRowToItemPanier(resultat: ResultSet):ItemsPanier{
-        var produit = ItemsPanier(
-                Produit(resultat.getInt("id"),
-                        resultat.getString("nom"),
-                        resultat.getDate("date_expiration"),
-                        resultat.getInt("quantité"),
-                        resultat.getDouble("prix"),
-                        resultat.getInt("idÉpicerie"),
-                        resultat.getInt("idGabarit")
-                ),
-                resultat.getInt("quantité")
+    private fun mapRowToItemPanier(resultat: ResultSet):ItemsPanier? {
+        print(resultat.getString("nom"))
+        var itemPanier: ItemsPanier? = null
+
+        itemPanier  = ItemsPanier(
+            Produit(
+                    resultat.getInt("id"),
+                    resultat.getString("nom"),
+                    resultat.getDate("date_expiration"),
+                    resultat.getInt("quantité"),
+                    resultat.getDouble("prix"),
+                    resultat.getInt("idÉpicerie"),
+                    resultat.getInt("idGabarit")
+            ),
+            resultat.getInt("quantité")
         )
-        return produit
+
+        print(itemPanier)
+        return itemPanier
     }
 
 }
