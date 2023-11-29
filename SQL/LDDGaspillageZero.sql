@@ -20,6 +20,7 @@ create table utilisateur (
 	courriel varchar(255) not null,
 	adresse_id int not null,
 	téléphone varchar(255) not null,
+	rôle  set("client", "livreur", "épicerie") not null,
 	constraint fk_utilisateur_adresse_adresse_id foreign key (adresse_id)
 	references adresse(id)
 );

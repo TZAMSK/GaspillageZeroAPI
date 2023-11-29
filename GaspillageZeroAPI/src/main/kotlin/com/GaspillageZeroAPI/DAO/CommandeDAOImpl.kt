@@ -55,10 +55,6 @@ class CommandeDAOImpl(private val jdbcTemplate: JdbcTemplate): CommandeDAO {
         return commandesParÉpicerie
     }
 
-    override fun chercherCommandeParUtilisateur(idUtilisateur: Int, idCommande: Int): Commande? = SourceDonnées.commandes.find{it.idUtilisateur == idUtilisateur && it.idCommande == idCommande}
-
-    override fun chercherCommandeParÉpicerie(idÉpicerie: Int, idCommande: Int): Commande? = SourceDonnées.commandes.find{it.idÉpicerie == idÉpicerie && it.idCommande == idCommande}
-
     private fun obtenireProchaineIncrementationIDCommande(): Int?{
         return jdbcTemplate.queryForObject("SELECT `auto_increment` FROM INFORMATION_SCHEMA.TABLES\n" +
                 "WHERE table_name = 'commande'") { resultat, _ ->
@@ -66,13 +62,16 @@ class CommandeDAOImpl(private val jdbcTemplate: JdbcTemplate): CommandeDAO {
         }
     }
 
+
+
+
     override fun ajouter(commande: Commande): Commande? {
         val id = obtenireProchaineIncrementationIDCommande()
         try {
             jdbcTemplate.update("INSERT INTO commande(épicerie_id, utilisateur_code) VALUES (?, ?)",
-                    commande.idÉpicerie, commande.idUtilisateur)
+                    commande.épicerie?.idÉpicerie, commande.utilisateur?.code)
             for(itemPanier in commande.panier){
-                jdbcTemplate.update("INSERT INTO commande_produits(commande_code, produit_id, quantité) values(?,?,?)",
+                jdbcTemplate.update("INSERT INTO commande_produits(commande_code, produit_id, quantité) values((select code from commande order by code desc limit 1),?,?)",
                         id, itemPanier.produit, itemPanier.quantité)
             }
         }catch (e: Exception){ throw e }
@@ -100,7 +99,7 @@ class CommandeDAOImpl(private val jdbcTemplate: JdbcTemplate): CommandeDAO {
     override fun modifier(idCommande: Int, commande: Commande): Commande? {
         try{
             jdbcTemplate.update("UPDATE commande SET épicerie_id=?, utilisateur_code=? WHERE code=?",
-                    commande.idÉpicerie, commande.idUtilisateur, idCommande)
+                    commande.épicerie?.idÉpicerie, commande.utilisateur?.code, idCommande)
             for(itemPanier in commande.panier){
                 jdbcTemplate.update("UPDATE commande_produits SET  quantité=? WHERE commande_code=? AND produit_id=?",
                         itemPanier.quantité, idCommande, itemPanier.produit)
@@ -112,7 +111,7 @@ class CommandeDAOImpl(private val jdbcTemplate: JdbcTemplate): CommandeDAO {
     fun chercherItemsPanierParCodeCommande(code: Int): MutableList<ItemsPanier>?{
         var panier: MutableList<ItemsPanier>? = null
         try{
-            panier = jdbcTemplate.query("select produits.id, produits.nom, produits.date_expiration, produits.quantité, produits.prix, produits.idÉpicerie, produits.idGabarit from commande_produits join produits on commande_produits.produit_id = produits.id where commande_code = ?", arrayOf(code) ) {resultat, _ ->
+            panier = jdbcTemplate.query("select produits.nom, produits.date_expiration, produits.quantité, produits.prix, produits.idÉpicerie, produits.idGabarit from commande_produits join produits on commande_produits.produit_id = produits.id where commande_code = ?", arrayOf(code) ) {resultat, _ ->
                 mapRowToItemPanier(resultat)
             }
         }catch (e: Exception){}
@@ -120,10 +119,13 @@ class CommandeDAOImpl(private val jdbcTemplate: JdbcTemplate): CommandeDAO {
     }
 
     private fun mapRowToCommande(resultat: ResultSet): Commande {
+        val épicerieDAO = ÉpicerieDAOImpl(jdbcTemplate)
+        val utilisateurDAO = UtilisateurDAOImpl(jdbcTemplate)
+
         return Commande(
                 resultat.getInt("code"),
-                resultat.getInt("épicerie_id"),
-                resultat.getInt("utilisateur_code"),
+                épicerieDAO.chercherParCode(resultat.getInt("épicerie_id")),
+                utilisateurDAO.chercherParCode(resultat.getInt("utilisateur_code")),
                 chercherItemsPanierParCodeCommande(resultat.getInt("code")) ?: mutableListOf()
         )
     }
@@ -142,4 +144,5 @@ class CommandeDAOImpl(private val jdbcTemplate: JdbcTemplate): CommandeDAO {
         )
         return produit
     }
+
 }

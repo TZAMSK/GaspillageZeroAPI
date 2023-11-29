@@ -7,23 +7,14 @@ values  ("1111", "Place des Chocolats", "Montreal", "QC", "H3A 0G4", "CA"),
 		("4444", "Rue Est", "Toronto", "ON", "M9B 3N4", "CA"),
 		("5555", "Rue West", "Toronto", "ON", "K1P 5Z9", "CA");
 
-insert into utilisateur (nom, prénom, courriel, adresse_id, téléphone)
-values  ("Montplaisir", "Samuel", "sammontplaisir@gmail.com", 1, "514 123-9895"),
-		("Khakimov", "Alikhan", "akhakimov@gmail.com", 2, "514 676-9823"),
-		("Tabti", "Lyazid", "lyatabti@gmail.com", 3, "514 894-8268"),
-		("Vienneau", "Joël", "joelvienneau@gmail.com", 4, "514 894-8268"),
-		("Lerouge", "Jean-Gabriel", "gabriellerouge@gmail.com", 5, "514 112-8391"),
-		("Ligtas", "Audric", "audricligtas@gmail.com", 5, "514 892-1903");
+insert into utilisateur (nom, prénom, courriel, adresse_id, téléphone, rôle)
+values  ("Montplaisir", "Samuel", "sammontplaisir@gmail.com", 1, "514 123-9895", "client"),
+		("Khakimov", "Alikhan", "akhakimov@gmail.com", 2, "514 676-9823", "client"),
+		("Tabti", "Lyazid", "lyatabti@gmail.com", 3, "514 894-8268", "client"),
+		("Vienneau", "Joël", "joelvienneau@gmail.com", 4, "514 894-8268", "livreur"),
+		("Lerouge", "Jean-Gabriel", "gabriellerouge@gmail.com", 5, "514 112-8391", "livreur"),
+		("Ligtas", "Audric", "audricligtas@gmail.com", 5, "514 892-1903", "épicerie");
 
-insert into rôle_utilisateur (utilisateur_code, rôle, horodatage)
-values  (1, "client", "2023-11-20 23:59:59"),
-		(2, "client", "2023-11-20 23:59:59"),
-		(3, "client", "2023-11-20 23:59:59"),
-		(4, "client", "2023-11-20 23:59:59"),
-		(5, "client", "2023-11-20 23:59:59"),
-		(6, "client", "2023-11-20 23:59:59"),
-		(1, "livreur", "2023-11-20 23:59:59"),
-		(2, "épicerie", "2023-11-20 23:59:59");
 
 insert into épicerie(adresse_id, utilisateur_code, nom, courriel, téléphone)
 values  (2, 2, "Metro", "metro@gmail.com", "514 231-6666"),

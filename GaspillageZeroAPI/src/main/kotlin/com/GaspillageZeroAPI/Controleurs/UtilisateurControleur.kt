@@ -39,7 +39,7 @@ class UtilisateurControleur(val service: UtilisateurService) {
             val location: URI = ServletUriComponentsBuilder
                     .fromCurrentRequest()
                     .path("/{idUtilisateur}")
-                    .buildAndExpand(utilisateur.idUtilisateur)
+                    .buildAndExpand(utilisateur.code)
                     .toUri()
             return ResponseEntity.created(location).body(utilisateur)
         }

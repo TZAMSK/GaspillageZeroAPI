@@ -11,19 +11,20 @@ import java.sql.ResultSet
 class UtilisateurDAOImpl(private val jdbcTemplate: JdbcTemplate): UtilisateurDAO {
 
     override fun chercherTous(): List<Utilisateur> = SourceDonnées.utilisateurs
-    override fun chercherParCode(idUtilisateur: Int): Utilisateur? = SourceDonnées.utilisateurs.find{it.idUtilisateur == idUtilisateur}
-    override fun chercherParCodeBD(idUtilisateur: Int): UtilisateursTable? {
-        return jdbcTemplate.query("SELECT * FROM Utilisateur WHERE code = ?", arrayOf(idUtilisateur)) { rs, _ ->
-            mapRowToUtilisateur(rs)
-        }.firstOrNull()
+    //override fun chercherParCode(idUtilisateur: Int): Utilisateur? = SourceDonnées.utilisateurs.find{it.idUtilisateur == idUtilisateur}
+    override fun chercherParCode(id: Int): Utilisateur? {
+        return jdbcTemplate.queryForObject("SELECT * from Utilisateur WHERE code = ?", arrayOf(id)) { resultat, _ ->
+            mapRowToUtilisateur(resultat)
+        }
     }
+
     override fun ajouter(utilisateur: Utilisateur): Utilisateur? {
         SourceDonnées.utilisateurs.add(utilisateur)
         return utilisateur
     }
 
     override fun supprimer(idUtilisateur: Int): Utilisateur? {
-        val utilisateurSuppimer = SourceDonnées.utilisateurs.find { it.idUtilisateur == idUtilisateur }
+        val utilisateurSuppimer = SourceDonnées.utilisateurs.find { it.code == idUtilisateur }
         if (utilisateurSuppimer != null){
             SourceDonnées.utilisateurs.remove(utilisateurSuppimer)
         }else{
@@ -33,18 +34,21 @@ class UtilisateurDAOImpl(private val jdbcTemplate: JdbcTemplate): UtilisateurDAO
     }
 
     override fun modifier(idUtilisateur: Int, utilisateur: Utilisateur): Utilisateur? {
-        val indexModifierUtilisateur = SourceDonnées.utilisateurs.indexOf(SourceDonnées.utilisateurs.find { it.idUtilisateur == idUtilisateur })
+        val indexModifierUtilisateur = SourceDonnées.utilisateurs.indexOf(SourceDonnées.utilisateurs.find { it.code == idUtilisateur })
         SourceDonnées.utilisateurs.set(indexModifierUtilisateur, utilisateur)
         return utilisateur
     }
-    private fun mapRowToUtilisateur(rs: ResultSet): UtilisateursTable {
-        return UtilisateursTable(
+    private fun mapRowToUtilisateur(rs: ResultSet): Utilisateur {
+        val adresseDAO = AdresseDAOImpl(jdbcTemplate)
+
+        return Utilisateur(
             code = rs.getInt("code"),
             nom = rs.getString("nom"),
             prénom = rs.getString("prénom"),
             courriel = rs.getString("courriel"),
-            adresse_id = rs.getInt("adresse_id"),
-            téléphone = rs.getString("téléphone")
+            adresseDAO.chercherParCode(rs.getInt("adresse_id")),
+            téléphone = rs.getString("téléphone"),
+            rs.getString("rôle")
         )
     }
 }
