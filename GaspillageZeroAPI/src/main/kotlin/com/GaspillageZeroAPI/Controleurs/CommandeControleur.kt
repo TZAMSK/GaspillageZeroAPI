@@ -40,45 +40,10 @@ class CommandeControleur(val service: CommandeService) {
         ApiResponse(responseCode = "200", description = "Commande trouvée"),
         ApiResponse(responseCode = "404", description = "commande non trouvé")
     ])
-    @Operation(summary = "Permet d'obtenir d'obtenir la commande {idCommande} de l'utilisateur {idUtilisateur}")
-    @GetMapping("/utilisateur/{idUtilisateur}/commande/{idCommande}")
-    fun obtenirCommandeParUtilisateur(@PathVariable idUtilisateur: Int, @PathVariable idCommande: Int) = service.chercherCommandeParUtilisateur(idUtilisateur, idCommande)
-    @ApiResponses(value = [
-        ApiResponse(responseCode = "200", description = "Commande trouvée"),
-        ApiResponse(responseCode = "404", description = "commande non trouvé")
-    ])
-    @Operation(summary = "Permet d'obtenir une commande ayant le {idCommande} à l'épicerie ayant le {idÉpicerie}")
-    @GetMapping("/épicerie/{idÉpicerie}/commande/{idCommande}")
-    fun obtenirCommandeParÉpicerie(@PathVariable idÉpicerie: Int, @PathVariable idCommande: Int) = service.chercherCommandeParÉpicerie(idÉpicerie, idCommande)
-
-    /**
-    @GetMapping("/utilisateur/{idUtilisateur}/commande/{idCommande}/commandeDetail")
-    fun obtenirCommandeDetailParUtilisateur(@PathVariable idUtilisateur: Int, @PathVariable idCommande: Int) = service.chercherCommandeDetailParUtilisateur(idUtilisateur, idCommande)
-
-    @GetMapping("/utilisateur/{idUtilisateur}/commandes/historiqueCommande")
-    fun obtenirHistoriqueCommandesDetailParUtilisateur(@PathVariable idUtilisateur: Int) = service.chercherHistoriqueCommandesDetailParUtilisateur(idUtilisateur)
-
-    @GetMapping("/utilisateur/{idUtilisateur}/commandes/historiqueCommande/montant")
-    fun obtenirArgentDépenséUtilisateur(@PathVariable idUtilisateur: Int) = service.obtenirArgentDépenséUtilisateur(idUtilisateur)
-     **/
-    @ApiResponses(value = [
-        ApiResponse(responseCode = "200", description = "Commande trouvée"),
-        ApiResponse(responseCode = "404", description = "commande non trouvé")
-    ])
     @Operation(summary = "Permet d'obtenir toutes les commande faites pour une épicerie ayant le {idÉpicerie}")
     @GetMapping("/épicerie/{idÉpicerie}/commandes")
     fun obtenirCommandesParÉpicerie(@PathVariable idÉpicerie: Int) = service.chercherCommandesParÉpicerie(idÉpicerie) ?: throw ExceptionRessourceIntrouvable("Les commandes de l'épicerie avec le id $idÉpicerie sont introuvables")
 
-    /**
-    @GetMapping("/épicerie/{idÉpicerie}/commande/{idCommande}/commandeDetail")
-    fun obtenirCommandeDetailParÉpicerie(@PathVariable idÉpicerie: Int, @PathVariable idCommande: Int) = service.chercherCommandeDetailParÉpicerie(idÉpicerie, idCommande)
-
-    @GetMapping("/épicerie/{idÉpicerie}/commandes/historiqueCommande")
-    fun obtenirHistoriqueCommandesDetailParÉpicerie(@PathVariable idÉpicerie: Int) = service.chercherHistoriqueCommandesDetailParÉpicerie(idÉpicerie)
-
-    @GetMapping("/épicerie/{idÉpicerie}/commandes/historiqueCommande/montant")
-    fun obtenirArgentGagnéÉpicerie(@PathVariable idÉpicerie: Int) = service.obtenirArgentGagnéÉpicerie(idÉpicerie)
-     **/
     @ApiResponses(value = [
         ApiResponse(responseCode = "201", description = "La commande à été ajouter à la base de données"),
         ApiResponse(responseCode = "500", description = "Il y a eu un problème lors de l'ajout de la commande dans la base de données")
