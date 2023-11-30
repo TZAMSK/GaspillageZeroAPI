@@ -72,10 +72,9 @@ class CommandeDAOImpl(private val jdbcTemplate: JdbcTemplate): CommandeDAO {
                     commande.épicerie?.idÉpicerie, commande.utilisateur?.code)
             for(itemPanier in commande.panier){
                 jdbcTemplate.update("INSERT INTO commande_produits(commande_code, produit_id, quantité) values((select code from commande order by code desc limit 1),?,?)",
-                        id, itemPanier.produit, itemPanier.quantité)
+                        itemPanier.produit.idProduit, itemPanier.quantité)
             }
         }catch (e: Exception){ throw e }
-        SourceDonnées.commandes.add(commande)
         if(id!=null){
             return chercherParCode(id)
         }else{
@@ -102,7 +101,7 @@ class CommandeDAOImpl(private val jdbcTemplate: JdbcTemplate): CommandeDAO {
                     commande.épicerie?.idÉpicerie, commande.utilisateur?.code, idCommande)
             for(itemPanier in commande.panier){
                 jdbcTemplate.update("UPDATE commande_produits SET  quantité=? WHERE commande_code=? AND produit_id=?",
-                        itemPanier.quantité, idCommande, itemPanier.produit)
+                        itemPanier.quantité, idCommande, itemPanier.produit.idProduit)
             }
         }catch (e: Exception){throw e}
         return commande
