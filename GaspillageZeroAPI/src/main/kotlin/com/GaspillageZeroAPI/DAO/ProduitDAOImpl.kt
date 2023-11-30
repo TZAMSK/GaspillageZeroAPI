@@ -43,8 +43,8 @@ class ProduitDAOImpl(private val jdbcTemplate: JdbcTemplate): ProduitDAO {
     override fun ajouter(produit: Produit): Produit? {
         val id = obtenirProchaineIncrementationIDProduit()
         try{
-            jdbcTemplate.update("INSERT INTO produits(id, nom, date_expiration, quantité, prix, idÉpicerie, idGabarit) VALUES (?,?,?,?,?,?,?)",
-                    id,produit.nom,produit.date_expiration,produit.quantité,produit.prix,produit.idÉpicerie,produit.idGabaritProduit)
+            jdbcTemplate.update("INSERT INTO produits(nom, date_expiration, quantité, prix, idÉpicerie, idGabarit) VALUES (?,?,?,?,?,?)",
+                    produit.nom,produit.date_expiration,produit.quantité,produit.prix,produit.Épicerie?.idÉpicerie,produit.GabaritProduit?.idGabaritProduit)
         }catch(e: Exception){throw e}
         SourceDonnées.produits.add(produit)
         if(id!=null) {
@@ -67,8 +67,8 @@ class ProduitDAOImpl(private val jdbcTemplate: JdbcTemplate): ProduitDAO {
 
     override fun modifier(idProduit: Int, produit: Produit): Produit? {
         try{
-            jdbcTemplate.update("UPDATE produits SET nom=?,date_expiration=?,quantité=?,prix=? WHERE id=?",
-                    produit.nom,produit.date_expiration,produit.quantité,produit.prix,idProduit)
+            jdbcTemplate.update("UPDATE produits SET nom=?,date_expiration=?,quantité=?,prix=?,idÉpicerie=?,idGabaritProduit=? WHERE id=?",
+                    produit.nom,produit.date_expiration,produit.quantité,produit.prix,produit.Épicerie?.idÉpicerie,produit.GabaritProduit?.idGabaritProduit,idProduit)
         }catch (e:Exception){throw e}
         return produit
     }
@@ -99,14 +99,16 @@ class ProduitDAOImpl(private val jdbcTemplate: JdbcTemplate): ProduitDAO {
 
 
     private fun mapRowToProduit(resultat: ResultSet): Produit {
+        val épicerieDAO = ÉpicerieDAOImpl(jdbcTemplate)
+        val gabaritDAO = GabaritProduitDAOImpl(jdbcTemplate)
         return Produit(
                 resultat.getInt("id"),
                 resultat.getString("nom"),
                 resultat.getDate("date_expiration"),
                 resultat.getInt("quantité"),
                 resultat.getDouble("prix"),
-                resultat.getInt("idÉpicerie"),
-                resultat.getInt("idGabarit")
+                épicerieDAO.chercherParCode(resultat.getInt("idÉpicerie")),
+                gabaritDAO.chercherParCode(resultat.getInt("idGabarit"))
         )
     }
 }

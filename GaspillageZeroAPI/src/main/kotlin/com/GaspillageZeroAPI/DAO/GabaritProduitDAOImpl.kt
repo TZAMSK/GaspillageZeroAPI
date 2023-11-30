@@ -40,8 +40,8 @@ class GabaritProduitDAOImpl(private val jdbcTemplate: JdbcTemplate): GabaritProd
     override fun ajouter(gabaritProduit: GabaritProduit): GabaritProduit?{
         val id = obtenirProchaineIncrementationIDGabaritProduit()
         try{
-            jdbcTemplate.update("INSERT INTO gabaritproduit(id,nom,description,image,catégorie,idÉpicerie) VALUES (?,?,?,?,?,?)",
-                    id,gabaritProduit.nom,gabaritProduit.description,gabaritProduit.image,gabaritProduit.categorie,gabaritProduit.idÉpicerie)
+            jdbcTemplate.update("INSERT INTO gabaritproduit(nom,description,image,catégorie,idÉpicerie) VALUES (?,?,?,?,?)",
+                    gabaritProduit.nom,gabaritProduit.description,gabaritProduit.image,gabaritProduit.categorie,gabaritProduit.Épicerie?.idÉpicerie)
         }catch(e: Exception){throw e}
         SourceDonnées.gabariProduits.add(gabaritProduit)
         if(id!=null){
@@ -64,19 +64,20 @@ class GabaritProduitDAOImpl(private val jdbcTemplate: JdbcTemplate): GabaritProd
     override fun modifier(idGabaritProduit: Int, gabaritProduit: GabaritProduit): GabaritProduit? {
         try {
             jdbcTemplate.update("UPDATE gabaritproduit SET nom=?,description=?,image=?,catégorie=?,idÉpicerie=? WHERE id=?",
-                    gabaritProduit.nom,gabaritProduit.description,gabaritProduit.image,gabaritProduit.categorie,gabaritProduit.idÉpicerie,idGabaritProduit)
+                    gabaritProduit.nom,gabaritProduit.description,gabaritProduit.image,gabaritProduit.categorie,gabaritProduit.Épicerie?.idÉpicerie,idGabaritProduit)
         }catch (e: Exception){throw e}
         return gabaritProduit
     }
 
     private fun mapRowToGabaritProduit(resultat: ResultSet):GabaritProduit{
+        val épicerieDAO = ÉpicerieDAOImpl(jdbcTemplate)
         return GabaritProduit(
                 resultat.getInt("id"),
                 resultat.getString("nom"),
                 resultat.getString("description"),
                 resultat.getBlob("image"),
                 resultat.getString("catégorie"),
-                resultat.getInt("idÉpicerie")
+                épicerieDAO.chercherParCode(resultat.getInt("idÉpicerie"))
         )
     }
 }

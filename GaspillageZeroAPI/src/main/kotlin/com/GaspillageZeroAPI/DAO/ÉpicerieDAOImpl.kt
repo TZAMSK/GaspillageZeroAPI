@@ -40,7 +40,7 @@ class ÉpicerieDAOImpl(private val jdbcTemplate: JdbcTemplate): ÉpicerieDAO {
         val id = obtenirProchaineIncrementationIDÉpicerie()
         try{
             jdbcTemplate.update("INSERT INTO épicerie(adresse_id,utilisateur_code,nom,courriel,téléphone,logo) VALUES (?,?,?,?,?,?)",
-                    épicerie.idAdresse,épicerie.idUtilisateur,épicerie.nom,épicerie.courriel,épicerie.téléphone,épicerie.logo)
+                    épicerie.Adresse?.idAdresse,épicerie.Utilisateur?.code,épicerie.nom,épicerie.courriel,épicerie.téléphone,épicerie.logo)
         }catch (e: Exception){throw e}
         SourceDonnées.épiceries.add(épicerie)
         if(id!=null){
@@ -63,16 +63,18 @@ class ÉpicerieDAOImpl(private val jdbcTemplate: JdbcTemplate): ÉpicerieDAO {
     override fun modifier(idÉpicerie: Int, épicerie: Épicerie): Épicerie? {
         try{
             jdbcTemplate.update("UPDATE épicerie SET adresse_id=?,utilisateur_code=?,nom=?,courriel=?,téléphone=?,logo=? WHERE id=?",
-                    épicerie.idAdresse,épicerie.idUtilisateur,épicerie.nom,épicerie.courriel,épicerie.téléphone,épicerie.logo, idÉpicerie)
+                    épicerie.Adresse?.idAdresse,épicerie.Utilisateur?.code,épicerie.nom,épicerie.courriel,épicerie.téléphone,épicerie.logo, idÉpicerie)
         }catch (e: Exception){throw e}
         return épicerie
     }
 
     private fun mapRowToÉpicerie(resultat: ResultSet): Épicerie{
+        val adresseDAO = AdresseDAOImpl(jdbcTemplate)
+        val utilisateurDAO = UtilisateurDAOImpl(jdbcTemplate)
         return Épicerie(
                 resultat.getInt("id"),
-                resultat.getInt("adresse_id"),
-                resultat.getInt("utilisateur_code"),
+                adresseDAO.chercherParCode(resultat.getInt("adresse_id")),
+                utilisateurDAO.chercherParCode(resultat.getInt("utilisateur_code")),
                 resultat.getString("nom"),
                 resultat.getString("courriel"),
                 resultat.getString("téléphone"),

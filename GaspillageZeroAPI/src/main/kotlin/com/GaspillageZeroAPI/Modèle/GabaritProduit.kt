@@ -8,6 +8,6 @@ data class GabaritProduit (
         val description: String,
         val image: Blob?,
         val categorie: String,
-        val idÉpicerie: Int?
+        val Épicerie: Épicerie?
 ){
 }
