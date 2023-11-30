@@ -4,8 +4,8 @@ import java.sql.Blob
 
 data class Épicerie(
         val idÉpicerie: Int?,
-        val Adresse: Adresse?,
-        val Utilisateur: Utilisateur?,
+        val adresse: Adresse?,
+        val utilisateur: Utilisateur?,
         val nom: String,
         val courriel: String,
         val téléphone: String,

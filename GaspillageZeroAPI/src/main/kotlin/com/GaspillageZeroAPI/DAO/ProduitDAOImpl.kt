@@ -44,7 +44,7 @@ class ProduitDAOImpl(private val jdbcTemplate: JdbcTemplate): ProduitDAO {
         val id = obtenirProchaineIncrementationIDProduit()
         try{
             jdbcTemplate.update("INSERT INTO produits(nom, date_expiration, quantité, prix, idÉpicerie, idGabarit) VALUES (?,?,?,?,?,?)",
-                    produit.nom,produit.date_expiration,produit.quantité,produit.prix,produit.Épicerie?.idÉpicerie,produit.GabaritProduit?.idGabaritProduit)
+                    produit.nom,produit.date_expiration,produit.quantité,produit.prix,produit.épicerie?.idÉpicerie,produit.gabaritProduit?.idGabaritProduit)
         }catch(e: Exception){throw e}
         SourceDonnées.produits.add(produit)
         if(id!=null) {
@@ -68,7 +68,7 @@ class ProduitDAOImpl(private val jdbcTemplate: JdbcTemplate): ProduitDAO {
     override fun modifier(idProduit: Int, produit: Produit): Produit? {
         try{
             jdbcTemplate.update("UPDATE produits SET nom=?,date_expiration=?,quantité=?,prix=?,idÉpicerie=?,idGabaritProduit=? WHERE id=?",
-                    produit.nom,produit.date_expiration,produit.quantité,produit.prix,produit.Épicerie?.idÉpicerie,produit.GabaritProduit?.idGabaritProduit,idProduit)
+                    produit.nom,produit.date_expiration,produit.quantité,produit.prix,produit.épicerie?.idÉpicerie,produit.gabaritProduit?.idGabaritProduit,idProduit)
         }catch (e:Exception){throw e}
         return produit
     }

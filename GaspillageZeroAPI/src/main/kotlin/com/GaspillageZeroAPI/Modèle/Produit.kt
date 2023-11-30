@@ -8,6 +8,6 @@ data class Produit(
         val date_expiration: Date,
         var quantité: Int,
         val prix: Double,
-        val Épicerie: Épicerie?,
-        val GabaritProduit: GabaritProduit?) {
+        val épicerie: Épicerie?,
+        val gabaritProduit: GabaritProduit?) {
 }

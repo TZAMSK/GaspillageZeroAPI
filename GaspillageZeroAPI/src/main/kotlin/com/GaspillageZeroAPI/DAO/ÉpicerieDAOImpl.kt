@@ -40,7 +40,7 @@ class ÉpicerieDAOImpl(private val jdbcTemplate: JdbcTemplate): ÉpicerieDAO {
         val id = obtenirProchaineIncrementationIDÉpicerie()
         try{
             jdbcTemplate.update("INSERT INTO épicerie(adresse_id,utilisateur_code,nom,courriel,téléphone,logo) VALUES (?,?,?,?,?,?)",
-                    épicerie.Adresse?.idAdresse,épicerie.Utilisateur?.code,épicerie.nom,épicerie.courriel,épicerie.téléphone,épicerie.logo)
+                    épicerie.adresse?.idAdresse,épicerie.utilisateur?.code,épicerie.nom,épicerie.courriel,épicerie.téléphone,épicerie.logo)
         }catch (e: Exception){throw e}
         SourceDonnées.épiceries.add(épicerie)
         if(id!=null){
@@ -63,7 +63,7 @@ class ÉpicerieDAOImpl(private val jdbcTemplate: JdbcTemplate): ÉpicerieDAO {
     override fun modifier(idÉpicerie: Int, épicerie: Épicerie): Épicerie? {
         try{
             jdbcTemplate.update("UPDATE épicerie SET adresse_id=?,utilisateur_code=?,nom=?,courriel=?,téléphone=?,logo=? WHERE id=?",
-                    épicerie.Adresse?.idAdresse,épicerie.Utilisateur?.code,épicerie.nom,épicerie.courriel,épicerie.téléphone,épicerie.logo, idÉpicerie)
+                    épicerie.adresse?.idAdresse,épicerie.utilisateur?.code,épicerie.nom,épicerie.courriel,épicerie.téléphone,épicerie.logo, idÉpicerie)
         }catch (e: Exception){throw e}
         return épicerie
     }
