@@ -3,7 +3,6 @@ package com.GaspillageZeroAPI.DAO
 import com.GaspillageZeroAPI.Exceptions.ExceptionErreurServeur
 import com.GaspillageZeroAPI.Exceptions.ExceptionRessourceIntrouvable
 import com.GaspillageZeroAPI.Modèle.GabaritProduit
-import com.GaspillageZeroAPI.Modèle.Produit
 import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.stereotype.Repository
 import java.lang.Exception
@@ -41,7 +40,7 @@ class GabaritProduitDAOImpl(private val jdbcTemplate: JdbcTemplate): GabaritProd
         val id = obtenirProchaineIncrementationIDGabaritProduit()
         try{
             jdbcTemplate.update("INSERT INTO gabaritproduit(nom,description,image,catégorie,idÉpicerie) VALUES (?,?,?,?,?)",
-                    gabaritProduit.nom,gabaritProduit.description,gabaritProduit.image,gabaritProduit.categorie,gabaritProduit.Épicerie?.idÉpicerie)
+                    gabaritProduit.nom,gabaritProduit.description,gabaritProduit.image,gabaritProduit.categorie,gabaritProduit.épicerie?.idÉpicerie)
         }catch(e: Exception){throw e}
         SourceDonnées.gabariProduits.add(gabaritProduit)
         if(id!=null){
@@ -64,7 +63,7 @@ class GabaritProduitDAOImpl(private val jdbcTemplate: JdbcTemplate): GabaritProd
     override fun modifier(idGabaritProduit: Int, gabaritProduit: GabaritProduit): GabaritProduit? {
         try {
             jdbcTemplate.update("UPDATE gabaritproduit SET nom=?,description=?,image=?,catégorie=?,idÉpicerie=? WHERE id=?",
-                    gabaritProduit.nom,gabaritProduit.description,gabaritProduit.image,gabaritProduit.categorie,gabaritProduit.Épicerie?.idÉpicerie,idGabaritProduit)
+                    gabaritProduit.nom,gabaritProduit.description,gabaritProduit.image,gabaritProduit.categorie,gabaritProduit.épicerie?.idÉpicerie,idGabaritProduit)
         }catch (e: Exception){throw e}
         return gabaritProduit
     }
