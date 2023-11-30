@@ -132,8 +132,9 @@ class CommandeDAOImpl(private val jdbcTemplate: JdbcTemplate): CommandeDAO {
     }
 
     private fun mapRowToItemPanier(resultat: ResultSet):ItemsPanier? {
-        print(resultat.getString("nom"))
         var itemPanier: ItemsPanier? = null
+        val épicerieDAO = ÉpicerieDAOImpl(jdbcTemplate)
+        val gabaritProduitDAO = GabaritProduitDAOImpl(jdbcTemplate)
 
         itemPanier  = ItemsPanier(
             Produit(
@@ -142,8 +143,8 @@ class CommandeDAOImpl(private val jdbcTemplate: JdbcTemplate): CommandeDAO {
                     resultat.getDate("date_expiration"),
                     resultat.getInt("quantité"),
                     resultat.getDouble("prix"),
-                    resultat.getInt("idÉpicerie"),
-                    resultat.getInt("idGabarit")
+                    épicerieDAO.chercherParCode(resultat.getInt("idÉpicerie")),
+                    gabaritProduitDAO.chercherParCode(resultat.getInt("idGabarit"))
             ),
             resultat.getInt("quantité")
         )
