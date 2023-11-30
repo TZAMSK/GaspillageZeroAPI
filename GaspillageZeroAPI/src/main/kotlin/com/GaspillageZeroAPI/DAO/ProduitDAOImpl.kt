@@ -67,7 +67,7 @@ class ProduitDAOImpl(private val jdbcTemplate: JdbcTemplate): ProduitDAO {
 
     override fun modifier(idProduit: Int, produit: Produit): Produit? {
         try{
-            jdbcTemplate.update("UPDATE produits SET nom=?,date_expiration=?,quantité=?,prix=?,idÉpicerie=?,idGabaritProduit=? WHERE id=?",
+            jdbcTemplate.update("UPDATE produits SET nom=?,date_expiration=?,quantité=?,prix=?,idÉpicerie=?,idGabarit=? WHERE id=?",
                     produit.nom,produit.date_expiration,produit.quantité,produit.prix,produit.épicerie?.idÉpicerie,produit.gabaritProduit?.idGabaritProduit,idProduit)
         }catch (e:Exception){throw e}
         return produit
