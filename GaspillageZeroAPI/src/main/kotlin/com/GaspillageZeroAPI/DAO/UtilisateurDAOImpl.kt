@@ -43,7 +43,6 @@ class UtilisateurDAOImpl(private val jdbcTemplate: JdbcTemplate): UtilisateurDAO
             jdbcTemplate.update("INSERT INTO utilisateur(nom, prénom, courriel, adresse_id, téléphone, rôle) VALUES (?,?,?,?,?,?)",
                     utilisateur.nom, utilisateur.prénom, utilisateur.courriel, utilisateur.adresse?.idAdresse, utilisateur.téléphone, utilisateur.rôle)
         }catch(e: java.lang.Exception){throw e}
-        SourceDonnées.produits.add(utilisateur)
         if(id!=null) {
             return chercherParCode(id)
         }else {
