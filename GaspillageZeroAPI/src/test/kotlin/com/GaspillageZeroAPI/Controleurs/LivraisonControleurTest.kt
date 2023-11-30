@@ -1,8 +1,12 @@
 package com.GaspillageZeroAPI.Controleurs
 
 import com.GaspillageZeroAPI.Exceptions.ExceptionRessourceIntrouvable
+import com.GaspillageZeroAPI.Exceptions.GabaritProduitIntrouvableException
+import com.GaspillageZeroAPI.Exceptions.LivraisonIntrouvableException
 import com.GaspillageZeroAPI.Modèle.Livraison
+import com.GaspillageZeroAPI.Modèle.Évaluation
 import com.GaspillageZeroAPI.Services.LivraisonService
+import com.GaspillageZeroAPI.Services.ÉvaluationService
 import com.fasterxml.jackson.databind.ObjectMapper
 import org.hamcrest.CoreMatchers
 import org.junit.jupiter.api.Assertions
@@ -18,6 +22,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers.*
 import org.springframework.http.MediaType
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -26,6 +31,9 @@ class LivraisonControleurTest {
     @MockBean
     lateinit var service: LivraisonService
 
+    @MockBean
+    lateinit var avis: ÉvaluationService
+
     @Autowired
     private lateinit var mockMvc: MockMvc
 
@@ -33,6 +41,7 @@ class LivraisonControleurTest {
     private lateinit var mapper: ObjectMapper
 
     val livraison = Livraison(2, 2, 2, 2)
+    val éval = Évaluation(1,1,3,"tres bon")
 
     /*  @Test
     fun `Étant donnée la livraison avec le code 1, lorsqu'on éffectue une requète GET alors on obtient une livraison  dans un format JSON avec le id 3 et un code 200 `(){
@@ -40,36 +49,50 @@ class LivraisonControleurTest {
             Utilisateur(1,"","","", Adresse("",3,"",))
 
     }*/
-    /*@Test
-    fun `Étant donnée une livraison avec le code 2 qui n'existe pas, lorsqu'on éffectue une requète GET alors on obtient un code de retour 404`(){
-        Mockito.`when`(service.obtenirLivraisonParCode(26)).thenReturn(null)
-
-        mockMvc.perform(
-            MockMvcRequestBuilders.get("/livraison/26")
-            .contentType(MediaType.APPLICATION_JSON))
-            .andExpect(MockMvcResultMatchers.status().isNotFound)
-            .andExpect { résultat ->
-                Assertions.assertTrue(résultat.resolvedException is RessourceInexistanteException)
-                Assertions.assertEquals(
-                    "La livraison au code 26 n'est pas inscrit au service.",
-                    résultat.resolvedException?.message
-                )
-            }
-    }*/
     @Test
-    fun `Étant donnée une commande avec le code 4, lorsqu'on ajoute une commande à une livraison avec le code 1 l'aide d'une requète POST on obtient le code 201`(){
+    fun `Étant donnée un avis avec le code 19 qui n'existe , lorsqu'on éffectue une requète GET alors on obtient un code de retour 404`(){
+
+
+        Mockito.`when`(avis.chercherParCodeÉvaluation(19)).thenThrow(LivraisonIntrouvableException("L'avis du code 19 est introuvable"))
+
+        mockMvc.perform(get("/evaluations/19"))
+            .andExpect(status().isNotFound)
 
     }
+    @Test
+    fun `Étant donnée une livraison avec le code 1, lorsqu'on recherche un avis  l'aide d'une requète POST on obtient le code 201`(){
+        Mockito.`when`(avis.chercherParCodeÉvaluation(1)).thenReturn(éval)
+
+        mockMvc.perform(MockMvcRequestBuilders.get("/evaluations/1"))
+            .andExpect(MockMvcResultMatchers.status().isOk)
+            .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON))
+            .andExpect(MockMvcResultMatchers.jsonPath("$.idÉvaluation").value(1))
+    }
+
+
+    /*@Test
+    fun `Étant donnée un avis avec le code 1, lorsqu'on essaie de supprimer avec une requête DELETE l'avis dont le code est 3, on obtient le code 200`() {
+        Mockito.doNothing().`when`(avis).(3)
+
+        mockMvc.perform(MockMvcRequestBuilders.delete("/produit/3"))
+            .andExpect(status().isOk)
+    }*/
 
     @Test
     fun `Étant donnée une livraison avec  l'id 3 qui n'existe pas, lorsqu'on éffectue un requête GET alors on obtient un code de retour 404`(){
-        TODO()
+        Mockito.`when`(avis.chercherParCodeÉvaluation(19)).thenThrow(LivraisonIntrouvableException("L'avis du code 19 est introuvable"))
+
+        mockMvc.perform(get("/evaluations/19"))
+            .andExpect(status().isNotFound)
     }
 
     @Test
     //@GetMapping("/evaluations/{code}")
-    fun `Étant donné un avis dont le code est '0009' et qui n'est pas inscrit au service lorsqu'on effectue une requête GET de recherche par code alors on obtient un code de retour 404 et le message d'erreur « L'avis avec le numéro '0009' n'est pas inscrit au service »`() {
-        TODO("Méthode non-implémentée")
+    fun `Étant donné un avis dont le code est '9' et qui n'est pas inscrit au service lorsqu'on effectue une requête GET de recherche par code alors on obtient un code de retour 404 et le message d'erreur « L'avis avec le numéro '0009' n'est pas inscrit au service »`() {
+        Mockito.`when`(avis.chercherParCodeÉvaluation(9)).thenThrow(LivraisonIntrouvableException("L'avis du code 9 est introuvable"))
+
+        mockMvc.perform(get("/evaluations/9"))
+            .andExpect(status().isNotFound)
     }
 
     @Test

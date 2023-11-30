@@ -1,8 +1,13 @@
 package com.GaspillageZeroAPI.Controleurs
 
 import com.GaspillageZeroAPI.Exceptions.ExceptionRessourceIntrouvable
+import com.GaspillageZeroAPI.Exceptions.LivraisonIntrouvableException
+import com.GaspillageZeroAPI.Exceptions.ProduitIntrouvableException
+import com.GaspillageZeroAPI.Exceptions.ÉpicerieIntrouvableException
 import com.GaspillageZeroAPI.Modèle.Commande
 import com.GaspillageZeroAPI.Modèle.Livraison
+import com.GaspillageZeroAPI.Modèle.Produit
+import com.GaspillageZeroAPI.Modèle.Évaluation
 import com.GaspillageZeroAPI.Services.CommandeService
 import com.GaspillageZeroAPI.Services.LivraisonService
 import com.GaspillageZeroAPI.Services.UtilisateurService
@@ -42,8 +47,12 @@ class LivraisonControleur (val livraisonService: LivraisonService, val commandeS
     @Operation(summary = "Obtenir une évaluation en cherchant par code")
     @ApiResponse(responseCode = "200", description = "Évaluation trouvée")
     @ApiResponse(responseCode = "404", description = "Évaluation non-trouvée, veuillez réessayez...")
-    fun obtenirEvaluationParCode(@PathVariable code: Int) {
-        TODO("Méthode non-implémentée")
+    fun obtenirEvaluationParCode(@PathVariable code: Int) : Évaluation? {
+        val avis = évaluationService.chercherParCodeÉvaluation(code)
+        if(avis == null){
+            throw LivraisonIntrouvableException("L'avis avec le code $code est introuvable")
+        }
+        return avis
     }
 
     @GetMapping("/utilisateur/{code_utilisateur}/commande/{idCommande}/livraisons")

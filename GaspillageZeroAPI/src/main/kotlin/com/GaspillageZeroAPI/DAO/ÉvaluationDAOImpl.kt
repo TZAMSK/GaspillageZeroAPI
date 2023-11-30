@@ -26,7 +26,7 @@ class ÉvaluationDAOImpl(val jdbcTemplate: JdbcTemplate) : ÉvaluationDAO {
     }
 
     override fun chercherParCodeÉvaluation(code: Int): Évaluation? {
-        return jdbcTemplate.query("SELECT * FROM Évaluation WHERE idÉvaluation = ?", arrayOf(code)) { rs, _ ->
+        return jdbcTemplate.query("SELECT * FROM avis WHERE idÉvaluation = ?", arrayOf(code)) { rs, _ ->
             mapRowToLivraison(rs)
         }.firstOrNull()
     }
@@ -38,7 +38,7 @@ class ÉvaluationDAOImpl(val jdbcTemplate: JdbcTemplate) : ÉvaluationDAO {
             throw ExceptionRessourceIntrouvable("L'avis dont l' ID $idÉvaluation est introuvable")
         }
         try{
-            jdbcTemplate.update("DELETE FROM avis WHERE id=?",idÉvaluation)
+            jdbcTemplate.update("DELETE FROM Évaluation WHERE id=?",idÉvaluation)
         }catch(e: Exception){ throw ExceptionErreurServeur("erreur: " + e.message) }
         return null
     }
