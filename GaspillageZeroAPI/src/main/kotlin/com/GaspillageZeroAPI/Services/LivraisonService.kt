@@ -29,7 +29,5 @@ class LivraisonService (val livraisonDAO: LivraisonDAO){
         livraisonDAO.supprimer(code)
     }
 
-    /*fun obtenirtoutsÉvaluation():List<Évaluation> {
-         return livraisonDAO.obtenirTousÉvaluation()
-    }*/
+
 }

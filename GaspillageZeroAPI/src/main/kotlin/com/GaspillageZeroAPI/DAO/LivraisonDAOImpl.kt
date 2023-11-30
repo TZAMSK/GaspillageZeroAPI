@@ -2,6 +2,7 @@ package com.GaspillageZeroAPI.DAO
 
 import com.GaspillageZeroAPI.Exceptions.ExceptionRessourceIntrouvable
 import com.GaspillageZeroAPI.Modèle.Commande
+import com.GaspillageZeroAPI.Modèle.GabaritProduit
 import com.GaspillageZeroAPI.Modèle.Livraison
 import com.GaspillageZeroAPI.Modèle.Évaluation
 import org.springframework.jdbc.core.JdbcTemplate
@@ -67,25 +68,13 @@ class LivraisonDAOImpl(val jdbcTemplate: JdbcTemplate): LivraisonDAO {
         return null
     }
 
-    override fun chercherParCodeÉvaluation(code: Int,): Livraison? {
-        return jdbcTemplate.query("SELECT * FROM Évaluation WHERE code = ?", arrayOf(code)) { rs, _ ->
-            mapRowToLivraison(rs)
-        }.firstOrNull()
-    }
 
-    /*override fun obtenirTousÉvaluation(): Évaluation {
-        return jdbcTemplate.query("SELECT * FROM Évaluation") { rs, _ -> mapRowToLivraison(rs)
-        }
-    }*/
 
-    override fun modifierÉvaluation(code: Int, avis: Évaluation): Int {
-        return jdbcTemplate.update("UPDATE Évaluation SET avis = ?,  commentaire = ? WHERE code = ?",
-            avis.idLivraison, avis.nbreÉtoiles, avis.message)
-    }
 
-    override fun obtenirTousÉvaluation(): Évaluation {
-        TODO("Not yet implemented")
-    }
+
+
+
+
 
 
     private fun mapRowToLivraison(rs: ResultSet): Livraison {
