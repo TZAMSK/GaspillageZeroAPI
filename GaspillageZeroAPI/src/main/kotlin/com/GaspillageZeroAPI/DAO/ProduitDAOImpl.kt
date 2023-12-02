@@ -21,15 +21,13 @@ class ProduitDAOImpl(private val jdbcTemplate: JdbcTemplate): ProduitDAO {
     }
 
     override fun chercherParCode(idProduit: Int): Produit? {
-        var produit: Produit? = null
-
-        try {
-            produit = jdbcTemplate.queryForObject<Produit>("SELECT * FROM produits WHERE id=?", arrayOf(idProduit)){resultat, _ ->
+        return try {
+            jdbcTemplate.queryForObject("SELECT * FROM produits WHERE id=?", arrayOf(idProduit)){resultat, _ ->
                 mapRowToProduit(resultat)
             }
-        }catch (e: Exception){}
-
-        return produit
+        }catch (e: Exception) {
+            throw ExceptionErreurServeur("Erreur lors de la recherche du produit avec l'ID $idProduit: ${e.message}")
+        }
     }
 
     private fun obtenirProchaineIncrementationIDProduit():Int?{
@@ -45,13 +43,10 @@ class ProduitDAOImpl(private val jdbcTemplate: JdbcTemplate): ProduitDAO {
         try{
             jdbcTemplate.update("INSERT INTO produits(nom, date_expiration, quantité, prix, idÉpicerie, idGabarit) VALUES (?,?,?,?,?,?)",
                     produit.nom,produit.date_expiration,produit.quantité,produit.prix,produit.épicerie?.idÉpicerie,produit.gabaritProduit?.idGabaritProduit)
-        }catch(e: Exception){throw e}
-        SourceDonnées.produits.add(produit)
-        if(id!=null) {
-            return chercherParCode(id)
-        }else {
-            return null
+        }catch(e: Exception){
+            throw ExceptionErreurServeur("Erreur lors de l'ajout du produit: ${e.message}")
         }
+        return id?.let { chercherParCode(it) }
     }
 
     override fun supprimer(idProduit: Int): Produit? {
@@ -60,7 +55,7 @@ class ProduitDAOImpl(private val jdbcTemplate: JdbcTemplate): ProduitDAO {
         }
         try{
             jdbcTemplate.update("DELETE FROM produits WHERE id=?",idProduit)
-        }catch (e:Exception){throw ExceptionErreurServeur("erreur: " + e.message)}
+        }catch (e:Exception){throw ExceptionErreurServeur("Erreur lors de la suppression du produit avec l'ID $idProduit: ${e.message}")}
 
         return null
     }
@@ -69,7 +64,9 @@ class ProduitDAOImpl(private val jdbcTemplate: JdbcTemplate): ProduitDAO {
         try{
             jdbcTemplate.update("UPDATE produits SET nom=?,date_expiration=?,quantité=?,prix=?,idÉpicerie=?,idGabarit=? WHERE id=?",
                     produit.nom,produit.date_expiration,produit.quantité,produit.prix,produit.épicerie?.idÉpicerie,produit.gabaritProduit?.idGabaritProduit,idProduit)
-        }catch (e:Exception){throw e}
+        }catch (e: Exception) {
+            throw ExceptionErreurServeur("Erreur lors de la modification du produit avec l'ID $idProduit: ${e.message}")
+        }
         return produit
     }
 

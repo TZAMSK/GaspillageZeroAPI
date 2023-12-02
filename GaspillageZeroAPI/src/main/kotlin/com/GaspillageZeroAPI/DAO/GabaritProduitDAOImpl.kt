@@ -18,15 +18,13 @@ class GabaritProduitDAOImpl(private val jdbcTemplate: JdbcTemplate): GabaritProd
     }
 
     override fun chercherParCode(idGabaritProduit: Int): GabaritProduit?{
-        var gabaritProduit : GabaritProduit? = null
-
-        try {
-            gabaritProduit = jdbcTemplate.queryForObject<GabaritProduit>("SELECT * FROM gabaritproduit WHERE id=?", arrayOf(idGabaritProduit)){resultat, _ ->
-                mapRowToGabaritProduit(resultat)
+        return try {
+            jdbcTemplate.queryForObject("SELECT * FROM gabaritproduit WHERE id=?", arrayOf(idGabaritProduit)) { resultSet, _ ->
+                mapRowToGabaritProduit(resultSet)
             }
-        }catch (e: Exception){}
-
-        return gabaritProduit
+        } catch (e: Exception) {
+            throw ExceptionErreurServeur("Erreur lors de la recherche du gabarit produit avec l'ID $idGabaritProduit: ${e.message}")
+        }
     }
 
     private fun obtenirProchaineIncrementationIDGabaritProduit():Int?{
@@ -41,13 +39,10 @@ class GabaritProduitDAOImpl(private val jdbcTemplate: JdbcTemplate): GabaritProd
         try{
             jdbcTemplate.update("INSERT INTO gabaritproduit(nom,description,image,catégorie,idÉpicerie) VALUES (?,?,?,?,?)",
                     gabaritProduit.nom,gabaritProduit.description,gabaritProduit.image,gabaritProduit.categorie,gabaritProduit.épicerie?.idÉpicerie)
-        }catch(e: Exception){throw e}
-        SourceDonnées.gabariProduits.add(gabaritProduit)
-        if(id!=null){
-            return chercherParCode(id)
-        }else{
-            return null
+        }catch(e: Exception){
+            throw ExceptionErreurServeur("Erreur lors de l'ajout du gabarit produit: ${e.message}")
         }
+        return id?.let { chercherParCode(it) }
     }
 
     override fun supprimer(idGabaritProduit: Int): GabaritProduit? {
@@ -56,7 +51,7 @@ class GabaritProduitDAOImpl(private val jdbcTemplate: JdbcTemplate): GabaritProd
         }
         try{
             jdbcTemplate.update("DELETE FROM gabaritproduit WHERE id=?", idGabaritProduit)
-        }catch (e: Exception){throw ExceptionErreurServeur("erreur: " + e.message) }
+        }catch (e: Exception){throw ExceptionErreurServeur("Erreur lors de la suppression du gabararit produit avec l'ID $idGabaritProduit: ${e.message}")}
         return null
     }
 
@@ -64,7 +59,9 @@ class GabaritProduitDAOImpl(private val jdbcTemplate: JdbcTemplate): GabaritProd
         try {
             jdbcTemplate.update("UPDATE gabaritproduit SET nom=?,description=?,image=?,catégorie=?,idÉpicerie=? WHERE id=?",
                     gabaritProduit.nom,gabaritProduit.description,gabaritProduit.image,gabaritProduit.categorie,gabaritProduit.épicerie?.idÉpicerie,idGabaritProduit)
-        }catch (e: Exception){throw e}
+        }catch (e: Exception) {
+            throw ExceptionErreurServeur("Erreur lors de la modification du gabararit produit avec l'ID $idGabaritProduit: ${e.message}")
+        }
         return gabaritProduit
     }
 

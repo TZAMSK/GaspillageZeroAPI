@@ -18,15 +18,13 @@ class UtilisateurDAOImpl(private val jdbcTemplate: JdbcTemplate): UtilisateurDAO
         }
     }
     override fun chercherParCode(id: Int): Utilisateur? {
-        var utilisateur: Utilisateur? = null
-
-        try {
-            utilisateur = jdbcTemplate.queryForObject<Utilisateur>("SELECT * FROM utilisateur WHERE code=?", arrayOf(id)){ resultat, _ ->
+        return try {
+            jdbcTemplate.queryForObject("SELECT * FROM utilisateur WHERE code=?", arrayOf(id)){ resultat, _ ->
                 mapRowToUtilisateur(resultat)
             }
-        }catch (e: Exception){}
-
-        return utilisateur
+        }catch (e: Exception) {
+            throw ExceptionErreurServeur("Erreur lors de la recherche de l'utilisateur avec l'ID $id: ${e.message}")
+        }
     }
 
     private fun obtenirProchaineIncrementationIDUtilisateur():Int?{
@@ -42,12 +40,10 @@ class UtilisateurDAOImpl(private val jdbcTemplate: JdbcTemplate): UtilisateurDAO
         try{
             jdbcTemplate.update("INSERT INTO utilisateur(nom, prénom, courriel, adresse_id, téléphone, rôle) VALUES (?,?,?,?,?,?)",
                     utilisateur.nom, utilisateur.prénom, utilisateur.courriel, utilisateur.adresse?.idAdresse, utilisateur.téléphone, utilisateur.rôle)
-        }catch(e: java.lang.Exception){throw e}
-        if(id!=null) {
-            return chercherParCode(id)
-        }else {
-            return null
+        }catch(e: Exception){
+            throw ExceptionErreurServeur("Erreur lors de l'ajout de l'utilisateur: ${e.message}")
         }
+        return id?.let { chercherParCode(it) }
     }
 
     override fun supprimer(idUtilisateur: Int): Utilisateur? {
@@ -57,7 +53,7 @@ class UtilisateurDAOImpl(private val jdbcTemplate: JdbcTemplate): UtilisateurDAO
         try{
             jdbcTemplate.update("DELETE FROM utilisateur WHERE code=?", idUtilisateur)
         } catch (e:Exception){
-            throw ExceptionErreurServeur("erreur: " + e.message)
+            throw ExceptionErreurServeur("Erreur lors de la suppression de l'utilisateur avec l'ID $idUtilisateur: ${e.message}")
         }
 
         return null
@@ -67,7 +63,9 @@ class UtilisateurDAOImpl(private val jdbcTemplate: JdbcTemplate): UtilisateurDAO
         try{
             jdbcTemplate.update("UPDATE utilisateur SET nom=?, prénom=?, courriel=?, adresse_id=?, téléphone=?, rôle=? WHERE code=?",
                     utilisateur.nom, utilisateur.prénom, utilisateur.courriel, utilisateur.adresse?.idAdresse, utilisateur.téléphone, utilisateur.rôle, idUtilisateur)
-        }catch (e:Exception){throw e}
+        }catch (e: Exception) {
+            throw ExceptionErreurServeur("Erreur lors de la modification de l'utilisateur avec l'ID $idUtilisateur: ${e.message}")
+        }
         return utilisateur
     }
     private fun mapRowToUtilisateur(rs: ResultSet): Utilisateur {
