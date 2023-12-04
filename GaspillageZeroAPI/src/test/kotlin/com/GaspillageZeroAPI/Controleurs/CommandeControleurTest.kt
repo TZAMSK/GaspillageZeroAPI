@@ -45,12 +45,12 @@ class CommandeControleurTest {
 
     @Test
     fun `Étant donnée la commande avec le code 3, lorsqu'on éffectue une requète GET avec le id 3 alors on obtient une commande dans un format JSON avec le id 3 et un code 200 `(){
-        Mockito.`when`(service.chercherParCode(3)).thenReturn(commande)
+            Mockito.`when`(service.chercherParCode(3)).thenReturn(commande)
 
-        mockMvc.perform(get("/commande/3"))
-                .andExpect(status().isOk)
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.idCommande").value(3))
+            mockMvc.perform(get("/commande/3"))
+                    .andExpect(status().isOk)
+                    .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                    .andExpect(jsonPath("$.idCommande").value(3))
     }
 
     @Test
@@ -146,6 +146,4 @@ class CommandeControleurTest {
                     assertEquals("La commande avec le code 4 est introuvable", result.resolvedException?.message)
                 }
     }
-
-
 }

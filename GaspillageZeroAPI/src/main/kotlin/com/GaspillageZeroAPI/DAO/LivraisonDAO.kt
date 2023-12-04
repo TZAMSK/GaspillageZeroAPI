@@ -9,8 +9,5 @@ interface LivraisonDAO: DAO<Livraison> {
     override fun ajouter(livraison: Livraison): Livraison?
     override fun modifier(code: Int, livraison: Livraison): Livraison?
     override fun supprimer(code: Int): Livraison?
-    fun chercherParCodeÉvaluation(code: Int): Livraison?
 
-    fun modifierÉvaluation(code: Int, avis: Évaluation): Int
-    fun obtenirTousÉvaluation(): Évaluation
 }

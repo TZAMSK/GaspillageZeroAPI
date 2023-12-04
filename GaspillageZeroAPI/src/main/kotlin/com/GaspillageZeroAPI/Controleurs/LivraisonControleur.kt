@@ -1,11 +1,17 @@
 package com.GaspillageZeroAPI.Controleurs
 
 import com.GaspillageZeroAPI.Exceptions.ExceptionRessourceIntrouvable
+import com.GaspillageZeroAPI.Exceptions.LivraisonIntrouvableException
+import com.GaspillageZeroAPI.Exceptions.ProduitIntrouvableException
+import com.GaspillageZeroAPI.Exceptions.ÉpicerieIntrouvableException
 import com.GaspillageZeroAPI.Modèle.Commande
 import com.GaspillageZeroAPI.Modèle.Livraison
+import com.GaspillageZeroAPI.Modèle.Produit
+import com.GaspillageZeroAPI.Modèle.Évaluation
 import com.GaspillageZeroAPI.Services.CommandeService
 import com.GaspillageZeroAPI.Services.LivraisonService
 import com.GaspillageZeroAPI.Services.UtilisateurService
+import com.GaspillageZeroAPI.Services.ÉvaluationService
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.responses.ApiResponse
 import org.springframework.http.HttpStatus
@@ -17,45 +23,26 @@ import java.net.URI
 
 @RestController
 class LivraisonControleur (val livraisonService: LivraisonService, val commandeService: CommandeService,
-                           val utilisateurService: UtilisateurService) {
+                           val utilisateurService: UtilisateurService, val évaluationService : ÉvaluationService) {
 
     //Pour accéder à la documentation OpenApi, visitez le lien suivant pour en savoir plus : http://localhost:8080/swagger-ui/index.html
-    //@GetMapping("/listeLivraisons")
-    //fun obtenirListeLivraisons() {
-
-    //}
-
-
-    //@GetMapping("/listeLivraisons/{code}")
-    //fun obtenirGabaritProduitParCode(@PathVariable code: String)  {
-
-    //}
-
-
-    /*@PostMapping("/listeLivraisons")
-    fun AjouterLivraison(@RequestBody livraison :Livraison) {
-
-    }*/
-
-    //@GetMapping("/épicerie/{idÉpicerie}/produit/{idProduit}")
-    //fun obtenirCommandeÉpicParCode(@PathVariable idCommande : Int, @PathVariable idProduit: Int) {}
 
     @GetMapping("/evaluations")
     @Operation(summary = "Obtenir la liste des évaluations")
     @ApiResponse(responseCode = "200", description = "Liste des évaluations trouvées")
     @ApiResponse(responseCode = "404", description = "Liste des évaluations non-trouvées, veuillez réessayez...")
-    fun obtenirEvaluations() {
-
-
-
-    }
+    fun obtenirTousÉvalutions() = évaluationService.obtenirÉvaluations()
 
     @GetMapping("/evaluations/{code}")
     @Operation(summary = "Obtenir une évaluation en cherchant par code")
     @ApiResponse(responseCode = "200", description = "Évaluation trouvée")
     @ApiResponse(responseCode = "404", description = "Évaluation non-trouvée, veuillez réessayez...")
-    fun obtenirEvaluationParCode(@PathVariable code: Int) {
-        TODO("Méthode non-implémentée")
+    fun obtenirEvaluationParCode(@PathVariable code: Int) : Évaluation? {
+        val avis = évaluationService.chercherParCodeÉvaluation(code)
+        if(avis == null){
+            throw LivraisonIntrouvableException("L'avis avec le code $code est introuvable")
+        }
+        return avis
     }
 
     @GetMapping("/utilisateur/{code_utilisateur}/commande/{idCommande}/livraisons")
@@ -75,7 +62,6 @@ class LivraisonControleur (val livraisonService: LivraisonService, val commandeS
         }
     }
 
-
     @GetMapping("/utilisateur/{code_utilisateur}/commande/{idCommande}/livraisons/{codeLivraison}")
     @Operation(summary = "Obtenir une livraison en cherchant par code")
     @ApiResponse(responseCode = "200", description = "Livraison trouvée")
@@ -84,7 +70,6 @@ class LivraisonControleur (val livraisonService: LivraisonService, val commandeS
                                 @PathVariable idCommande: Int, @PathVariable codeLivraison: Int) =
 
         livraisonService.obtenirLivraisonParCode(codeLivraison) ?: throw ExceptionRessourceIntrouvable("La livraison avec le code $codeLivraison est invalide.")
-
 
     @PostMapping("/utilisateur/{code_utilisateur}/commande/{idCommande}/livraison")
     @Operation(summary = "Ajouté une livraison")

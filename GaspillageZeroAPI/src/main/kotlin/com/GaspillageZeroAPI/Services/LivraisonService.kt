@@ -2,9 +2,7 @@ package com.GaspillageZeroAPI.Services
 
 import com.GaspillageZeroAPI.DAO.LivraisonDAO
 import com.GaspillageZeroAPI.Modèle.Livraison
-import com.GaspillageZeroAPI.Modèle.Évaluation
 import org.springframework.stereotype.Service
-import org.springframework.transaction.annotation.Transactional
 
 @Service
 class LivraisonService (val livraisonDAO: LivraisonDAO){
@@ -29,7 +27,5 @@ class LivraisonService (val livraisonDAO: LivraisonDAO){
         livraisonDAO.supprimer(code)
     }
 
-    /*fun obtenirtoutsÉvaluation():List<Évaluation> {
-         return livraisonDAO.obtenirTousÉvaluation()
-    }*/
+
 }

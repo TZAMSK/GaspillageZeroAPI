@@ -31,9 +31,9 @@ class LivraisonDAOImpl(val jdbcTemplate: JdbcTemplate): LivraisonDAO {
     }
 
     private fun obtenirProchaineIncrementationIDLivraison(): Int? {
-        return jdbcTemplate.queryForObject("SELECT auto_increment FROM INFORMATION_SCHEMA.TABLES WHERE table_schema = 'gaspillagealimentaire' AND table_name = 'livraison'")
+        return jdbcTemplate.queryForObject("SELECT COALESCE(MAX(code), 0) + 1 AS max_code FROM Livraison")
         { resultat, _ ->
-            resultat.getInt("auto_increment")
+            resultat.getInt("max_code")
         }
     }
 
@@ -72,25 +72,13 @@ class LivraisonDAOImpl(val jdbcTemplate: JdbcTemplate): LivraisonDAO {
         return null
     }
 
-    override fun chercherParCodeÉvaluation(code: Int,): Livraison? {
-        return jdbcTemplate.query("SELECT * FROM Évaluation WHERE code = ?", arrayOf(code)) { rs, _ ->
-            mapRowToLivraison(rs)
-        }.firstOrNull()
-    }
 
-    /*override fun obtenirTousÉvaluation(): Évaluation {
-        return jdbcTemplate.query("SELECT * FROM Évaluation") { rs, _ -> mapRowToLivraison(rs)
-        }
-    }*/
 
-    override fun modifierÉvaluation(code: Int, avis: Évaluation): Int {
-        return jdbcTemplate.update("UPDATE Évaluation SET avis = ?,  commentaire = ? WHERE code = ?",
-            avis.idLivraison, avis.nbreÉtoiles, avis.message)
-    }
 
-    override fun obtenirTousÉvaluation(): Évaluation {
-        TODO("Not yet implemented")
-    }
+
+
+
+
 
 
     private fun mapRowToLivraison(rs: ResultSet): Livraison {
