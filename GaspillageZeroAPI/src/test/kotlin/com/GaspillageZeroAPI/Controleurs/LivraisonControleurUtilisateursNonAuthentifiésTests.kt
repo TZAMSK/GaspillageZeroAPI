@@ -1,7 +1,6 @@
 package com.GaspillageZeroAPI.Controleurs
 
 import com.GaspillageZeroAPI.Exceptions.ExceptionRessourceIntrouvable
-import com.GaspillageZeroAPI.Exceptions.GabaritProduitIntrouvableException
 import com.GaspillageZeroAPI.Exceptions.LivraisonIntrouvableException
 import com.GaspillageZeroAPI.Modèle.Livraison
 import com.GaspillageZeroAPI.Modèle.Évaluation
@@ -19,14 +18,13 @@ import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.*
 import org.springframework.http.MediaType
-import org.springframework.security.test.context.support.WithMockUser
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers
 
 @SpringBootTest
 @AutoConfigureMockMvc
-class LivraisonControleurTest {
+class LivraisonControleurUtilisateursNonAuthentifiésTests {
 
     @MockBean
     lateinit var service: LivraisonService
@@ -97,7 +95,7 @@ class LivraisonControleurTest {
 
     @Test
     //@GetMapping("/utilisateur/{code_utilisateur}/commande/{idCommande}/livraisons/{codeLivraison}")
-    fun `Étant donnée une livraison dont le code est '2', lorsqu'on effectue une requête GET de recherche par code alors on obtient un code de retour 200`() {
+    fun `Étant donnée une livraison dont le code est '2', lorsqu'un utilisateur non-authentifié effectue une requête GET de recherche par code alors on obtient un code de retour 200`() {
         Mockito.`when`(service.obtenirLivraisonParCode(2)).thenReturn(livraison)
 
         mockMvc.perform(get("/utilisateur/2/commande/2/livraisons/2"))

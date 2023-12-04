@@ -23,7 +23,7 @@ class CommandeDAOImpl(private val jdbcTemplate: JdbcTemplate): CommandeDAO {
         var commande: Commande? = null
 
         try {
-            commande = jdbcTemplate.queryForObject<Commande>("SELECT * FROM commande WHERE code=?", arrayOf(idCommande)){ resultat, _ ->
+            commande = jdbcTemplate.queryForObject<Commande>("SELECT * FROM commande WHERE code=?", arrayOf(idCommande)) { resultat, _ ->
                 mapRowToCommande(resultat)
             }
         }catch (e: Exception){}
@@ -55,10 +55,6 @@ class CommandeDAOImpl(private val jdbcTemplate: JdbcTemplate): CommandeDAO {
         return commandesParÉpicerie
     }
 
-    override fun chercherCommandeParUtilisateur(idUtilisateur: Int, idCommande: Int): Commande? = SourceDonnées.commandes.find{it.idUtilisateur == idUtilisateur && it.idCommande == idCommande}
-
-    override fun chercherCommandeParÉpicerie(idÉpicerie: Int, idCommande: Int): Commande? = SourceDonnées.commandes.find{it.idÉpicerie == idÉpicerie && it.idCommande == idCommande}
-
     private fun obtenireProchaineIncrementationIDCommande(): Int?{
         return jdbcTemplate.queryForObject("SELECT `auto_increment` FROM INFORMATION_SCHEMA.TABLES\n" +
                 "WHERE table_name = 'commande'") { resultat, _ ->
@@ -66,17 +62,19 @@ class CommandeDAOImpl(private val jdbcTemplate: JdbcTemplate): CommandeDAO {
         }
     }
 
+
+
+
     override fun ajouter(commande: Commande): Commande? {
         val id = obtenireProchaineIncrementationIDCommande()
         try {
             jdbcTemplate.update("INSERT INTO commande(épicerie_id, utilisateur_code) VALUES (?, ?)",
-                    commande.idÉpicerie, commande.idUtilisateur)
+                    commande.épicerie?.idÉpicerie, commande.utilisateur?.code)
             for(itemPanier in commande.panier){
-                jdbcTemplate.update("INSERT INTO commande_produits(commande_code, produit_id, quantité) values(?,?,?)",
-                        id, itemPanier.produit, itemPanier.quantité)
+                jdbcTemplate.update("INSERT INTO commande_produits(commande_code, produit_id, quantité) values((select code from commande order by code desc limit 1),?,?)",
+                        itemPanier.produit.idProduit, itemPanier.quantité)
             }
         }catch (e: Exception){ throw e }
-        SourceDonnées.commandes.add(commande)
         if(id!=null){
             return chercherParCode(id)
         }else{
@@ -100,10 +98,10 @@ class CommandeDAOImpl(private val jdbcTemplate: JdbcTemplate): CommandeDAO {
     override fun modifier(idCommande: Int, commande: Commande): Commande? {
         try{
             jdbcTemplate.update("UPDATE commande SET épicerie_id=?, utilisateur_code=? WHERE code=?",
-                    commande.idÉpicerie, commande.idUtilisateur, idCommande)
+                    commande.épicerie?.idÉpicerie, commande.utilisateur?.code, idCommande)
             for(itemPanier in commande.panier){
                 jdbcTemplate.update("UPDATE commande_produits SET  quantité=? WHERE commande_code=? AND produit_id=?",
-                        itemPanier.quantité, idCommande, itemPanier.produit)
+                        itemPanier.quantité, idCommande, itemPanier.produit.idProduit)
             }
         }catch (e: Exception){throw e}
         return commande
@@ -111,29 +109,47 @@ class CommandeDAOImpl(private val jdbcTemplate: JdbcTemplate): CommandeDAO {
 
     fun chercherItemsPanierParCodeCommande(code: Int): MutableList<ItemsPanier>?{
         var panier: MutableList<ItemsPanier>? = null
-
         try{
-            panier = jdbcTemplate.query("SELECT produit_id, quantité FROM commande_produits WHERE commande_code=?", arrayOf(code)) {resultat, _ ->
+            panier = jdbcTemplate.query("select produits.id, produits.nom, produits.date_expiration, produits.quantité, produits.prix, produits.idÉpicerie, produits.idGabarit from commande_produits join produits on commande_produits.produit_id = produits.id where commande_code = ?", arrayOf(code) ) {resultat, _ ->
                 mapRowToItemPanier(resultat)
             }
         }catch (e: Exception){}
-
         return panier
     }
 
     private fun mapRowToCommande(resultat: ResultSet): Commande {
-        return Commande(
+        val épicerieDAO = ÉpicerieDAOImpl(jdbcTemplate)
+        val utilisateurDAO = UtilisateurDAOImpl(jdbcTemplate)
+
+        val commande = Commande(
                 resultat.getInt("code"),
-                resultat.getInt("épicerie_id"),
-                resultat.getInt("utilisateur_code"),
+                épicerieDAO.chercherParCode(resultat.getInt("épicerie_id")),
+                utilisateurDAO.chercherParCode(resultat.getInt("utilisateur_code")),
                 chercherItemsPanierParCodeCommande(resultat.getInt("code")) ?: mutableListOf()
         )
+        return commande
     }
 
-    private fun mapRowToItemPanier(resultat: ResultSet):ItemsPanier{
-        return ItemsPanier(
-                resultat.getInt("produit_id"),
-                resultat.getInt("quantité")
+    private fun mapRowToItemPanier(resultat: ResultSet):ItemsPanier? {
+        var itemPanier: ItemsPanier? = null
+        val épicerieDAO = ÉpicerieDAOImpl(jdbcTemplate)
+        val gabaritProduitDAO = GabaritProduitDAOImpl(jdbcTemplate)
+
+        itemPanier  = ItemsPanier(
+            Produit(
+                    resultat.getInt("id"),
+                    resultat.getString("nom"),
+                    resultat.getDate("date_expiration"),
+                    resultat.getInt("quantité"),
+                    resultat.getDouble("prix"),
+                    épicerieDAO.chercherParCode(resultat.getInt("idÉpicerie")),
+                    gabaritProduitDAO.chercherParCode(resultat.getInt("idGabarit"))
+            ),
+            resultat.getInt("quantité")
         )
+
+        print(itemPanier)
+        return itemPanier
     }
+
 }

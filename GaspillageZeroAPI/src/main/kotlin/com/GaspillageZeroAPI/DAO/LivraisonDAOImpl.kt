@@ -1,5 +1,6 @@
 package com.GaspillageZeroAPI.DAO
 
+import com.GaspillageZeroAPI.Exceptions.ExceptionErreurServeur
 import com.GaspillageZeroAPI.Exceptions.ExceptionRessourceIntrouvable
 import com.GaspillageZeroAPI.Modèle.Commande
 import com.GaspillageZeroAPI.Modèle.GabaritProduit
@@ -20,11 +21,12 @@ class LivraisonDAOImpl(val jdbcTemplate: JdbcTemplate): LivraisonDAO {
 
     override fun chercherParCode(code: Int): Livraison? {
 
-        return jdbcTemplate.queryForObject<Livraison>(
-            "SELECT * FROM Livraison WHERE code = ?",
-            arrayOf(code)
-        ) { rs, _ ->
-            mapRowToLivraison(rs)
+        return try {
+            jdbcTemplate.queryForObject("SELECT * FROM Livraison WHERE code = ?", arrayOf(code)) { rs, _ ->
+                mapRowToLivraison(rs)
+            }
+        } catch (e: java.lang.Exception) {
+            throw ExceptionErreurServeur("Erreur lors de la recherche de la livraison avec l'ID $code: ${e.message}")
         }
     }
 
@@ -40,12 +42,10 @@ class LivraisonDAOImpl(val jdbcTemplate: JdbcTemplate): LivraisonDAO {
         try {
             jdbcTemplate.update("INSERT INTO Livraison(code, commande_code, utilisateur_code, adresse_id) VALUES (?, ?, ?, ?)",
             id, livraison.commande_code, livraison.utilisateur_code, livraison.adresse_id)
-        } catch (e:Exception){ throw e }
-        if(id != null && id != 0){
-            return chercherParCode(id)
-        } else {
-            return null
+        } catch (e:Exception){
+            throw ExceptionErreurServeur("Erreur lors de l'ajout de la livraison: ${e.message}")
         }
+        return id?.let { chercherParCode(it) }
     }
 
     override fun modifier(code: Int, livraison: Livraison): Livraison? {
@@ -53,8 +53,9 @@ class LivraisonDAOImpl(val jdbcTemplate: JdbcTemplate): LivraisonDAO {
             jdbcTemplate.update(
                 "UPDATE Livraison SET commande_code = ?, utilisateur_code = ?, adresse_id = ? WHERE code = ?",
                 livraison.commande_code, livraison.utilisateur_code, livraison.adresse_id, code)
-        } catch (e:Exception){throw e}
-
+        }catch (e: Exception) {
+            throw ExceptionErreurServeur("Erreur lors de la modification de la livraison avec l'ID $code: ${e.message}")
+        }
         return livraison
     }
     //override fun chercherLivraisonParÉvaluation(idÉvaluation: Int, idLivrainson: Int): Évaluation? = SourceDonnées.avis.find{it.idÉvaluation == idÉvaluation && it.idLivraison == idLivrainson}
@@ -65,7 +66,8 @@ class LivraisonDAOImpl(val jdbcTemplate: JdbcTemplate): LivraisonDAO {
         }
         try{
             jdbcTemplate.update("DELETE FROM Livraison WHERE code = ?", code)
-        } catch (e:Exception){throw e}
+        } catch (e:Exception){throw ExceptionErreurServeur("Erreur lors de la suppression de la livraison avec l'ID $code: ${e.message}")
+        }
 
         return null
     }
