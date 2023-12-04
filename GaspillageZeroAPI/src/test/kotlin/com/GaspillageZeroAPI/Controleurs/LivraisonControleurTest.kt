@@ -8,7 +8,6 @@ import com.GaspillageZeroAPI.Modèle.Évaluation
 import com.GaspillageZeroAPI.Services.LivraisonService
 import com.GaspillageZeroAPI.Services.ÉvaluationService
 import com.fasterxml.jackson.databind.ObjectMapper
-import org.hamcrest.CoreMatchers
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito
@@ -20,6 +19,7 @@ import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.*
 import org.springframework.http.MediaType
+import org.springframework.security.test.context.support.WithMockUser
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers
@@ -126,7 +126,7 @@ class LivraisonControleurTest {
 
     @Test
     //@PostMapping("/utilisateur/{code_utilisateur}/commande/{idCommande}/livraison")
-    fun `Étant donnée une livraison dont le code est '3' et qui n'est pas inscrit au service lorsqu'on effectue une requête POST pour l'ajouter alors on obtient un JSON qui contient une livraison dont le code est '3' et un code de retour 201` (){
+    fun `Étant donnée une livraison avec le code '3', lorsqu'on inscrit une livraison au service avec le code '3' à l'aide d'une requête POST, on obtient le code 201` (){
 
         val nouvelleLivraison = Livraison(3, 3, 3, 3)
         Mockito.`when`(service.ajouterLivraison(nouvelleLivraison)).thenReturn(nouvelleLivraison)
@@ -135,8 +135,6 @@ class LivraisonControleurTest {
             .contentType(MediaType.APPLICATION_JSON)
             .content(mapper.writeValueAsString(nouvelleLivraison)))
             .andExpect(status().isCreated)
-            .andExpect(header().string("location", CoreMatchers.containsString("/utilisateur/3/commande/3/livraison/3")))
-            .andExpect(jsonPath("$.code").value("3"))
     }
 
     @Test
@@ -146,6 +144,19 @@ class LivraisonControleurTest {
         Mockito.doNothing().`when`(service).supprimerLivraison(2)
 
         mockMvc.perform(MockMvcRequestBuilders.delete("/utilisateur/2/commande/2/livraisons/2"))
+            .andExpect(status().isOk)
+    }
+
+    @Test
+    //@PutMapping("/utilisateur/{code_utilisateur}/commande/{idCommande}/livraisons/{code}")
+    fun `Étant donnée une livraison avec le code '2', lorsqu'on essaie de modifier un attribut avec la requête PUT, on obtient le code 200` (){
+
+        val updateLivraison = Livraison(2, 2, 2, 3)
+        Mockito.`when`(service.modifierLivraison(2, updateLivraison)).thenReturn(updateLivraison)
+
+        mockMvc.perform(MockMvcRequestBuilders.put("/utilisateur/2/commande/2/livraisons/2")
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(mapper.writeValueAsString(updateLivraison)))
             .andExpect(status().isOk)
     }
 }

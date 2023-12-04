@@ -147,6 +147,4 @@ class CommandeControleurTest {
                     assertEquals("La commande avec le code 4 est introuvable", result.resolvedException?.message)
                 }
     }
-
-
 }

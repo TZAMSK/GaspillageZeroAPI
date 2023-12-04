@@ -20,15 +20,18 @@ class LivraisonDAOImpl(val jdbcTemplate: JdbcTemplate): LivraisonDAO {
 
     override fun chercherParCode(code: Int): Livraison? {
 
-        return jdbcTemplate.queryForObject<Livraison>("SELECT * FROM Livraison WHERE code = ?", arrayOf(code)) { rs, _ ->
+        return jdbcTemplate.queryForObject<Livraison>(
+            "SELECT * FROM Livraison WHERE code = ?",
+            arrayOf(code)
+        ) { rs, _ ->
             mapRowToLivraison(rs)
         }
     }
 
     private fun obtenirProchaineIncrementationIDLivraison(): Int? {
-        return jdbcTemplate.queryForObject("SELECT auto_increment FROM INFORMATION_SCHEMA.TABLES WHERE table_schema = 'gaspillagealimentaire' AND table_name = 'livraison'")
+        return jdbcTemplate.queryForObject("SELECT COALESCE(MAX(code), 0) + 1 AS max_code FROM Livraison")
         { resultat, _ ->
-            resultat.getInt("auto_increment")
+            resultat.getInt("max_code")
         }
     }
 
@@ -38,8 +41,7 @@ class LivraisonDAOImpl(val jdbcTemplate: JdbcTemplate): LivraisonDAO {
             jdbcTemplate.update("INSERT INTO Livraison(code, commande_code, utilisateur_code, adresse_id) VALUES (?, ?, ?, ?)",
             id, livraison.commande_code, livraison.utilisateur_code, livraison.adresse_id)
         } catch (e:Exception){ throw e }
-            SourceDonnées.livraison.add(livraison)
-        if(id != null){
+        if(id != null && id != 0){
             return chercherParCode(id)
         } else {
             return null

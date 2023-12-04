@@ -27,21 +27,11 @@ class LivraisonControleur (val livraisonService: LivraisonService, val commandeS
 
     //Pour accéder à la documentation OpenApi, visitez le lien suivant pour en savoir plus : http://localhost:8080/swagger-ui/index.html
 
-
-
-
-
-
-
-
     @GetMapping("/evaluations")
     @Operation(summary = "Obtenir la liste des évaluations")
     @ApiResponse(responseCode = "200", description = "Liste des évaluations trouvées")
     @ApiResponse(responseCode = "404", description = "Liste des évaluations non-trouvées, veuillez réessayez...")
     fun obtenirTousÉvalutions() = évaluationService.obtenirÉvaluations()
-
-
-
 
     @GetMapping("/evaluations/{code}")
     @Operation(summary = "Obtenir une évaluation en cherchant par code")
@@ -72,7 +62,6 @@ class LivraisonControleur (val livraisonService: LivraisonService, val commandeS
         }
     }
 
-
     @GetMapping("/utilisateur/{code_utilisateur}/commande/{idCommande}/livraisons/{codeLivraison}")
     @Operation(summary = "Obtenir une livraison en cherchant par code")
     @ApiResponse(responseCode = "200", description = "Livraison trouvée")
@@ -81,7 +70,6 @@ class LivraisonControleur (val livraisonService: LivraisonService, val commandeS
                                 @PathVariable idCommande: Int, @PathVariable codeLivraison: Int) =
 
         livraisonService.obtenirLivraisonParCode(codeLivraison) ?: throw ExceptionRessourceIntrouvable("La livraison avec le code $codeLivraison est invalide.")
-
 
     @PostMapping("/utilisateur/{code_utilisateur}/commande/{idCommande}/livraison")
     @Operation(summary = "Ajouté une livraison")
@@ -116,8 +104,4 @@ class LivraisonControleur (val livraisonService: LivraisonService, val commandeS
     fun supprimerLivraison(@PathVariable code: Int) {
         livraisonService.supprimerLivraison(code)
     }
-
-
-
-
 }
