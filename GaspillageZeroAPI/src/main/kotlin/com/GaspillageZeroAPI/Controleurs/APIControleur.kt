@@ -12,7 +12,7 @@ class APIControleur {
     @GetMapping("/")
     fun index() = "Service web du service de GaspillageZero"
 
-    @GetMapping("/utilisateur")
+    @GetMapping("/WhoIsUtilisateur")
     fun lireUtilisateur(principal: Principal?): String?{
         if (principal != null){
             return "Bonjour, " + principal.name
