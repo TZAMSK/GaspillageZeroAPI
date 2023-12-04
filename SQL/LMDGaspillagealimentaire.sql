@@ -31,7 +31,7 @@ values  ("tomate de la ferme Rosemont", "2023-11-20 23:59:59", 33, 1.2, 1, 1),
 
 insert into commande (épicerie_id, utilisateur_code)
 values  (1, 4),
-		(1, 3),
+		(2, 3),
 		(1, 4);
 
 insert into commande_produits(commande_code, produit_id, quantité)
