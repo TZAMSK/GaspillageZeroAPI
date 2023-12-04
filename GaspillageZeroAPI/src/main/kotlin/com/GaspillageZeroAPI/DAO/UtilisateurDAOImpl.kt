@@ -68,6 +68,17 @@ class UtilisateurDAOImpl(private val jdbcTemplate: JdbcTemplate): UtilisateurDAO
         }
         return utilisateur
     }
+
+    override fun validerUtilisateur(code_utilisateur: Int, code_courant: String?): Boolean {
+        val utilisateur = chercherParCode(code_utilisateur)
+
+        if(utilisateur?.tokenAuth0 == code_courant){
+            return true
+        }else{
+            return false
+        }
+    }
+
     private fun mapRowToUtilisateur(rs: ResultSet): Utilisateur {
         val adresseDAO = AdresseDAOImpl(jdbcTemplate)
 
@@ -78,7 +89,11 @@ class UtilisateurDAOImpl(private val jdbcTemplate: JdbcTemplate): UtilisateurDAO
             courriel = rs.getString("courriel"),
             adresseDAO.chercherParCode(rs.getInt("adresse_id")),
             téléphone = rs.getString("téléphone"),
-            rs.getString("rôle")
+            rs.getString("rôle"),
+            rs.getString("codeAuth")
         )
     }
+
+
+
 }

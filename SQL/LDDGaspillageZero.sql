@@ -21,6 +21,7 @@ create table utilisateur (
 	adresse_id int not null,
 	téléphone varchar(255) not null,
 	rôle  set("client", "livreur", "épicerie") not null,
+	codeAuth VARCHAR(255),
 	constraint fk_utilisateur_adresse_adresse_id foreign key (adresse_id)
 	references adresse(id)
 );
