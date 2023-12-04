@@ -2,11 +2,7 @@ package com.GaspillageZeroAPI.Controleurs
 
 import com.GaspillageZeroAPI.Exceptions.ExceptionRessourceIntrouvable
 import com.GaspillageZeroAPI.Exceptions.LivraisonIntrouvableException
-import com.GaspillageZeroAPI.Exceptions.ProduitIntrouvableException
-import com.GaspillageZeroAPI.Exceptions.ÉpicerieIntrouvableException
-import com.GaspillageZeroAPI.Modèle.Commande
 import com.GaspillageZeroAPI.Modèle.Livraison
-import com.GaspillageZeroAPI.Modèle.Produit
 import com.GaspillageZeroAPI.Modèle.Évaluation
 import com.GaspillageZeroAPI.Services.CommandeService
 import com.GaspillageZeroAPI.Services.LivraisonService
