@@ -9,4 +9,5 @@ interface ÉpicerieDAO: DAO<Épicerie> {
     override fun ajouter(épicerie: Épicerie): Épicerie?
     override fun supprimer(idÉpicerie: Int): Épicerie?
     override fun modifier(idÉpicerie: Int, épicerie: Épicerie): Épicerie?
+    fun validerÉpicerie(code_épicerie: Int, code_courant: String?): Boolean
 }

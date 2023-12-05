@@ -19,7 +19,7 @@ class UtilisateurService(val dao: UtilisateurDAO) {
         if (dao.validerUtilisateur(idUtilisateur, code_util)) {
             dao.modifier(idUtilisateur, utilisateur)
         } else {
-            throw DroitAccèsInsuffisantException("Seuls les gérants du restaurant " + code_util + " peuvent le désinscrire. L'utilisateur " + code_util + " n'est pas inscrit comme gérant du restaurant.")
+            throw DroitAccèsInsuffisantException("Seul l'utilisateur' " + code_util + " peut modifier ses informations.")
         }
         return utilisateur
     }
