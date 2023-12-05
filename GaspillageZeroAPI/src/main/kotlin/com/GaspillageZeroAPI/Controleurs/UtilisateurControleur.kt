@@ -63,7 +63,17 @@ class UtilisateurControleur(val service: UtilisateurService) {
     ])
     @Operation(summary = "Permet de modifier les informations d'un utilisateur")
     @PutMapping("/utilisateur/{idUtilisateur}")
-    fun modifierUtilisateur(@PathVariable idUtilisateur: Int, @RequestBody utilisateur: Utilisateur){
-        service.modifier(idUtilisateur, utilisateur)
+    fun modifierUtilisateur(
+            @PathVariable idUtilisateur: Int,
+            @RequestParam code_util: String,
+            @RequestBody utilisateur: Utilisateur
+    ): ResponseEntity<Utilisateur> {
+        val updatedUtilisateur = service.modifier(idUtilisateur, code_util, utilisateur)
+
+        return if (updatedUtilisateur != null) {
+            ResponseEntity.ok(updatedUtilisateur)
+        } else {
+            ResponseEntity.notFound().build()
+        }
     }
 }
