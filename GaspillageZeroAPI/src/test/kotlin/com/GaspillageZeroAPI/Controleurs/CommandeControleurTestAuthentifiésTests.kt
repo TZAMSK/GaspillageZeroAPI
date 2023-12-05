@@ -1,10 +1,8 @@
 package com.GaspillageZeroAPI.Controleurs
 
+import com.GaspillageZeroAPI.DAO.SourceDonnées
 import com.GaspillageZeroAPI.Exceptions.ExceptionConflitRessourceExistante
 import com.GaspillageZeroAPI.Exceptions.ExceptionRessourceIntrouvable
-import com.GaspillageZeroAPI.Modèle.Commande
-import com.GaspillageZeroAPI.Modèle.ItemsPanier
-import com.GaspillageZeroAPI.Modèle.Produit
 import com.GaspillageZeroAPI.Services.CommandeService
 import com.fasterxml.jackson.databind.ObjectMapper
 import org.junit.jupiter.api.Test
@@ -26,7 +24,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
 
 @SpringBootTest
 @AutoConfigureMockMvc
-class CommandeControleurTest {
+class CommandeControleurTestAuthentifiésTests {
 
     @MockBean
     lateinit var service: CommandeService
@@ -37,15 +35,9 @@ class CommandeControleurTest {
     @Autowired
     private lateinit var mockMvc: MockMvc
 
-    val commande: Commande = Commande(3,1,2, mutableListOf<ItemsPanier>(
-            ItemsPanier(1, 2),
-            ItemsPanier(2, 2),
-            ItemsPanier(4, 3),
-    ))
-
     @Test
     fun `Étant donnée la commande avec le code 3, lorsqu'on éffectue une requète GET avec le id 3 alors on obtient une commande dans un format JSON avec le id 3 et un code 200 `(){
-            Mockito.`when`(service.chercherParCode(3)).thenReturn(commande)
+            Mockito.`when`(service.chercherParCode(3)).thenReturn(SourceDonnées.commandes.get(1))
 
             mockMvc.perform(get("/commande/3"))
                     .andExpect(status().isOk)
@@ -67,11 +59,7 @@ class CommandeControleurTest {
     }
     @Test
     fun `Étant donnée une commande avec le code 4, lorsqu'on ajoute une commande à l'épicerie avec le code 1 l'aide d'une requète POST on obtient le code 201`(){
-        val commandeÀAjouter = Commande(11, 2, 1, mutableListOf<ItemsPanier>(
-                ItemsPanier(5, 3),
-                ItemsPanier(22, 2),
-                ItemsPanier(87, 4),
-        ))
+        val commandeÀAjouter = SourceDonnées.commandes.get(2)
 
         Mockito.`when`(service.ajouter(commandeÀAjouter)).thenReturn(commandeÀAjouter)
 
@@ -85,11 +73,8 @@ class CommandeControleurTest {
 
     @Test
     fun `Étant donnée une commnde avec le code 3 qui existe déjà, lorsqu'on exécute une requête POST, alors on obtient un code d'erreur 409(conflit)`(){
-        val commandeÀAjouter = Commande(11, 2, 1, mutableListOf<ItemsPanier>(
-                ItemsPanier(5, 3),
-                ItemsPanier(22, 2),
-                ItemsPanier(87, 4),
-        ))
+        val commandeÀAjouter = SourceDonnées.commandes.get(2)
+
 
         Mockito.`when`(service.ajouter(commandeÀAjouter)).thenThrow(ExceptionConflitRessourceExistante("La ressource avec ce id ${commandeÀAjouter.idCommande} existe déjà dans la base de données"))
 
@@ -114,10 +99,8 @@ class CommandeControleurTest {
 
     @Test
     fun `Étant donnée une commande avec le code 3, lorsqu'on essaie de modifier un attribut avec la requête PUT, on obtient le code 200`(){
-        val updatedCommand = Commande(3, 1, 2, mutableListOf(
-                ItemsPanier(1, 3),
-                ItemsPanier(2, 3)
-        ))
+        val updatedCommand = SourceDonnées.commandes.get(2)
+
         Mockito.`when`(service.modifier(3, updatedCommand)).thenReturn(updatedCommand)
 
         mockMvc.perform(MockMvcRequestBuilders.put("/commande/3")
@@ -131,10 +114,8 @@ class CommandeControleurTest {
 
     @Test
     fun `Étant donnée une commande avec le code 4 qui n'existe pas, lorsqu'on exécute un requête PUT afin de modifier un attribut on obtient alors un code d'erreur 404`(){
-        val updatedCommand = Commande(4, 1, 2, mutableListOf(
-                ItemsPanier(1, 3),
-                ItemsPanier(2, 3)
-        ))
+        val updatedCommand = SourceDonnées.commandes.get(2)
+
         Mockito.`when`(service.modifier(4, updatedCommand)).thenThrow(ExceptionRessourceIntrouvable("La commande avec le code 4 est introuvable"))
 
         mockMvc.perform(MockMvcRequestBuilders.put("/commande/4")

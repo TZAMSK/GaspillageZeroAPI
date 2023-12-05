@@ -30,15 +30,15 @@ class CommandeService(val dao: CommandeDAO, val utilisateurDAO : UtilisateurDAO,
     // Épicerie
     //fun chercherCommandesParÉpicerie(idÉpicerie: Int): List<Commande>? = dao.chercherCommandesParÉpicerie(idÉpicerie)
 
-    /*
+
     fun chercherCommandesParÉpicerie(idÉpicerie: Int, code_util: String): List<Commande>?{
-        if (épicerieDAO.validerÉpicerie(idÉpicerie, code_util)) {
+        if (utilisateurDAO.validerUtilisateur(épicerieDAO.chercherParCode(idÉpicerie)?.utilisateur?.code ?: 0, code_util)) {
             return dao.chercherCommandesParÉpicerie(idÉpicerie)
         } else {
             throw DroitAccèsInsuffisantException("Seul l'utilisateur " + code_util + " peut chercher ses commandes.")
         }
     }
-     */
+
 
     fun ajouter(commande: Commande): Commande? = dao.ajouter(commande)
 
