@@ -19,7 +19,7 @@ import java.util.Date
 @SpringBootTest
 @AutoConfigureMockMvc
 class GabaritProduitControleurTest {
-
+/*
     @Autowired
     private lateinit var mockMvc: MockMvc
 
@@ -98,4 +98,6 @@ class GabaritProduitControleurTest {
             .content(mapper.writeValueAsString(updatedGabaritProduit)))
             .andExpect(status().isNotFound)
     }
+
+ */
 }

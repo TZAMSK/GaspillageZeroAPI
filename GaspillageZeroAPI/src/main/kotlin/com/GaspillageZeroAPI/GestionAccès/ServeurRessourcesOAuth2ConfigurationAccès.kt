@@ -26,9 +26,13 @@ class ServeurRessourcesOAuth2ConfigurationAccès {
     @Bean
     fun filterChain(http: HttpSecurity): SecurityFilterChain {
         http {
+            csrf { disable() }
             authorizeHttpRequests {
                 authorize("/", permitAll)
                 authorize(HttpMethod.GET, "/**", permitAll)
+                authorize(HttpMethod.POST, "/**", authenticated)
+                authorize(HttpMethod.PUT, "/**", authenticated)
+                authorize(HttpMethod.DELETE, "/**", authenticated)
                 authorize(anyRequest, authenticated)
             }
             oauth2ResourceServer {

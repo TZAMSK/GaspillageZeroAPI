@@ -45,7 +45,7 @@ class LivraisonDAOImpl(val jdbcTemplate: JdbcTemplate): LivraisonDAO {
         } catch (e:Exception){
             throw ExceptionErreurServeur("Erreur lors de l'ajout de la livraison: ${e.message}")
         }
-        return id?.let { chercherParCode(it) }
+        return livraison
     }
 
     override fun modifier(code: Int, livraison: Livraison): Livraison? {
@@ -66,11 +66,12 @@ class LivraisonDAOImpl(val jdbcTemplate: JdbcTemplate): LivraisonDAO {
         }
         try{
             jdbcTemplate.update("DELETE FROM Livraison WHERE code = ?", code)
-        } catch (e:Exception){throw ExceptionErreurServeur("Erreur lors de la suppression de la livraison avec l'ID $code: ${e.message}")
+        } catch (e:Exception){
+            throw ExceptionErreurServeur("Erreur lors de la suppression de la livraison avec l'ID $code: ${e.message}")
         }
 
         return null
-    }
+}
 
 
 

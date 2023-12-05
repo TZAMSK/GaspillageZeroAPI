@@ -15,9 +15,7 @@ class LivraisonService (val livraisonDAO: LivraisonDAO){
         return livraisonDAO.chercherParCode(code)
     }
 
-    fun ajouterLivraison(livraison: Livraison): Livraison? {
-        return livraisonDAO.ajouter(livraison)
-    }
+    fun ajouterLivraison(livraison: Livraison): Livraison? = livraisonDAO.ajouter(livraison)
 
     fun modifierLivraison(code: Int, livraison: Livraison): Livraison? {
         return livraisonDAO.modifier(code, livraison)
@@ -26,6 +24,4 @@ class LivraisonService (val livraisonDAO: LivraisonDAO){
     fun supprimerLivraison(code: Int) {
         livraisonDAO.supprimer(code)
     }
-
-
 }

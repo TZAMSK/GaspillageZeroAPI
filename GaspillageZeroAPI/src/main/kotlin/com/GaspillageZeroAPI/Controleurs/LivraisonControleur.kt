@@ -2,11 +2,7 @@ package com.GaspillageZeroAPI.Controleurs
 
 import com.GaspillageZeroAPI.Exceptions.ExceptionRessourceIntrouvable
 import com.GaspillageZeroAPI.Exceptions.LivraisonIntrouvableException
-import com.GaspillageZeroAPI.Exceptions.ProduitIntrouvableException
-import com.GaspillageZeroAPI.Exceptions.ÉpicerieIntrouvableException
-import com.GaspillageZeroAPI.Modèle.Commande
 import com.GaspillageZeroAPI.Modèle.Livraison
-import com.GaspillageZeroAPI.Modèle.Produit
 import com.GaspillageZeroAPI.Modèle.Évaluation
 import com.GaspillageZeroAPI.Services.CommandeService
 import com.GaspillageZeroAPI.Services.LivraisonService
@@ -16,9 +12,9 @@ import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.responses.ApiResponse
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
-import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder
+import org.springframework.web.util.UriComponentsBuilder
 import java.net.URI
 
 @RestController
@@ -49,18 +45,8 @@ class LivraisonControleur (val livraisonService: LivraisonService, val commandeS
     @Operation(summary = "Obtenir la liste des livraisons")
     @ApiResponse(responseCode = "200", description = "Liste des livraisons trouvées")
     @ApiResponse(responseCode = "404", description = "Liste des livraisons non-trouvées, veuillez réessayez...")
-    fun obtenirLivraisons(@PathVariable codeUtilisateur: Int, @PathVariable idÉpicerie: Int,
-                          @PathVariable idCommande: Int): ResponseEntity<List<Livraison>> {
-        val utilisateur = utilisateurService.chercherParCode(codeUtilisateur)
-        val commande = commandeService.chercherParCode(idCommande)
-
-        return if (utilisateur != null && commande != null) {
-            val livraisons = livraisonService.obtenirLivraisons()
-            ResponseEntity.status(HttpStatus.OK).body(livraisons)
-        } else {
-            ResponseEntity.status(HttpStatus.NOT_FOUND).build()
-        }
-    }
+    fun obtenirLivraisons(@PathVariable code_utilisateur: Int,
+                          @PathVariable idCommande: Int) = livraisonService.obtenirLivraisons()
 
     @GetMapping("/utilisateur/{code_utilisateur}/commande/{idCommande}/livraisons/{codeLivraison}")
     @Operation(summary = "Obtenir une livraison en cherchant par code")
@@ -75,19 +61,25 @@ class LivraisonControleur (val livraisonService: LivraisonService, val commandeS
     @Operation(summary = "Ajouté une livraison")
     @ApiResponse(responseCode = "201", description = "La livraison a été ajouté avec succès!")
     fun inscrireLivraison(@PathVariable code_utilisateur: Int,
-        @PathVariable idCommande: Int, @RequestBody livraison: Livraison): ResponseEntity<Livraison> {
-        val livraison = livraisonService.ajouterLivraison(livraison)
+        @PathVariable idCommande: Int, @RequestBody livraison: Livraison,
+                          uriComponentsBuilder: UriComponentsBuilder) : ResponseEntity<Livraison> {
+        try {
+            return if (livraison != null) {
+                val nouvelleLivraison = livraisonService.ajouterLivraison(livraison)
 
-        if(livraison != null) {
-            val location: URI = ServletUriComponentsBuilder
-                .fromCurrentRequest()
-                .path("/{code}")
-                .buildAndExpand(livraison.code)
-                .toUri()
-            return ResponseEntity.created(location).body(livraison)
+                val location: URI = ServletUriComponentsBuilder
+                    .fromCurrentRequest()
+                    .path("/utilisateur/{code_utilisateur}/commande/{idCommande}/livraisons/{codeLivraison}")
+                    .buildAndExpand(code_utilisateur, idCommande, livraison.code)
+                    .toUri()
+
+                ResponseEntity.created(location).body(nouvelleLivraison)
+            } else {
+                ResponseEntity.status(HttpStatus.BAD_REQUEST).build()
+            }
+        } catch (e: Exception) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build()
         }
-
-        return ResponseEntity.internalServerError().build()
     }
 
     @PutMapping("/utilisateur/{code_utilisateur}/commande/{idCommande}/livraisons/{code}")

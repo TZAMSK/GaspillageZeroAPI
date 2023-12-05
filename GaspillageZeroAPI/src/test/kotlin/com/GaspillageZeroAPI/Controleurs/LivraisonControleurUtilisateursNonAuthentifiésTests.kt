@@ -18,6 +18,7 @@ import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.*
 import org.springframework.http.MediaType
+import org.springframework.security.test.context.support.WithMockUser
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers
@@ -120,19 +121,6 @@ class LivraisonControleurUtilisateursNonAuthentifiésTests {
                     résultat.resolvedException?.message
                 )
             }
-    }
-
-    @Test
-    //@PostMapping("/utilisateur/{code_utilisateur}/commande/{idCommande}/livraison")
-    fun `Étant donnée une livraison avec le code '3', lorsqu'on inscrit une livraison au service avec le code '3' à l'aide d'une requête POST, on obtient le code 201` (){
-
-        val nouvelleLivraison = Livraison(3, 3, 3, 3)
-        Mockito.`when`(service.ajouterLivraison(nouvelleLivraison)).thenReturn(nouvelleLivraison)
-
-        mockMvc.perform(post("/utilisateur/3/commande/3/livraison")
-            .contentType(MediaType.APPLICATION_JSON)
-            .content(mapper.writeValueAsString(nouvelleLivraison)))
-            .andExpect(status().isCreated)
     }
 
     @Test

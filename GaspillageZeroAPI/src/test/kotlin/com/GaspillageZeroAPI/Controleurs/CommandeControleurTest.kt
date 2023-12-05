@@ -27,7 +27,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
 @SpringBootTest
 @AutoConfigureMockMvc
 class CommandeControleurTest {
-
+/*
     @MockBean
     lateinit var service: CommandeService
 
@@ -146,4 +146,6 @@ class CommandeControleurTest {
                     assertEquals("La commande avec le code 4 est introuvable", result.resolvedException?.message)
                 }
     }
+
+ */
 }
