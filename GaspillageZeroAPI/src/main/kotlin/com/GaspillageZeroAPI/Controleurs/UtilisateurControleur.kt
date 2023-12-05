@@ -1,5 +1,6 @@
 package com.GaspillageZeroAPI.Controleurs
 
+import com.GaspillageZeroAPI.Exceptions.ExceptionAuthentification
 import com.GaspillageZeroAPI.Exceptions.ExceptionRessourceIntrouvable
 import com.GaspillageZeroAPI.Modèle.Utilisateur
 import com.GaspillageZeroAPI.Services.UtilisateurService
@@ -10,6 +11,7 @@ import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder
 import java.net.URI
+import java.security.Principal
 
 @RestController
 class UtilisateurControleur(val service: UtilisateurService) {
@@ -65,10 +67,14 @@ class UtilisateurControleur(val service: UtilisateurService) {
     @PutMapping("/utilisateur/{idUtilisateur}")
     fun modifierUtilisateur(
             @PathVariable idUtilisateur: Int,
-            @RequestParam code_util: String,
+            code_util: Principal?,
             @RequestBody utilisateur: Utilisateur
     ): ResponseEntity<Utilisateur> {
-        val updatedUtilisateur = service.modifier(idUtilisateur, code_util, utilisateur)
+        if(code_util == null){
+            throw ExceptionAuthentification("L'utilisateur doit être authentifié pour pouvoir modifier")
+        }
+
+        val updatedUtilisateur = service.modifier(idUtilisateur, code_util.name, utilisateur)
 
         return if (updatedUtilisateur != null) {
             ResponseEntity.ok(updatedUtilisateur)

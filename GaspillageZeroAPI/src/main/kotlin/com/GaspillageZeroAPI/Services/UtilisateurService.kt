@@ -2,9 +2,11 @@ package com.GaspillageZeroAPI.Services
 
 import com.GaspillageZeroAPI.DAO.UtilisateurDAO
 import com.GaspillageZeroAPI.Exceptions.DroitAccèsInsuffisantException
+import com.GaspillageZeroAPI.Exceptions.ExceptionAuthentification
 import com.GaspillageZeroAPI.Modèle.Utilisateur
 import com.GaspillageZeroAPI.Modèle.UtilisateursTable
 import org.springframework.stereotype.Service
+import java.security.Principal
 
 @Service
 class UtilisateurService(val dao: UtilisateurDAO) {
@@ -16,6 +18,7 @@ class UtilisateurService(val dao: UtilisateurDAO) {
     //fun modifier(idUtilisateur: Int, utilisateur: Utilisateur): Utilisateur? = dao.modifier(idUtilisateur, utilisateur)
 
     fun modifier(idUtilisateur: Int, code_util: String, utilisateur: Utilisateur): Utilisateur?{
+
         if (dao.validerUtilisateur(idUtilisateur, code_util)) {
             dao.modifier(idUtilisateur, utilisateur)
         } else {
