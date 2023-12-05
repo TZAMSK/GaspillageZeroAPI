@@ -46,6 +46,7 @@ class CommandeControleur(val service: CommandeService) {
         }
     }
 
+    /*
     @ApiResponses(value = [
         ApiResponse(responseCode = "200", description = "Commande trouvée"),
         ApiResponse(responseCode = "404", description = "commande non trouvé")
@@ -64,6 +65,8 @@ class CommandeControleur(val service: CommandeService) {
             ResponseEntity.notFound().build()
         }
     }
+     */
+
 
     @ApiResponses(value = [
         ApiResponse(responseCode = "201", description = "La commande à été ajouter à la base de données"),
