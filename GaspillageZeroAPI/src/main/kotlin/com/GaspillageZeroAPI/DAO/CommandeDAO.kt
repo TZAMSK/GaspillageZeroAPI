@@ -10,6 +10,6 @@ interface CommandeDAO : DAO<Commande> {
     override fun supprimer(idCommande: Int): Commande?
 
     fun chercherCommandesParUtilisateur(idUtilisateur: Int): List<Commande>?
-    fun chercherCommandesParÉpicerie(idÉpicerie: Int): List<Commande>?
+    //fun chercherCommandesParÉpicerie(idÉpicerie: Int): List<Commande>?
 
 }

@@ -31,18 +31,42 @@ class CommandeControleur(val service: CommandeService) {
         ApiResponse(responseCode = "200", description = "Commande trouvée"),
         ApiResponse(responseCode = "404", description = "commande non trouvé")
     ])
-
-    @Operation(summary = "Permet d'ajouter une commande à la BD")
+    @Operation(summary = "Permet d'obtenir toutes les commande faites pour l'utlisateur ayant le {idUtilisateur}")
     @GetMapping("/utilisateur/{idUtilisateur}/commandes/")
-    fun obtenirCommandesParUtilisateur(@PathVariable idUtilisateur: Int) = service.chercherCommandesParUtilisateur(idUtilisateur) ?: throw ExceptionRessourceIntrouvable("Les commandes de l'utilisateur avec le code $idUtilisateur sont introuvables")
+    fun obtenirCommandesParUtilisateur(
+            @PathVariable idUtilisateur: Int,
+            @RequestParam code_util: String
+    ): ResponseEntity<List<Commande>> {
+        val commandes = service.chercherCommandesParUtilisateur(idUtilisateur, code_util)
 
+        return if (commandes != null && commandes.isNotEmpty()) {
+            ResponseEntity.ok(commandes)
+        } else {
+            ResponseEntity.notFound().build()
+        }
+    }
+
+    /*
     @ApiResponses(value = [
         ApiResponse(responseCode = "200", description = "Commande trouvée"),
         ApiResponse(responseCode = "404", description = "commande non trouvé")
     ])
     @Operation(summary = "Permet d'obtenir toutes les commande faites pour une épicerie ayant le {idÉpicerie}")
     @GetMapping("/épicerie/{idÉpicerie}/commandes")
-    fun obtenirCommandesParÉpicerie(@PathVariable idÉpicerie: Int) = service.chercherCommandesParÉpicerie(idÉpicerie) ?: throw ExceptionRessourceIntrouvable("Les commandes de l'épicerie avec le id $idÉpicerie sont introuvables")
+    fun obtenirCommandesParÉpicerie(
+            @PathVariable idÉpicerie: Int,
+            @RequestParam code_util: String
+    ): ResponseEntity<List<Commande>> {
+        val commandes = service.chercherCommandesParÉpicerie(idÉpicerie, code_util)
+
+        return if (commandes != null && commandes.isNotEmpty()) {
+            ResponseEntity.ok(commandes)
+        } else {
+            ResponseEntity.notFound().build()
+        }
+    }
+     */
+
 
     @ApiResponses(value = [
         ApiResponse(responseCode = "201", description = "La commande à été ajouter à la base de données"),

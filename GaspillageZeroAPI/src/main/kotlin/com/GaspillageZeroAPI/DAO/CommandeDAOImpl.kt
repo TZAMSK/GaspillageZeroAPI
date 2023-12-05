@@ -43,6 +43,7 @@ class CommandeDAOImpl(private val jdbcTemplate: JdbcTemplate): CommandeDAO {
         return commandesParUtilisateur
     }
 
+    /*
     override fun chercherCommandesParÉpicerie(idÉpicerie: Int): List<Commande>?{
         var commandesParÉpicerie: List<Commande>? = null
 
@@ -54,6 +55,8 @@ class CommandeDAOImpl(private val jdbcTemplate: JdbcTemplate): CommandeDAO {
 
         return commandesParÉpicerie
     }
+     */
+
 
     private fun obtenireProchaineIncrementationIDCommande(): Int?{
         return jdbcTemplate.queryForObject("SELECT `auto_increment` FROM INFORMATION_SCHEMA.TABLES\n" +
