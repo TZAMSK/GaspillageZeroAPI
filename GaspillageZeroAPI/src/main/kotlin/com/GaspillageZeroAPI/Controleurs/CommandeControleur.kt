@@ -1,5 +1,6 @@
 package com.GaspillageZeroAPI.Controleurs
 
+import com.GaspillageZeroAPI.Exceptions.ExceptionAuthentification
 import com.GaspillageZeroAPI.Exceptions.ExceptionRessourceIntrouvable
 import com.GaspillageZeroAPI.Modèle.Adresse
 import com.GaspillageZeroAPI.Modèle.Commande
@@ -10,6 +11,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder
+import java.lang.Exception
 import java.net.URI
 import java.security.Principal
 
@@ -54,8 +56,13 @@ class CommandeControleur(val service: CommandeService) {
     ])
     @Operation(summary = "Permet d'obtenir toutes les commande faites pour une épicerie ayant le {idÉpicerie}")
     @GetMapping("/épicerie/{idÉpicerie}/commandes")
-    fun obtenirCommandesParÉpicerie(@PathVariable idÉpicerie: Int, principal: Principal): ResponseEntity<List<Commande>> {
+    fun obtenirCommandesParÉpicerie(@PathVariable idÉpicerie: Int, principal: Principal?): ResponseEntity<List<Commande>> {
+        if(principal == null){
+            throw ExceptionAuthentification("Vous devez vous authentifier")
+        }
+
         val commandes = service.chercherCommandesParÉpicerie(idÉpicerie, principal.name)
+
 
         return if (commandes != null && commandes.isNotEmpty()) {
             ResponseEntity.ok(commandes)
