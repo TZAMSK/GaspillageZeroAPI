@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder
 import java.net.URI
+import java.security.Principal
 
 @RestController
 class CommandeControleur(val service: CommandeService) {
@@ -46,18 +47,15 @@ class CommandeControleur(val service: CommandeService) {
         }
     }
 
-    /*
+
     @ApiResponses(value = [
         ApiResponse(responseCode = "200", description = "Commande trouvée"),
         ApiResponse(responseCode = "404", description = "commande non trouvé")
     ])
     @Operation(summary = "Permet d'obtenir toutes les commande faites pour une épicerie ayant le {idÉpicerie}")
     @GetMapping("/épicerie/{idÉpicerie}/commandes")
-    fun obtenirCommandesParÉpicerie(
-            @PathVariable idÉpicerie: Int,
-            @RequestParam code_util: String
-    ): ResponseEntity<List<Commande>> {
-        val commandes = service.chercherCommandesParÉpicerie(idÉpicerie, code_util)
+    fun obtenirCommandesParÉpicerie(@PathVariable idÉpicerie: Int, principal: Principal): ResponseEntity<List<Commande>> {
+        val commandes = service.chercherCommandesParÉpicerie(idÉpicerie, principal.name)
 
         return if (commandes != null && commandes.isNotEmpty()) {
             ResponseEntity.ok(commandes)
@@ -65,7 +63,7 @@ class CommandeControleur(val service: CommandeService) {
             ResponseEntity.notFound().build()
         }
     }
-     */
+
 
 
     @ApiResponses(value = [
