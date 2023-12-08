@@ -30,6 +30,14 @@ class LivraisonDAOImpl(val jdbcTemplate: JdbcTemplate): LivraisonDAO {
         }
     }
 
+    override fun chercherLivraisonExistanteParCode(code: Int): Int? {
+        return jdbcTemplate.queryForObject(
+                "SELECT EXISTS(SELECT * FROM livraison WHERE code = ?) AS livraisonExistante", arrayOf(code))
+        { rs, _ ->
+                rs.getInt("livraisonExistante")
+        }
+    }
+
     private fun obtenirProchaineIncrementationIDLivraison(): Int? {
         return jdbcTemplate.queryForObject("SELECT COALESCE(MAX(code), 0) + 1 AS max_code FROM Livraison")
         { resultat, _ ->
@@ -71,16 +79,7 @@ class LivraisonDAOImpl(val jdbcTemplate: JdbcTemplate): LivraisonDAO {
         }
 
         return null
-}
-
-
-
-
-
-
-
-
-
+    }
 
     private fun mapRowToLivraison(rs: ResultSet): Livraison {
         return Livraison(

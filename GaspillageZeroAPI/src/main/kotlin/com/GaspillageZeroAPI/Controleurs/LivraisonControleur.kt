@@ -1,5 +1,7 @@
 package com.GaspillageZeroAPI.Controleurs
 
+import com.GaspillageZeroAPI.DAO.LivraisonDAO
+import com.GaspillageZeroAPI.Exceptions.ExceptionConflitRessourceExistante
 import com.GaspillageZeroAPI.Exceptions.ExceptionRessourceIntrouvable
 import com.GaspillageZeroAPI.Exceptions.LivraisonIntrouvableException
 import com.GaspillageZeroAPI.Modèle.Livraison
@@ -18,8 +20,8 @@ import org.springframework.web.util.UriComponentsBuilder
 import java.net.URI
 
 @RestController
-class LivraisonControleur (val livraisonService: LivraisonService, val commandeService: CommandeService,
-                           val utilisateurService: UtilisateurService, val évaluationService : ÉvaluationService) {
+class LivraisonControleur (val livraisonService: LivraisonService, val évaluationService : ÉvaluationService,
+                            val livraisonDAO: LivraisonDAO) {
 
     //Pour accéder à la documentation OpenApi, visitez le lien suivant pour en savoir plus : http://localhost:8080/swagger-ui/index.html
 
@@ -59,26 +61,24 @@ class LivraisonControleur (val livraisonService: LivraisonService, val commandeS
 
     @PostMapping("/utilisateur/{code_utilisateur}/commande/{idCommande}/livraison")
     @Operation(summary = "Ajouté une livraison")
-    @ApiResponse(responseCode = "201", description = "La livraison a été ajouté avec succès!")
+    @ApiResponse(responseCode = "201", description = "Ce code signifie que la livraison a bien été ajouté dans la base de données.")
+    @ApiResponse(responseCode = "409", description = "Ce code est retourné lorsqu'on essaye d'ajouter une livraison qui existe déjà.")
     fun inscrireLivraison(@PathVariable code_utilisateur: Int,
         @PathVariable idCommande: Int, @RequestBody livraison: Livraison,
                           uriComponentsBuilder: UriComponentsBuilder) : ResponseEntity<Livraison> {
-        try {
-            return if (livraison != null) {
-                val nouvelleLivraison = livraisonService.ajouterLivraison(livraison)
+        val livraisonExistante = livraison.code?.let { livraisonService.obtenirLivraisonExistanteParCode(it) }
 
-                val location: URI = ServletUriComponentsBuilder
-                    .fromCurrentRequest()
-                    .path("/utilisateur/{code_utilisateur}/commande/{idCommande}/livraisons/{codeLivraison}")
-                    .buildAndExpand(code_utilisateur, idCommande, livraison.code)
-                    .toUri()
+        return if (livraisonExistante != null) {
+            throw ExceptionConflitRessourceExistante("La livraison avec le numéro de code ${livraison.code} est déjà inscrit au service.")
+        } else {
+            val nouvelleLivraison = livraisonService.ajouterLivraison(livraison)
+            val location: URI = ServletUriComponentsBuilder
+                .fromCurrentRequest()
+                .path("/utilisateur/{code_utilisateur}/commande/{idCommande}/livraisons/{codeLivraison}")
+                .buildAndExpand(code_utilisateur, idCommande, livraison.code)
+                .toUri()
 
-                ResponseEntity.created(location).body(nouvelleLivraison)
-            } else {
-                ResponseEntity.status(HttpStatus.BAD_REQUEST).build()
-            }
-        } catch (e: Exception) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build()
+            ResponseEntity.created(location).body(nouvelleLivraison)
         }
     }
 

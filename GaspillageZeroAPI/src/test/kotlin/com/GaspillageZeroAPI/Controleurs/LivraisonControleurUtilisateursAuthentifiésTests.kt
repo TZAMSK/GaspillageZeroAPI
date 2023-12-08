@@ -1,9 +1,11 @@
 package com.GaspillageZeroAPI.Controleurs
 
+import com.GaspillageZeroAPI.Exceptions.ExceptionConflitRessourceExistante
 import com.GaspillageZeroAPI.Modèle.Livraison
 import com.GaspillageZeroAPI.Services.LivraisonService
 import com.fasterxml.jackson.databind.ObjectMapper
 import org.hamcrest.CoreMatchers
+import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
@@ -15,6 +17,8 @@ import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.*
 import org.springframework.http.MediaType
 import org.springframework.security.test.context.support.WithMockUser
+import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers
 
@@ -62,7 +66,7 @@ class LivraisonControleurUtilisateursAuthentifiésTests {
     @WithMockUser
     @Test
     //@PostMapping("/utilisateur/{code_utilisateur}/commande/{idCommande}/livraison")
-    fun `Étant donnée un utilisateur authentifié et une livraison avec le code '3', lorsqu'on inscrit une livraison au service avec le code '3' à l'aide d'une requête POST, on obtient le code 201` (){
+    fun `Étant donnée un utilisateur authentifié et une livraison avec le code '3', lorsqu'on inscrit une livraison au service avec le code '3' à l'aide d'une requête POST, on obtient un code de retour 201` (){
 
         val nouvelleLivraison = Livraison(3, 3, 3, 3)
         Mockito.`when`(service.ajouterLivraison(nouvelleLivraison)).thenReturn(nouvelleLivraison)
@@ -73,5 +77,46 @@ class LivraisonControleurUtilisateursAuthentifiésTests {
             .andExpect(status().isCreated)
             .andExpect(
                 header().string("Location", CoreMatchers.containsString("/utilisateur/3/commande/3/livraisons/3")))
+    }
+
+    @WithMockUser
+    @Test
+    //@PostMapping("/utilisateur/{code_utilisateur}/commande/{idCommande}/livraison")
+    fun `Étant donnée un utilisateur authentifié et une livraison avec le code '3', lorsqu'on inscrit une livraison au service avec le code '3' à l'aide d'une requête POST et qu'on oublie le champ 'adresse_id', on obtient un code de retour 400` (){
+
+        val nouvelleLivraison = """
+                {
+                    "code": 3,
+                    "commande_code": 3,
+                    "utilisateur_code": 3
+                }
+            """.trimIndent()
+
+        mockMvc.perform(post("/utilisateur/3/commande/3/livraison")
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(mapper.writeValueAsString(nouvelleLivraison)))
+            .andExpect(status().isBadRequest)
+    }
+
+    @WithMockUser
+    @Test
+    //@PostMapping("/utilisateur/{code_utilisateur}/commande/{idCommande}/livraison")
+    fun `Étant donnée un utilisateur authentifié et une livraison dont le code est '2' qui existe déjà lorsque l'utilisateur effectue une requête POST pour l'ajouter alors il obtient un code de retour 409 et le message d'erreur « La livraison avec le numéro de code '2' est déjà inscrit au service » ` (){
+
+        val nouvelleLivraison = Livraison(2,2,2,2)
+
+        Mockito.`when`(service.ajouterLivraison(nouvelleLivraison)).thenThrow(ExceptionConflitRessourceExistante("La livraison avec le numéro de code '2' est déjà inscrit au service."))
+
+        mockMvc.perform(post("/utilisateur/2/commande/2/livraison")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(mapper.writeValueAsString(nouvelleLivraison)))
+            .andExpect(status().isConflict)
+            .andExpect { résultat ->
+                Assertions.assertTrue(résultat.resolvedException is ExceptionConflitRessourceExistante)
+                Assertions.assertEquals(
+                    "La livraison avec le numéro de code 2 est déjà inscrit au service.",
+                    résultat.resolvedException?.message
+                )
+            }
     }
 }

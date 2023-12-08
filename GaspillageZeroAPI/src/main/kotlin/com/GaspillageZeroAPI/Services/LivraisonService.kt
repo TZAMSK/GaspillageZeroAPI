@@ -1,6 +1,7 @@
 package com.GaspillageZeroAPI.Services
 
 import com.GaspillageZeroAPI.DAO.LivraisonDAO
+import com.GaspillageZeroAPI.Exceptions.ExceptionConflitRessourceExistante
 import com.GaspillageZeroAPI.Modèle.Livraison
 import org.springframework.stereotype.Service
 
@@ -13,6 +14,10 @@ class LivraisonService (val livraisonDAO: LivraisonDAO){
 
     fun obtenirLivraisonParCode(code: Int): Livraison? {
         return livraisonDAO.chercherParCode(code)
+    }
+
+    fun obtenirLivraisonExistanteParCode(code: Int) : Int? {
+        return livraisonDAO.chercherLivraisonExistanteParCode(code)
     }
 
     fun ajouterLivraison(livraison: Livraison): Livraison? = livraisonDAO.ajouter(livraison)
