@@ -20,13 +20,13 @@ class UtilisateurConfig {
     fun userDetailsService(passwordEncoder: PasswordEncoder): UserDetailsService {
         val manager = InMemoryUserDetailsManager()
         manager.createUser(
-            User.withUsername("user")
+            User.withUsername("Anonyme")
                 .password(passwordEncoder.encode("userPass"))
                 .roles("USER")
                 .build()
         )
         manager.createUser(
-            User.withUsername("admin")
+            User.withUsername("Gaston")
                 .password(passwordEncoder.encode("adminPass"))
                 .roles("USER", "GÉRANTS")
                 .build()

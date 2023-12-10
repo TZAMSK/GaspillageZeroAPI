@@ -119,4 +119,16 @@ class LivraisonControleurUtilisateursAuthentifiésTests {
                 )
             }
     }
+
+    @WithMockUser(username = "Anonyme", roles = ["USER"])
+    @Test
+    //@DeleteMapping("/utilisateur/{code_utilisateur}/commande/{idCommande}/livraisons/{code}")
+    fun `Étant donnée le numéro de livraison dont le code est '2' et un utilisateur 'Anonyme' authentifié lorsqu'il effectue une requête DELETE alors il obtient un code de retour 403` (){
+
+        Mockito.doNothing().`when`(service).supprimerLivraison(2)
+
+        mockMvc.perform(MockMvcRequestBuilders.delete("/utilisateur/2/commande/2/livraisons/2")
+            .header(HttpHeaders.AUTHORIZATION, "Basic " + Base64.getEncoder().encodeToString("Anonyme:userPass".toByteArray())))
+            .andExpect(status().isForbidden)
+    }
 }
