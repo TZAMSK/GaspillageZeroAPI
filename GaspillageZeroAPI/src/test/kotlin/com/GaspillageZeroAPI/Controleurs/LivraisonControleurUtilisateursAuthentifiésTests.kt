@@ -13,14 +13,14 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.mock.mockito.MockBean
+import org.springframework.http.HttpHeaders
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.*
 import org.springframework.http.MediaType
 import org.springframework.security.test.context.support.WithMockUser
-import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers
+import java.util.*
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -103,13 +103,13 @@ class LivraisonControleurUtilisateursAuthentifiésTests {
     //@PostMapping("/utilisateur/{code_utilisateur}/commande/{idCommande}/livraison")
     fun `Étant donnée un utilisateur authentifié et une livraison dont le code est '2' qui existe déjà lorsque l'utilisateur effectue une requête POST pour l'ajouter alors il obtient un code de retour 409 et le message d'erreur « La livraison avec le numéro de code '2' est déjà inscrit au service » ` (){
 
-        val nouvelleLivraison = Livraison(2,2,2,2)
+        val livraisonExistante = Livraison(2,2,2,2)
 
-        Mockito.`when`(service.ajouterLivraison(nouvelleLivraison)).thenThrow(ExceptionConflitRessourceExistante("La livraison avec le numéro de code '2' est déjà inscrit au service."))
+        Mockito.`when`(service.obtenirLivraisonExistanteParCode(2)).thenThrow(ExceptionConflitRessourceExistante("La livraison avec le numéro de code 2 est déjà inscrit au service."))
 
         mockMvc.perform(post("/utilisateur/2/commande/2/livraison")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(mapper.writeValueAsString(nouvelleLivraison)))
+                .content(mapper.writeValueAsString(livraisonExistante)))
             .andExpect(status().isConflict)
             .andExpect { résultat ->
                 Assertions.assertTrue(résultat.resolvedException is ExceptionConflitRessourceExistante)

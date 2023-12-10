@@ -1,9 +1,13 @@
 package com.GaspillageZeroAPI.Services
 
 import com.GaspillageZeroAPI.DAO.LivraisonDAO
-import com.GaspillageZeroAPI.Exceptions.ExceptionConflitRessourceExistante
 import com.GaspillageZeroAPI.Modèle.Livraison
+import org.springframework.security.access.prepost.PreAuthorize
+import org.springframework.security.core.context.SecurityContextHolder
+import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.stereotype.Service
+import java.security.Principal
+
 
 @Service
 class LivraisonService (val livraisonDAO: LivraisonDAO){

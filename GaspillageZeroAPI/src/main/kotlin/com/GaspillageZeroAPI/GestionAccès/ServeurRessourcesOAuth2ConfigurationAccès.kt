@@ -1,5 +1,5 @@
 package com.GaspillageZeroAPI.GestionAccès
-
+/*
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -53,3 +53,4 @@ class ServeurRessourcesOAuth2ConfigurationAccès {
         return jwtDecoder
     }
 }
+*/

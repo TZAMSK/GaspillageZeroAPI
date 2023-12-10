@@ -1,27 +1,25 @@
 package com.GaspillageZeroAPI.Controleurs
 
-import com.GaspillageZeroAPI.DAO.LivraisonDAO
 import com.GaspillageZeroAPI.Exceptions.ExceptionConflitRessourceExistante
 import com.GaspillageZeroAPI.Exceptions.ExceptionRessourceIntrouvable
 import com.GaspillageZeroAPI.Exceptions.LivraisonIntrouvableException
 import com.GaspillageZeroAPI.Modèle.Livraison
 import com.GaspillageZeroAPI.Modèle.Évaluation
-import com.GaspillageZeroAPI.Services.CommandeService
 import com.GaspillageZeroAPI.Services.LivraisonService
-import com.GaspillageZeroAPI.Services.UtilisateurService
 import com.GaspillageZeroAPI.Services.ÉvaluationService
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.responses.ApiResponse
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
+import org.springframework.security.access.prepost.PreAuthorize
+import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder
 import org.springframework.web.util.UriComponentsBuilder
 import java.net.URI
-
+import org.springframework.security.core.Authentication
 @RestController
-class LivraisonControleur (val livraisonService: LivraisonService, val évaluationService : ÉvaluationService,
-                            val livraisonDAO: LivraisonDAO) {
+class LivraisonControleur (val livraisonService: LivraisonService, val évaluationService : ÉvaluationService) {
 
     //Pour accéder à la documentation OpenApi, visitez le lien suivant pour en savoir plus : http://localhost:8080/swagger-ui/index.html
 
@@ -68,9 +66,7 @@ class LivraisonControleur (val livraisonService: LivraisonService, val évaluati
                           uriComponentsBuilder: UriComponentsBuilder) : ResponseEntity<Livraison> {
         val livraisonExistante = livraison.code?.let { livraisonService.obtenirLivraisonExistanteParCode(it) }
 
-        return if (livraisonExistante != null) {
-            throw ExceptionConflitRessourceExistante("La livraison avec le numéro de code ${livraison.code} est déjà inscrit au service.")
-        } else {
+        return if (livraisonExistante == 0) {
             val nouvelleLivraison = livraisonService.ajouterLivraison(livraison)
             val location: URI = ServletUriComponentsBuilder
                 .fromCurrentRequest()
@@ -79,6 +75,10 @@ class LivraisonControleur (val livraisonService: LivraisonService, val évaluati
                 .toUri()
 
             ResponseEntity.created(location).body(nouvelleLivraison)
+        } else if (livraisonExistante == 1){
+            throw ExceptionConflitRessourceExistante("La livraison avec le numéro de code ${livraison.code} est déjà inscrit au service.")
+        } else {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build()
         }
     }
 
@@ -94,6 +94,14 @@ class LivraisonControleur (val livraisonService: LivraisonService, val évaluati
     @Operation(summary = "Supprimer une livraison")
     @ApiResponse(responseCode = "204", description = "La livraison a été supprimée avec succès!")
     fun supprimerLivraison(@PathVariable code: Int) {
-        livraisonService.supprimerLivraison(code)
+        val authentication: Authentication? = SecurityContextHolder.getContext().authentication
+
+        if (authentication != null && authentication.authorities.any { it.authority == "GÉRANTS" }) {
+            val username: String? = authentication.name
+
+            if (username == "admin") {
+                livraisonService.supprimerLivraison(code)
+            }
+        }
     }
 }
