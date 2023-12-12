@@ -1,5 +1,6 @@
 package com.GaspillageZeroAPI.Controleurs
 
+import com.GaspillageZeroAPI.Exceptions.DroitAccèsInsuffisantException
 import com.GaspillageZeroAPI.Exceptions.ExceptionConflitRessourceExistante
 import com.GaspillageZeroAPI.Exceptions.ExceptionRessourceIntrouvable
 import com.GaspillageZeroAPI.Exceptions.LivraisonIntrouvableException
@@ -9,17 +10,21 @@ import com.GaspillageZeroAPI.Services.LivraisonService
 import com.GaspillageZeroAPI.Services.ÉvaluationService
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.responses.ApiResponse
+import org.apache.coyote.Response
+import org.springframework.boot.autoconfigure.neo4j.Neo4jProperties
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
+import org.springframework.security.core.Authentication
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder
 import org.springframework.web.util.UriComponentsBuilder
+import java.net.PasswordAuthentication
 import java.net.URI
-import org.springframework.security.core.Authentication
+
+
 @RestController
 class LivraisonControleur (val livraisonService: LivraisonService, val évaluationService : ÉvaluationService) {
-
     //Pour accéder à la documentation OpenApi, visitez le lien suivant pour en savoir plus : http://localhost:8080/swagger-ui/index.html
 
     @GetMapping("/evaluations")
@@ -60,6 +65,7 @@ class LivraisonControleur (val livraisonService: LivraisonService, val évaluati
     @Operation(summary = "Ajouté une livraison")
     @ApiResponse(responseCode = "201", description = "Ce code signifie que la livraison a bien été ajouté dans la base de données.")
     @ApiResponse(responseCode = "409", description = "Ce code est retourné lorsqu'on essaye d'ajouter une livraison qui existe déjà.")
+    @ApiResponse(responseCode = "500", description = "Ce code signifie qu'il y a un problème interne dans le serveur.")
     fun inscrireLivraison(@PathVariable code_utilisateur: Int,
         @PathVariable idCommande: Int, @RequestBody livraison: Livraison,
                           uriComponentsBuilder: UriComponentsBuilder) : ResponseEntity<Livraison> {
@@ -92,15 +98,14 @@ class LivraisonControleur (val livraisonService: LivraisonService, val évaluati
     @DeleteMapping("/utilisateur/{code_utilisateur}/commande/{idCommande}/livraisons/{code}")
     @Operation(summary = "Supprimer une livraison")
     @ApiResponse(responseCode = "204", description = "La livraison a été supprimée avec succès!")
-    fun supprimerLivraison(@PathVariable code: Int) {
-        val authentication: Authentication? = SecurityContextHolder.getContext().authentication
+    fun supprimerLivraison(@PathVariable code: Int, authentication: Neo4jProperties.Authentication) : ResponseEntity<String> {
+        val username = authentication.username
 
-        if (authentication != null && authentication.authorities.any { it.authority == "GÉRANTS" }) {
-            val username: String? = authentication.name
-
-            if (username == "admin") {
-                livraisonService.supprimerLivraison(code)
-            }
+      return if (username == "Gaston") {
+            livraisonService.supprimerLivraison(code)
+            ResponseEntity.ok().build()
+        } else {
+            ResponseEntity.status(HttpStatus.FORBIDDEN).build()
         }
     }
 }

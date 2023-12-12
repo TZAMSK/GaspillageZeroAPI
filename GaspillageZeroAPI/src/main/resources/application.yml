@@ -1,8 +1,5 @@
-auth0:
-  audience: https://gaspillezero/
-spring:
-  security:
-    oauth2:
-      resourceserver:
-        jwt:
-          issuer-uri: https://dev-dzubrtusqkbhecui.us.auth0.com/
+okta:
+  oauth2:
+    issuer: https://dev-dzubrtusqkbhecui.us.auth0.com/
+    client-id: tJ7i0cnQeJMxzrCLU4T2kkBdVEjsZyML
+    client-secret: Uy-PzsofLvsIJV0sK3nbmQwpV6OijuN09YpKZKslyTJr-M6DDfsZeYaC3kFHyP5Q

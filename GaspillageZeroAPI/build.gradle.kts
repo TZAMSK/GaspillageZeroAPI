@@ -29,8 +29,10 @@ dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-security")
 	implementation("org.springframework.security:spring-security-oauth2-resource-server")
 	implementation("org.springframework.security:spring-security-oauth2-jose")
+	implementation("org.springframework.security:spring-security-oauth2-client")
 	implementation("org.springframework.security:spring-security-config")
 	implementation("org.springframework.security:spring-security-test")
+	implementation("com.okta.spring:okta-spring-boot-starter:3.0.5")
 }
 
 tasks.withType<KotlinCompile> {
