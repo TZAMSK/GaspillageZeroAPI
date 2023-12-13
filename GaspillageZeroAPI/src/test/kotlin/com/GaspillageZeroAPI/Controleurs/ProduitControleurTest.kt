@@ -1,5 +1,7 @@
 package com.GaspillageZeroAPI.Controleurs
 
+import com.GaspillageZeroAPI.DAO.SourceDonnées
+import com.GaspillageZeroAPI.Exceptions.ExceptionRessourceIntrouvable
 import com.GaspillageZeroAPI.Modèle.Produit
 import com.GaspillageZeroAPI.Services.ProduitService
 import com.fasterxml.jackson.databind.ObjectMapper
@@ -14,6 +16,7 @@ import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.*
 import java.util.Date
+import javax.xml.transform.Source
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -29,7 +32,7 @@ class ProduitControleurTest {
     private lateinit var mapper: ObjectMapper
 
     private fun créationÉchantillonProduit(id: Int, nom: String, dateExpiration: Date, quantite: Int, prix: Double, idÉpicerie: Int, idGabaritProduit: Int): Produit {
-        return Produit(id, nom, dateExpiration, quantite, prix, idÉpicerie, idGabaritProduit)
+        return Produit(id, nom, dateExpiration, quantite, prix, SourceDonnées.épiceries[idÉpicerie-1], SourceDonnées.gabariProduits[idGabaritProduit-1])
     }
 
     @Test
@@ -48,7 +51,7 @@ class ProduitControleurTest {
 
     @Test
     fun `Étant donnée le Produit avec le code 4 qui n'existe pas, lorsqu'on éffectue une requète GET alors on obtient un code de retour 404`() {
-        Mockito.`when`(service.chercherParCode(4)).thenThrow(ProduitIntrouvableException::class.java)
+        Mockito.`when`(service.chercherParCode(4)).thenThrow(ExceptionRessourceIntrouvable::class.java)
 
         mockMvc.perform(get("/produit/4"))
             .andExpect(status().isNotFound)
@@ -88,7 +91,7 @@ class ProduitControleurTest {
     @Test
     fun `Étant donnée un Produit avec le code 3, lorsqu'on essaie de modifier un attribut avec la requête PUT, on obtient le code 200`() {
         val produitModifié = créationÉchantillonProduit(3, "ProduitModifié", Date(), 20, 10.0, 1, 1)
-        Mockito.`when`(service.modifier(3, produitModifié)).thenReturn(produitModifié)
+        Mockito.`when`(service.modifier(3, produitModifié)).thenReturn(true)
 
         mockMvc.perform(put("/produit/3")
             .contentType(MediaType.APPLICATION_JSON)
@@ -100,7 +103,7 @@ class ProduitControleurTest {
     @Test
     fun `Étant donnée un Produit avec le code 4 qui n'existe pas, lorsqu'on exécute un requête PUT afin de modifier un attribut on obtient alors un code d'erreur 404`() {
         val produitInexistant = créationÉchantillonProduit(4, "ProduitInexistant", Date(), 30, 15.0, 1, 1)
-        Mockito.`when`(service.modifier(4, produitInexistant)).thenThrow(ProduitIntrouvableException::class.java)
+        Mockito.`when`(service.modifier(4, produitInexistant)).thenThrow(ExceptionRessourceIntrouvable::class.java)
 
         mockMvc.perform(put("/produit/4")
             .contentType(MediaType.APPLICATION_JSON)

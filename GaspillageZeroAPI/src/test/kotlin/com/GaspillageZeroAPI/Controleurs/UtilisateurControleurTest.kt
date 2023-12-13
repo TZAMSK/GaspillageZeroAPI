@@ -1,5 +1,6 @@
 package com.GaspillageZeroAPI.Controleurs
 
+import com.GaspillageZeroAPI.DAO.SourceDonnées
 import com.GaspillageZeroAPI.Exceptions.ExceptionConflitRessourceExistante
 import com.GaspillageZeroAPI.Exceptions.ExceptionRessourceIntrouvable
 import com.GaspillageZeroAPI.Modèle.*
@@ -14,6 +15,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.http.MediaType
+import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers
@@ -32,16 +34,16 @@ class UtilisateurControleurTest{
     @Autowired
     private lateinit var mockMvc: MockMvc
 
-    val utilisateur: Utilisateur = Utilisateur(2, "Africa", "Toto", "toto@afri.ca", Adresse(3,"123", "Saint-chose", "Québec", "Montréal", "HJS 890","Canada"),"(123)456-7890", mutableListOf())
+    val utilisateur: Utilisateur = SourceDonnées.utilisateurs.get(2)
 
     @Test
-    fun `Étant donnée un utilisateur avec le id 2, lorsqu'on éffectue un requète GET alors on obtien un JSON qui contient un objet Utilisateur avec le ID 2 et le code 200`(){
+    fun `Étant donnée un utilisateur avec le id 3, lorsqu'on éffectue un requète GET alors on obtien un JSON qui contient un objet Utilisateur avec le ID 2 et le code 200`(){
         Mockito.`when`(service.chercherParCode(3)).thenReturn(utilisateur)
 
-        mockMvc.perform(MockMvcRequestBuilders.get("/utilisateur/2"))
+        mockMvc.perform(MockMvcRequestBuilders.get("/utilisateur/3"))
                 .andExpect(MockMvcResultMatchers.status().isOk)
                 .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.idCommande").value(3))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.code").value(3))
     }
 
     @Test
@@ -59,27 +61,21 @@ class UtilisateurControleurTest{
 
     @Test
     fun `Étant donnée un Utilisateur avec le ID 3 qui n'existe pas, lorsqu'on éffectue un requête POST alors on obtient un code 201`(){
-        val utilisateurÀAjouter = Utilisateur(9, "Wilson", "Ken", "kenwilson@gmail.com",
-                Adresse(123, "12345", "Place de Gaspésie", "Montréal", "Québec", "H4N 0F2", "Canada"), "514 618-2847", mutableListOf(
-                Utilisateur_Rôle(9, "client", Date())
-        ))
+        val utilisateurÀAjouter = SourceDonnées.utilisateurs.get(2)
 
         Mockito.`when`(service.ajouter(utilisateurÀAjouter)).thenReturn(utilisateurÀAjouter)
 
-        mockMvc.perform(MockMvcRequestBuilders.post("/utilisateur")
+        mockMvc.perform(MockMvcRequestBuilders.post("/utilisateur").with(csrf())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(mapper.writeValueAsString(utilisateurÀAjouter)))
                 .andExpect(MockMvcResultMatchers.status().isCreated)
                 .andExpect(MockMvcResultMatchers.header().string("location", CoreMatchers.containsString("/utilisateur/9")))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.idUtilisateur").value(9))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.code").value(9))
     }
 
     @Test
     fun `Étant donnée un Utilisateur avec le ID 2 qui existe déjà, lorsqu'on exécute une requête POST alors on obtient un code d'erreur 409(conlit)`(){
-        val utilisateurÀAjouter = Utilisateur(9, "Wilson", "Ken", "kenwilson@gmail.com",
-                Adresse(123, "12345", "Place de Gaspésie", "Montréal", "Québec", "H4N 0F2", "Canada"), "514 618-2847", mutableListOf(
-                Utilisateur_Rôle(9, "client", Date())
-        ))
+        val utilisateurÀAjouter = SourceDonnées.utilisateurs.get(1)
 
         Mockito.`when`(service.ajouter(utilisateurÀAjouter)).thenReturn(utilisateurÀAjouter)
 
@@ -89,7 +85,7 @@ class UtilisateurControleurTest{
                 .andExpect(MockMvcResultMatchers.status().isConflict)
                 .andExpect {résultat ->
                     assertTrue(résultat.resolvedException is ExceptionConflitRessourceExistante)
-                    assertEquals("La ressource avec ce id ${utilisateurÀAjouter.idUtilisateur} existe déjà dans la base de données", résultat.resolvedException?.message)
+                    assertEquals("La ressource avec ce id ${utilisateurÀAjouter.code} existe déjà dans la base de données", résultat.resolvedException?.message)
                 }
     }
 
@@ -117,10 +113,9 @@ class UtilisateurControleurTest{
 
     @Test
     fun `Étant donnée un Utilisateur avec le ID 2, lorsqu'on exécute une requête PUT avec une objet Utilisateur en JSON, on obtient alors le code 202 pour accepted`(){
-        val utilisateurModifie = Utilisateur(2, "Modified", "Name", "modified@gmail.com",
-                Adresse(1, "123", "Street", "City", "Province", "PostalCode", "Country"), "123-456-7890", mutableListOf())
+        val utilisateurModifie = SourceDonnées.utilisateurs.get(1)
 
-        Mockito.`when`(service.modifier(2, utilisateurModifie)).thenReturn(utilisateurModifie)
+        Mockito.`when`(service.modifier(2, "", utilisateurModifie)).thenReturn(utilisateurModifie)
 
         mockMvc.perform(MockMvcRequestBuilders.put("/utilisateur/2")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -131,10 +126,9 @@ class UtilisateurControleurTest{
 
     @Test
     fun `Étant donnée un Utilisateur avec le ID 3 qui n'existe pas, lorsqu'on exécute une requete PUT avec un objet Utilisateur en JSON, on obtient alors le code d'erreur 404`(){
-        val utilisateurModifie = Utilisateur(3, "Modified", "Name", "modified@gmail.com",
-                Adresse(1, "123", "Street", "City", "Province", "PostalCode", "Country"), "123-456-7890", mutableListOf())
+        val utilisateurModifie = SourceDonnées.utilisateurs.get(2)
 
-        Mockito.`when`(service.modifier(3, utilisateurModifie))
+        Mockito.`when`(service.modifier(3, "", utilisateurModifie))
                 .thenThrow(ExceptionRessourceIntrouvable("L'utilisateur avec le code 3 est introuvable"))
 
         mockMvc.perform(MockMvcRequestBuilders.put("/utilisateur/3")

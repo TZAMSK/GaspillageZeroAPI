@@ -1,5 +1,7 @@
 package com.GaspillageZeroAPI.Controleurs
 
+import com.GaspillageZeroAPI.DAO.SourceDonnées
+import com.GaspillageZeroAPI.Exceptions.ExceptionRessourceIntrouvable
 import com.GaspillageZeroAPI.Modèle.GabaritProduit
 import com.GaspillageZeroAPI.Modèle.Produit
 import com.GaspillageZeroAPI.Services.GabaritProduitService
@@ -31,10 +33,10 @@ class GabaritProduitControleurTest {
 
     private fun créationÉchantillonGabaritProduit(id: Int, nom: String, description: String, categorie: String): GabaritProduit {
         val produits = listOf(
-            Produit(1, "Produit1", Date(), 10, 2.5, 1, 1),
-            Produit(2, "Produit2", Date(), 20, 5.0, 1, 1)
+            SourceDonnées.produits[0],
+                SourceDonnées.produits[1]
         )
-        return GabaritProduit(id, nom, description, null, categorie, 1)
+        return GabaritProduit(id, nom, description, null, categorie, SourceDonnées.épiceries[0])
     }
 
     @Test
@@ -51,7 +53,7 @@ class GabaritProduitControleurTest {
 
     @Test
     fun `Étant donnée le GabaritProduit avec le code 4 qui n'existe pas, lorsqu'on éffectue une requète GET alors on obtient un code de retour 404`() {
-        Mockito.`when`(service.chercherParCode(4)).thenThrow(GabaritProduitIntrouvableException("Le gabarit de code 4 est introuvable"))
+        Mockito.`when`(service.chercherParCode(4)).thenThrow(ExceptionRessourceIntrouvable("Le gabarit de code 4 est introuvable"))
 
         mockMvc.perform(get("/gabaritproduit/4"))
             .andExpect(status().isNotFound)
@@ -79,7 +81,7 @@ class GabaritProduitControleurTest {
     @Test
     fun `Étant donnée un GabaritProduit avec le code 3, lorsqu'on essaie de modifier un attribut avec la requête PUT, on obtient le code 200`() {
         val updatedGabaritProduit = créationÉchantillonGabaritProduit(3, "NomModifié", "DescriptionModifiée", "CatégorieModifiée")
-        Mockito.`when`(service.modifier(3, updatedGabaritProduit)).thenReturn(updatedGabaritProduit)
+        Mockito.`when`(service.modifier(3, updatedGabaritProduit)).thenReturn(true)
 
         mockMvc.perform(put("/gabaritproduit/3")
             .contentType(MediaType.APPLICATION_JSON)
@@ -91,7 +93,7 @@ class GabaritProduitControleurTest {
     @Test
     fun `Étant donnée un GabaritProduit avec le code 4 qui n'existe pas, lorsqu'on exécute un requête PUT afin de modifier un attribut on obtient alors un code d'erreur 404`() {
         val updatedGabaritProduit = créationÉchantillonGabaritProduit(4, "NomInexistant", "DescriptionInexistante", "CatégorieInexistante")
-        Mockito.`when`(service.modifier(4, updatedGabaritProduit)).thenThrow(GabaritProduitIntrouvableException("Le gabarit de code 4 est introuvable"))
+        Mockito.`when`(service.modifier(4, updatedGabaritProduit)).thenThrow(ExceptionRessourceIntrouvable("Le gabarit de code 4 est introuvable"))
 
         mockMvc.perform(put("/gabaritproduit/4")
             .contentType(MediaType.APPLICATION_JSON)

@@ -12,7 +12,7 @@ curl --request POST \
   --url 'https://dev-tmsylhcqmyl63lry.us.auth0.com/oauth/token' \
   --header 'content-type: application/x-www-form-urlencoded' \
   --data grant_type=password \
-  --data 'username=joelvienneau@gmail.com' \
+  --data 'username=akhakimov@gmail.com' \
   --data 'password=collegeR0semont' \
   --data 'audience=http://gaspillagezero.demo' \
   --data scope=read:sample \

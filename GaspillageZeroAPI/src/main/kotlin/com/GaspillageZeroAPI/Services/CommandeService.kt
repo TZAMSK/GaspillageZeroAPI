@@ -3,11 +3,8 @@ package com.GaspillageZeroAPI.Services
 import com.GaspillageZeroAPI.DAO.CommandeDAO
 import com.GaspillageZeroAPI.DAO.UtilisateurDAO
 import com.GaspillageZeroAPI.DAO.ÉpicerieDAO
-import com.GaspillageZeroAPI.DAO.ÉpicerieDAOImpl
 import com.GaspillageZeroAPI.Exceptions.DroitAccèsInsuffisantException
 import com.GaspillageZeroAPI.Modèle.Commande
-import com.GaspillageZeroAPI.Modèle.Produit
-import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.stereotype.Service
 
 @Service
@@ -31,11 +28,11 @@ class CommandeService(val dao: CommandeDAO, val utilisateurDAO : UtilisateurDAO,
     //fun chercherCommandesParÉpicerie(idÉpicerie: Int): List<Commande>? = dao.chercherCommandesParÉpicerie(idÉpicerie)
 
 
-    fun chercherCommandesParÉpicerie(idÉpicerie: Int, code_util: String): List<Commande>?{
-        if (utilisateurDAO.validerUtilisateur(épicerieDAO.chercherParCode(idÉpicerie)?.utilisateur?.code ?: 0, code_util)) {
+    fun chercherCommandesParÉpicerie(idÉpicerie: Int, principal: String): List<Commande>?{
+        if (utilisateurDAO.validerUtilisateur(épicerieDAO.chercherParCode(idÉpicerie)?.utilisateur?.code ?: 0, principal)) {
             return dao.chercherCommandesParÉpicerie(idÉpicerie)
         } else {
-            throw DroitAccèsInsuffisantException("Seul l'utilisateur " + code_util + " peut chercher ses commandes.")
+            throw DroitAccèsInsuffisantException("Seul l'utilisateur " + principal + " peut chercher ses commandes.")
         }
     }
 
@@ -46,4 +43,5 @@ class CommandeService(val dao: CommandeDAO, val utilisateurDAO : UtilisateurDAO,
 
     fun modifier(idCommande: Int, commande: Commande): Commande? = dao.modifier(idCommande, commande)
 
+    
 }
