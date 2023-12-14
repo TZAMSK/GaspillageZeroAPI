@@ -1,6 +1,5 @@
 package com.GaspillageZeroAPI.Controleurs
 
-import com.GaspillageZeroAPI.Exceptions.DroitAccèsInsuffisantException
 import com.GaspillageZeroAPI.Exceptions.ExceptionConflitRessourceExistante
 import com.GaspillageZeroAPI.Exceptions.ExceptionRessourceIntrouvable
 import com.GaspillageZeroAPI.Exceptions.LivraisonIntrouvableException
@@ -10,16 +9,12 @@ import com.GaspillageZeroAPI.Services.LivraisonService
 import com.GaspillageZeroAPI.Services.ÉvaluationService
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.responses.ApiResponse
-import org.apache.coyote.Response
 import org.springframework.boot.autoconfigure.neo4j.Neo4jProperties
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
-import org.springframework.security.core.Authentication
-import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder
 import org.springframework.web.util.UriComponentsBuilder
-import java.net.PasswordAuthentication
 import java.net.URI
 
 
@@ -97,13 +92,17 @@ class LivraisonControleur (val livraisonService: LivraisonService, val évaluati
 
     @DeleteMapping("/utilisateur/{code_utilisateur}/commande/{idCommande}/livraisons/{code}")
     @Operation(summary = "Supprimer une livraison")
-    @ApiResponse(responseCode = "204", description = "La livraison a été supprimée avec succès!")
-    fun supprimerLivraison(@PathVariable code: Int, authentication: Neo4jProperties.Authentication) : ResponseEntity<String> {
-        val username = authentication.username
+    @ApiResponse(responseCode = "204", description = "Ce code signifie que la livraison a bien été supprimé et elle retourne aucun contenu.")
+    @ApiResponse(responseCode = "403", description = "Ce code signifie que l'on est interdit de supprimer une livraison, car l'utilisateur n'est pas le bon gérant.")
+    @ApiResponse(responseCode = "500", description = "Ce code signifie qu'il y a un problème interne dans le serveur.")
+    fun supprimerLivraison(@PathVariable code: Int, auth: Neo4jProperties.Authentication): ResponseEntity<String> {
 
-      return if (username == "Gaston") {
-            livraisonService.supprimerLivraison(code)
-            ResponseEntity.ok().build()
+        val username = auth.username.substringBefore('@')
+        val validation = livraisonService.obtenirGérants(code, username)
+
+        return if(validation){
+            livraisonService.supprimerLivraison(code, username)
+            ResponseEntity.status(HttpStatus.NO_CONTENT).build()
         } else {
             ResponseEntity.status(HttpStatus.FORBIDDEN).build()
         }

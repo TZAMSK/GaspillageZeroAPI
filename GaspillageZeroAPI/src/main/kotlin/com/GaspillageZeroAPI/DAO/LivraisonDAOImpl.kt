@@ -2,10 +2,7 @@ package com.GaspillageZeroAPI.DAO
 
 import com.GaspillageZeroAPI.Exceptions.ExceptionErreurServeur
 import com.GaspillageZeroAPI.Exceptions.ExceptionRessourceIntrouvable
-import com.GaspillageZeroAPI.Modèle.Commande
-import com.GaspillageZeroAPI.Modèle.GabaritProduit
-import com.GaspillageZeroAPI.Modèle.Livraison
-import com.GaspillageZeroAPI.Modèle.Évaluation
+import com.GaspillageZeroAPI.Modèle.*
 import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.stereotype.Repository
 import java.sql.ResultSet
@@ -42,6 +39,18 @@ class LivraisonDAOImpl(val jdbcTemplate: JdbcTemplate): LivraisonDAO {
         return jdbcTemplate.queryForObject("SELECT COALESCE(MAX(code), 0) + 1 AS max_code FROM Livraison")
         { resultat, _ ->
             resultat.getInt("max_code")
+        }
+    }
+
+    override fun validerGérants(code: Int, nom_gérant: String): Boolean {
+        return try {
+            val query = "SELECT * FROM Livraison WHERE code = ? AND nom_gérant = ?"
+            val livraisons = jdbcTemplate.query(query, arrayOf(code, nom_gérant)) { rs, _ ->
+                mapRowToLivraison(rs)
+            }
+            livraisons.isNotEmpty()
+        } catch (e: Exception) {
+            throw ExceptionErreurServeur("Erreur lors de la recherche de la livraison avec l'ID $code: ${e.message}")
         }
     }
 
@@ -86,7 +95,8 @@ class LivraisonDAOImpl(val jdbcTemplate: JdbcTemplate): LivraisonDAO {
             code = rs.getInt("code"),
             commande_code = rs.getInt("commande_code"),
             utilisateur_code = rs.getInt("utilisateur_code"),
-            adresse_id = rs.getInt("adresse_id")
+            adresse_id = rs.getInt("adresse_id"),
+            nom_gérant = rs.getString("nom_gérant")
         )
     }
 }

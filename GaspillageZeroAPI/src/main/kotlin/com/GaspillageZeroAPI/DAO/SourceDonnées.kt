@@ -92,9 +92,9 @@ class SourceDonnées {
         )
 
         val livraison = mutableListOf(
-                Livraison(1,commandes[0].idCommande, null, adresses[0].idAdresse) ,
-                Livraison(2,commandes[1].idCommande, null, adresses[1].idAdresse),
-                Livraison(3,commandes[2].idCommande, null, adresses[2].idAdresse),
+                Livraison(1,commandes[0].idCommande, null, adresses[0].idAdresse, "gaston"),
+                Livraison(2,commandes[1].idCommande, null, adresses[1].idAdresse, "michel"),
+                Livraison(3,commandes[2].idCommande, null, adresses[2].idAdresse, null)
         )
 
 
