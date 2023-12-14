@@ -2,9 +2,7 @@ package com.GaspillageZeroAPI.DAO
 
 import com.GaspillageZeroAPI.Exceptions.ExceptionErreurServeur
 import com.GaspillageZeroAPI.Exceptions.ExceptionRessourceIntrouvable
-import com.GaspillageZeroAPI.Modèle.Produit
 import com.GaspillageZeroAPI.Modèle.Utilisateur
-import com.GaspillageZeroAPI.Modèle.UtilisateursTable
 import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.stereotype.Repository
 import java.sql.ResultSet
@@ -69,10 +67,10 @@ class UtilisateurDAOImpl(private val jdbcTemplate: JdbcTemplate): UtilisateurDAO
         return utilisateur
     }
 
-    override fun validerUtilisateur(code_utilisateur: Int, code_courant: String?): Boolean {
+    override fun validerUtilisateur(code_utilisateur: Int, principal: String?): Boolean {
         val utilisateur = chercherParCode(code_utilisateur)
 
-        if(utilisateur?.tokenAuth0 == code_courant){
+        if(utilisateur?.tokenAuth0 == principal){
             return true
         }else{
             return false

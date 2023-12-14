@@ -21,6 +21,5 @@ class CommandeControleurTestNonAuthentifiésTests {
     @Autowired
     private lateinit var mockMvc: MockMvc
 
-    @Test
-    fun `Étant donées un utilisateur non-authentifié et commande`
+
 }

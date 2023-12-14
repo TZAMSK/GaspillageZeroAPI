@@ -19,7 +19,10 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.*
 
 import org.hamcrest.CoreMatchers.containsString
+import org.springframework.security.test.context.support.WithMockUser
+import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers
 
 
 @SpringBootTest
@@ -37,7 +40,7 @@ class CommandeControleurTestAuthentifiésTests {
 
     @Test
     fun `Étant donnée la commande avec le code 3, lorsqu'on éffectue une requète GET avec le id 3 alors on obtient une commande dans un format JSON avec le id 3 et un code 200 `(){
-            Mockito.`when`(service.chercherParCode(3)).thenReturn(SourceDonnées.commandes.get(1))
+            Mockito.`when`(service.chercherParCode(3)).thenReturn(SourceDonnées.commandes.get(2))
 
             mockMvc.perform(get("/commande/3"))
                     .andExpect(status().isOk)
@@ -57,20 +60,22 @@ class CommandeControleurTestAuthentifiésTests {
                     assertEquals("La commande avec le code 4 est introuvable", résultat.resolvedException?.message)
                 }
     }
+    @WithMockUser
     @Test
     fun `Étant donnée une commande avec le code 4, lorsqu'on ajoute une commande à l'épicerie avec le code 1 l'aide d'une requète POST on obtient le code 201`(){
-        val commandeÀAjouter = SourceDonnées.commandes.get(2)
+        val commandeÀAjouter = SourceDonnées.commandes.get(3)
 
         Mockito.`when`(service.ajouter(commandeÀAjouter)).thenReturn(commandeÀAjouter)
 
-        mockMvc.perform(post("/commande")
+        mockMvc.perform(MockMvcRequestBuilders.post("/commande").with(csrf())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(mapper.writeValueAsString(commandeÀAjouter)))
-                .andExpect(status().isCreated)
-                .andExpect(header().string("location", containsString("/commande/11")))
-                .andExpect(jsonPath("$.idCommande").value("11"))
+                .andExpect(MockMvcResultMatchers.status().isCreated)
+                .andExpect(header().string("location", containsString("/commande/4")))
+                .andExpect(jsonPath("$.idCommande").value("4"))
     }
 
+    @WithMockUser
     @Test
     fun `Étant donnée une commnde avec le code 3 qui existe déjà, lorsqu'on exécute une requête POST, alors on obtient un code d'erreur 409(conflit)`(){
         val commandeÀAjouter = SourceDonnées.commandes.get(2)
@@ -78,7 +83,7 @@ class CommandeControleurTestAuthentifiésTests {
 
         Mockito.`when`(service.ajouter(commandeÀAjouter)).thenThrow(ExceptionConflitRessourceExistante("La ressource avec ce id ${commandeÀAjouter.idCommande} existe déjà dans la base de données"))
 
-        mockMvc.perform(post("/commande")
+        mockMvc.perform(post("/commande").with(csrf())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(mapper.writeValueAsString(commandeÀAjouter)))
                 .andExpect(status().isConflict)
@@ -88,15 +93,17 @@ class CommandeControleurTestAuthentifiésTests {
                 }
     }
 
+    @WithMockUser
     @Test
     fun `Étant donnée une commande avec le code 3, lorsqu'on essaie de supprimer avec la requête DELETE la commande avec le code 3, on obtient le code 200`(){
         Mockito.doNothing().`when`(service).supprimer(3)
 
         // Act and Assert
-        mockMvc.perform(MockMvcRequestBuilders.delete("/commande/3"))
+        mockMvc.perform(MockMvcRequestBuilders.delete("/commande/3").with(csrf()))
                 .andExpect(status().isOk)
     }
 
+    @WithMockUser
     @Test
     fun `Étant donnée une commande avec le code 3, lorsqu'on essaie de modifier un attribut avec la requête PUT, on obtient le code 200`(){
         val updatedCommand = SourceDonnées.commandes.get(2)
