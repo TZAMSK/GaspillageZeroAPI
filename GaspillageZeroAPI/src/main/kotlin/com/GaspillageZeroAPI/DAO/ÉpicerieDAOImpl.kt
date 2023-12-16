@@ -90,7 +90,7 @@ class ÉpicerieDAOImpl(private val jdbcTemplate: JdbcTemplate): ÉpicerieDAO {
                 resultat.getString("nom"),
                 resultat.getString("courriel"),
                 resultat.getString("téléphone"),
-                resultat.getBlob("logo"),
+                resultat.getString("logo"),
                // resultat.getString("codeAuth")
         )
     }
