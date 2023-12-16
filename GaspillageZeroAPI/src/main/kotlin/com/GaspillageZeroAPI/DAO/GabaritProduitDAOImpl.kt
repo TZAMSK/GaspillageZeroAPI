@@ -71,7 +71,7 @@ class GabaritProduitDAOImpl(private val jdbcTemplate: JdbcTemplate): GabaritProd
                 resultat.getInt("id"),
                 resultat.getString("nom"),
                 resultat.getString("description"),
-                resultat.getBlob("image"),
+                resultat.getString("image"),
                 resultat.getString("catégorie"),
                 épicerieDAO.chercherParCode(resultat.getInt("idÉpicerie"))
         )

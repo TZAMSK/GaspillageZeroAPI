@@ -5,13 +5,11 @@ import com.GaspillageZeroAPI.Exceptions.ExceptionErreurServeur
 import com.GaspillageZeroAPI.Exceptions.ExceptionRequeteInvalide
 import com.GaspillageZeroAPI.Exceptions.ExceptionRessourceIntrouvable
 import com.GaspillageZeroAPI.Modèle.GabaritProduit
-import com.GaspillageZeroAPI.Modèle.GabaritProduitDto
 import com.GaspillageZeroAPI.Services.GabaritProduitService
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.responses.ApiResponse
 import io.swagger.v3.oas.annotations.responses.ApiResponses
 import org.springframework.dao.DataIntegrityViolationException
-import org.springframework.dao.EmptyResultDataAccessException
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
@@ -29,15 +27,12 @@ class GabaritProduitController(val service: GabaritProduitService) {
     ])
     @Operation(summary = "Obtenir la liste des gabaritproduits")
     @GetMapping("/gabaritproduits")
-    fun obtenirGabaritProduits(): ResponseEntity<List<GabaritProduitDto>> {
+    fun obtenirGabaritProduits(): ResponseEntity<List<GabaritProduit>> {
         try {
             val gabarits = service.chercherTous()
-            val gabaritsDto = gabarits.map { gabarit ->
-                convertirEnDto(gabarit)
-            }
 
-            if (gabaritsDto.isNotEmpty()) {
-                return ResponseEntity.ok(gabaritsDto)
+            if (gabarits.isNotEmpty()) {
+                return ResponseEntity.ok(gabarits)
             } else {
                 throw ExceptionRessourceIntrouvable("Gabaritproduits non trouvés")
             }
@@ -53,11 +48,11 @@ class GabaritProduitController(val service: GabaritProduitService) {
     ])
     @Operation(summary = "Obtenir un gabaritproduit par son ID")
     @GetMapping("/gabaritproduit/{idGabaritProduit}")
-    fun obtenirGabaritProduitParCode(@PathVariable idGabaritProduit: Int): ResponseEntity<GabaritProduitDto> {
+    fun obtenirGabaritProduitParCode(@PathVariable idGabaritProduit: Int): ResponseEntity<GabaritProduit> {
         return try {
             val gabarit = service.chercherParCode(idGabaritProduit)
             gabarit?.let {
-                ResponseEntity.ok(convertirEnDto(it))
+                ResponseEntity.ok(gabarit)
             } ?: throw ExceptionRessourceIntrouvable("Gabaritproduit avec l'ID $idGabaritProduit non trouvé")
         } catch (e: IllegalArgumentException) {
             throw ExceptionRequeteInvalide("Requête invalide : ${e.message}")
@@ -74,9 +69,8 @@ class GabaritProduitController(val service: GabaritProduitService) {
     ])
     @Operation(summary = "Ajouter un gabaritproduit")
     @PostMapping("/gabaritproduit")
-    fun ajouterGabarit(@RequestBody gabaritProduitDto: GabaritProduitDto): ResponseEntity<Void> {
+    fun ajouterGabarit(@RequestBody gabaritProduit: GabaritProduit): ResponseEntity<Void> {
         return try {
-            val gabaritProduit = convertirEnEntité(gabaritProduitDto)
             service.ajouter(gabaritProduit)
             ResponseEntity.status(HttpStatus.CREATED).build()
         } catch (e: DataIntegrityViolationException) {
@@ -118,9 +112,8 @@ class GabaritProduitController(val service: GabaritProduitService) {
     ])
     @Operation(summary = "Modifier un gabaritproduit par son ID")
     @PutMapping("/gabaritproduit/{idGabaritProduit}")
-    fun modifierGabarit(@PathVariable idGabaritProduit: Int, @RequestBody gabaritProduitDto: GabaritProduitDto): ResponseEntity<Void> {
+    fun modifierGabarit(@PathVariable idGabaritProduit: Int, @RequestBody gabaritProduit: GabaritProduit): ResponseEntity<Void> {
         return try {
-            val gabaritProduit = convertirEnEntité(gabaritProduitDto)
             if (service.modifier(idGabaritProduit, gabaritProduit)) {
                 ResponseEntity.ok().build()
             } else {
@@ -133,42 +126,6 @@ class GabaritProduitController(val service: GabaritProduitService) {
         } catch (e: Exception) {
             throw ExceptionRessourceIntrouvable("Gabaritproduit avec l'ID $idGabaritProduit non trouvé")
         }
-    }
-
-    // Méthodes de Conversions Blob/Base64
-    fun convertirEnDto(gabaritProduit: GabaritProduit): GabaritProduitDto {
-        val imageBase64 = gabaritProduit.image?.let { blob ->
-            // Conversion de Blob en Base64
-            ByteArrayOutputStream().use { outputStream ->
-                blob.binaryStream.use { inputStream ->
-                    inputStream.copyTo(outputStream)
-                }
-                Base64.getEncoder().encodeToString(outputStream.toByteArray())
-            }
-        }
-        return GabaritProduitDto(
-            idGabaritProduit = gabaritProduit.idGabaritProduit,
-            nom = gabaritProduit.nom,
-            description = gabaritProduit.description,
-            image = imageBase64,
-            categorie = gabaritProduit.categorie,
-            épicerie = gabaritProduit.épicerie
-        )
-    }
-
-    fun convertirEnEntité(gabaritProduitDto: GabaritProduitDto): GabaritProduit {
-        val imageBlob = gabaritProduitDto.image?.let { base64 ->
-            // Conversion de Base64 en Blob
-            SerialBlob(Base64.getDecoder().decode(base64))
-        }
-        return GabaritProduit(
-            idGabaritProduit = gabaritProduitDto.idGabaritProduit,
-            nom = gabaritProduitDto.nom,
-            description = gabaritProduitDto.description,
-            image = imageBlob,
-            categorie = gabaritProduitDto.categorie,
-            épicerie = gabaritProduitDto.épicerie
-        )
     }
 
 

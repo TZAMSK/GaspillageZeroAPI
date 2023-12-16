@@ -6,7 +6,7 @@ data class GabaritProduit (
         val idGabaritProduit: Int?,
         val nom: String,
         val description: String,
-        val image: Blob?,
+        val image: String?, // Image sous forme de chaîne Base64
         val categorie: String,
         val épicerie: Épicerie?
 ){
