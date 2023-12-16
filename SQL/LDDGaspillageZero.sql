@@ -53,7 +53,7 @@ create table gabaritProduit(
 	id int primary key auto_increment not null,
 	nom varchar(255) not null,
 	description varchar(255) not null,
-	image BLOB,
+	image LONGTEXT,
 	catégorie varchar(255) not null,
 	idÉpicerie int not null,
 	constraint fk_gabaritProduit_épicerie_idÉpicerie foreign key (idÉpicerie)
