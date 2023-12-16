@@ -42,7 +42,7 @@ create table épicerie(
 	nom varchar(255),
 	courriel varchar(255) not null unique,
 	téléphone varchar(255) not null,
-	logo BLOB,
+	logo LONGTEXT,
 	constraint fk_épicerie_adresse_adresseID foreign key (adresse_id)
 	references adresse(id),
 	constraint fk_épicerie_utilisateur_utilisateurCode foreign key (utilisateur_code)
