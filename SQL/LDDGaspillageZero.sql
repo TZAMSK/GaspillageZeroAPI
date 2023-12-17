@@ -42,7 +42,7 @@ create table épicerie(
 	nom varchar(255),
 	courriel varchar(255) not null unique,
 	téléphone varchar(255) not null,
-	logo BLOB,
+	logo LONGTEXT,
 	constraint fk_épicerie_adresse_adresseID foreign key (adresse_id)
 	references adresse(id),
 	constraint fk_épicerie_utilisateur_utilisateurCode foreign key (utilisateur_code)
@@ -53,7 +53,7 @@ create table gabaritProduit(
 	id int primary key auto_increment not null,
 	nom varchar(255) not null,
 	description varchar(255) not null,
-	image BLOB,
+	image LONGTEXT,
 	catégorie varchar(255) not null,
 	idÉpicerie int not null,
 	constraint fk_gabaritProduit_épicerie_idÉpicerie foreign key (idÉpicerie)

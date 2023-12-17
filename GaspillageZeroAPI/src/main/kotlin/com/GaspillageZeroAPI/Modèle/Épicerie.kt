@@ -9,7 +9,7 @@ data class Épicerie(
         val nom: String,
         val courriel: String,
         val téléphone: String,
-        val logo: Blob?
+        val logo: String? // logo sous forme de chaîne Base64
         //val tokenAuth0: String?
 ) {
 }

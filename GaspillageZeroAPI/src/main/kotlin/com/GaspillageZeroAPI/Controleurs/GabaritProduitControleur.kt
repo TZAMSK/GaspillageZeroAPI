@@ -10,10 +10,12 @@ import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.responses.ApiResponse
 import io.swagger.v3.oas.annotations.responses.ApiResponses
 import org.springframework.dao.DataIntegrityViolationException
-import org.springframework.dao.EmptyResultDataAccessException
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
+import java.io.ByteArrayOutputStream
+import java.util.*
+import javax.sql.rowset.serial.SerialBlob
 
 @RestController
 class GabaritProduitController(val service: GabaritProduitService) {
@@ -28,6 +30,7 @@ class GabaritProduitController(val service: GabaritProduitService) {
     fun obtenirGabaritProduits(): ResponseEntity<List<GabaritProduit>> {
         try {
             val gabarits = service.chercherTous()
+
             if (gabarits.isNotEmpty()) {
                 return ResponseEntity.ok(gabarits)
             } else {
@@ -48,11 +51,12 @@ class GabaritProduitController(val service: GabaritProduitService) {
     fun obtenirGabaritProduitParCode(@PathVariable idGabaritProduit: Int): ResponseEntity<GabaritProduit> {
         return try {
             val gabarit = service.chercherParCode(idGabaritProduit)
-            gabarit?.let { ResponseEntity.ok(it) }
-                ?: throw ExceptionRessourceIntrouvable("Gabaritproduit avec l'ID $idGabaritProduit non trouvé")
+            gabarit?.let {
+                ResponseEntity.ok(gabarit)
+            } ?: throw ExceptionRessourceIntrouvable("Gabaritproduit avec l'ID $idGabaritProduit non trouvé")
         } catch (e: IllegalArgumentException) {
             throw ExceptionRequeteInvalide("Requête invalide : ${e.message}")
-        }  catch (e: Exception) {
+        } catch (e: Exception) {
             throw ExceptionRessourceIntrouvable("Gabaritproduit avec l'ID $idGabaritProduit non trouvé")
         }
     }
