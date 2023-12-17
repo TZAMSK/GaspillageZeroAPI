@@ -6,6 +6,7 @@ import com.GaspillageZeroAPI.DAO.ÉpicerieDAO
 import com.GaspillageZeroAPI.Exceptions.DroitAccèsInsuffisantException
 import com.GaspillageZeroAPI.Modèle.Commande
 import org.springframework.stereotype.Service
+import java.security.Principal
 
 @Service
 class CommandeService(val dao: CommandeDAO, val utilisateurDAO : UtilisateurDAO, val épicerieDAO : ÉpicerieDAO) {
@@ -39,7 +40,14 @@ class CommandeService(val dao: CommandeDAO, val utilisateurDAO : UtilisateurDAO,
 
     fun ajouter(commande: Commande): Commande? = dao.ajouter(commande)
 
-    fun supprimer(idCommande: Int): Commande? = dao.supprimer(idCommande)
+    fun supprimer(idCommande: Int, principal: String) {
+        val utilisateur = dao.chercherParCode(idCommande)?.utilisateur
+        if(utilisateur?.code != null && utilisateurDAO.validerUtilisateur(utilisateur.code, principal)){
+            dao.supprimer(idCommande)
+        }else{
+            throw DroitAccèsInsuffisantException("Seul l'utilisateur " + principal + "peut supprimer cette commande")
+        }
+    }
 
     fun modifier(idCommande: Int, commande: Commande): Commande? = dao.modifier(idCommande, commande)
 
