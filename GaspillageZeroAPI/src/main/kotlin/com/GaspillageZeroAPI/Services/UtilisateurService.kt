@@ -27,4 +27,6 @@ class UtilisateurService(val dao: UtilisateurDAO) {
         return utilisateur
     }
 
+    fun validerUtilisateur(idUtilisateur: Int, code_courant: String): Boolean = dao.validerUtilisateur(idUtilisateur, code_courant)
+
 }

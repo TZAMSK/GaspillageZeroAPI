@@ -3,6 +3,7 @@ package com.GaspillageZeroAPI.Controleurs
 import com.GaspillageZeroAPI.DAO.SourceDonnées
 import com.GaspillageZeroAPI.Exceptions.ExceptionConflitRessourceExistante
 import com.GaspillageZeroAPI.Exceptions.ExceptionRessourceIntrouvable
+import com.GaspillageZeroAPI.Modèle.Commande
 import com.GaspillageZeroAPI.Services.CommandeService
 import com.fasterxml.jackson.databind.ObjectMapper
 import org.junit.jupiter.api.Test
@@ -134,5 +135,25 @@ class CommandeControleurTestAuthentifiésTests {
                     assertTrue(result.resolvedException is ExceptionRessourceIntrouvable)
                     assertEquals("La commande avec le code 4 est introuvable", result.resolvedException?.message)
                 }
+    }
+
+    @WithMockUser
+    @Test
+    fun `Étant donnée une nouvelle commande, lorsqu'elle est ajoutée avec une requête valide, alors retourner un code 201 Created`() {
+        val nouvelleCommand = Commande(
+                idCommande = null,
+                épicerie = null,
+                utilisateur = null,
+                panier = mutableListOf()
+        )
+
+        Mockito.`when`(service.ajouter(nouvelleCommand)).thenReturn(nouvelleCommand)
+
+        mockMvc.perform(
+                MockMvcRequestBuilders.post("/commande").with(csrf())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(mapper.writeValueAsString(nouvelleCommand)))
+                .andExpect(MockMvcResultMatchers.status().isCreated)
+                .andExpect(MockMvcResultMatchers.header().exists("location"))
     }
 }
