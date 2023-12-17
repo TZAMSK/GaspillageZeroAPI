@@ -9,7 +9,7 @@ values  ("1111", "Place des Chocolats", "Montreal", "QC", "H3A 0G4", "CA"),
 
 insert into utilisateur (nom, prénom, courriel, adresse_id, téléphone, rôle, codeAuth)
 values  ("Montplaisir", "Samuel", "sammontplaisir@gmail.com", 1, "514 123-9895", "client", "auth0|656e22be4178aefc03438594"),
-		("Khakimov", "Alikhan", "akhakimov@gmail.com", 2, "514 676-9823", "client", "auth0|656e22da34408e731c3b0153"),
+		("Khakimov", "Alikhan", "akhakimov@gmail.com", 2, "514 676-9823", "épicerie", "auth0|656e22da34408e731c3b0153"),
 		("Tabti", "Lyazid", "lyatabti@gmail.com", 3, "514 894-8268", "client", "auth0|656e22ff1de2cf4321c09bf1"),
 		("Vienneau", "Joël", "joelvienneau@gmail.com", 4, "514 894-8268", "livreur", "auth0|656e232b4178aefc0343862a"),
 		("Lerouge", "Jean-Gabriel", "gabriellerouge@gmail.com", 5, "514 112-8391", "livreur", "auth0|656e234f1de2cf4321c09c44"),

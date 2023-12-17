@@ -30,7 +30,7 @@ class ÉpicerieControleurTest {
     @Autowired
     private lateinit var mapper: ObjectMapper
 
-    private fun créationÉchantillonEpicerie(idÉpicerie: Int, idAdresse: Int, idUtilisateur: Int, nom: String, courriel: String, téléphone: String, logo: Blob?): Épicerie {
+    private fun créationÉchantillonEpicerie(idÉpicerie: Int, idAdresse: Int, idUtilisateur: Int, nom: String, courriel: String, téléphone: String, logo: String?): Épicerie {
         return Épicerie(idÉpicerie, SourceDonnées.adresses[idAdresse-1], SourceDonnées.utilisateurs[idUtilisateur-1], nom, courriel, téléphone, logo)
     }
 
