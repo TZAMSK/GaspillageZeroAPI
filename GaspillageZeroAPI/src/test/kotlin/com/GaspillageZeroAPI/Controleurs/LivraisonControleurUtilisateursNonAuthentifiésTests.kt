@@ -1,5 +1,5 @@
 package com.GaspillageZeroAPI.Controleurs
-/*
+
 import com.GaspillageZeroAPI.Exceptions.ExceptionRessourceIntrouvable
 import com.GaspillageZeroAPI.Exceptions.LivraisonIntrouvableException
 import com.GaspillageZeroAPI.Modèle.Livraison
@@ -38,8 +38,9 @@ class LivraisonControleurUtilisateursNonAuthentifiésTests {
 
     @Autowired
     private lateinit var mapper: ObjectMapper
-
-    val livraison = Livraison(2, 2, 2, 2)
+}
+    /*
+    val livraison = Livraison(2, 2, 2, 2, "michel")
     val éval = Évaluation(1,1,3,"tres bon")
 
     /*  @Test
@@ -124,20 +125,10 @@ class LivraisonControleurUtilisateursNonAuthentifiésTests {
     }
 
     @Test
-    //@DeleteMapping("/utilisateur/{code_utilisateur}/commande/{idCommande}/livraisons/{code}")
-    fun `Étant donnée le numéro de livraison dont le code est '2' et qui est inscrit au service lorsqu'on effectue une requête DELETE alors on obtient un code de retour 200` (){
-
-        Mockito.doNothing().`when`(service).supprimerLivraison(2)
-
-        mockMvc.perform(MockMvcRequestBuilders.delete("/utilisateur/2/commande/2/livraisons/2"))
-            .andExpect(status().isOk)
-    }
-
-    @Test
     //@PutMapping("/utilisateur/{code_utilisateur}/commande/{idCommande}/livraisons/{code}")
     fun `Étant donnée une livraison avec le code '2', lorsqu'on essaie de modifier un attribut avec la requête PUT, on obtient le code 200` (){
 
-        val updateLivraison = Livraison(2, 2, 2, 3)
+        val updateLivraison = Livraison(2, 2, 2, 3, "michel")
         Mockito.`when`(service.modifierLivraison(2, updateLivraison)).thenReturn(updateLivraison)
 
         mockMvc.perform(MockMvcRequestBuilders.put("/utilisateur/2/commande/2/livraisons/2")
@@ -145,5 +136,17 @@ class LivraisonControleurUtilisateursNonAuthentifiésTests {
             .content(mapper.writeValueAsString(updateLivraison)))
             .andExpect(status().isOk)
     }
+
+    @Test
+    //@DeleteMapping("/utilisateur/{code_utilisateur}/commande/{idCommande}/livraisons/{code}")
+    fun `Étant donnée un utilisateur non-authentifié et le numéro de livraison dont le code est '2' et qui est inscrit au service lorsqu'on effectue une requête DELETE alors on obtient un code de retour 401` (){
+
+        Mockito.doNothing().`when`(service).supprimerLivraison(2, "michel")
+
+        mockMvc.perform(MockMvcRequestBuilders.delete("/utilisateur/2/commande/2/livraisons/2"))
+            .andExpect(status().isUnauthorized)
+    }
 }
 */
+
+

@@ -2,7 +2,6 @@ package com.GaspillageZeroAPI.Services
 
 import com.GaspillageZeroAPI.DAO.UtilisateurDAO
 import com.GaspillageZeroAPI.Modèle.Utilisateur
-import com.GaspillageZeroAPI.Modèle.UtilisateursTable
 import org.springframework.stereotype.Service
 
 @Service

@@ -20,6 +20,7 @@ create table utilisateur (
 	courriel varchar(255) not null,
 	adresse_id int not null,
 	téléphone varchar(255) not null,
+	code_util varchar(255),
 	rôle  set("client", "livreur", "épicerie") not null,
 	constraint fk_utilisateur_adresse_adresse_id foreign key (adresse_id)
 	references adresse(id)
@@ -94,7 +95,7 @@ create table livraison (
 	code int primary key auto_increment,
 	commande_code int not null,
 	utilisateur_code int not null,
-	adresse_id int not null,
+	adresse_id int not null
 	constraint fk_livraison_commande_commandeCode foreign key (commande_code)
 	references commande(code),
 	constraint fk_livraison_utilisateur_utilisateurCode foreign key (utilisateur_code)

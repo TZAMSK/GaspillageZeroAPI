@@ -8,7 +8,7 @@ interface LivraisonDAO: DAO<Livraison> {
     override fun chercherTous(): List<Livraison>
     override fun chercherParCode(code: Int): Livraison?
     fun chercherLivraisonExistanteParCode(code: Int): Int?
-    fun validerGérants(code: Int, nom_gérant: String): Boolean
+    fun chercherParUtilisateurCommandeEtLivraison(code: Int, commande_code: Int, utilisateur_code: String?, livraison_code: Int): Livraison?
     override fun ajouter(livraison: Livraison): Livraison?
     override fun modifier(code: Int, livraison: Livraison): Livraison?
     override fun supprimer(code: Int): Livraison?

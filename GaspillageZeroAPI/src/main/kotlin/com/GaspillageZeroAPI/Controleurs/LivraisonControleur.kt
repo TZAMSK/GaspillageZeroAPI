@@ -12,14 +12,28 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse
 import org.springframework.boot.autoconfigure.neo4j.Neo4jProperties
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
+import org.springframework.security.core.Authentication
+import org.springframework.security.core.annotation.AuthenticationPrincipal
+import org.springframework.security.core.annotation.CurrentSecurityContext
+import org.springframework.security.core.context.SecurityContext
+import org.springframework.security.core.context.SecurityContextHolder
+import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken
+import org.springframework.security.oauth2.core.OAuth2AccessToken
+import org.springframework.security.oauth2.core.OAuth2RefreshToken
+import org.springframework.security.oauth2.core.oidc.OidcUserInfo
+import org.springframework.security.oauth2.core.oidc.user.OidcUser
+import org.springframework.security.oauth2.jwt.Jwt
+import org.springframework.security.oauth2.jwt.JwtDecoder
 import org.springframework.web.bind.annotation.*
+import org.springframework.web.server.ResponseStatusException
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder
 import org.springframework.web.util.UriComponentsBuilder
 import java.net.URI
-
+import java.security.Principal
+import java.security.Security
 
 @RestController
-class LivraisonControleur (val livraisonService: LivraisonService, val évaluationService : ÉvaluationService) {
+class LivraisonControleur (val livraisonService: LivraisonService, val évaluationService : ÉvaluationService)  {
     //Pour accéder à la documentation OpenApi, visitez le lien suivant pour en savoir plus : http://localhost:8080/swagger-ui/index.html
 
     @GetMapping("/evaluations")
@@ -49,12 +63,27 @@ class LivraisonControleur (val livraisonService: LivraisonService, val évaluati
 
     @GetMapping("/utilisateur/{code_utilisateur}/commande/{idCommande}/livraisons/{codeLivraison}")
     @Operation(summary = "Obtenir une livraison en cherchant par code")
-    @ApiResponse(responseCode = "200", description = "Livraison trouvée")
-    @ApiResponse(responseCode = "404", description = "Livraison non-trouvée, veuillez réessayez...")
-    fun obtenirLivraisonParCode(@PathVariable code_utilisateur: Int,
-                                @PathVariable idCommande: Int, @PathVariable codeLivraison: Int) =
+    @ApiResponse(responseCode = "200", description = "Ce code signifie que la livraison a été trouvé avec le bon utilisateur")
+    @ApiResponse(responseCode = "500", description = "Ce code est retournée lorsqu'on essaye de rechercher une livraison qui n'existe pas et envoye une exception avec un message")
+    fun obtenirLivraisonParCode(@PathVariable code_utilisateur: Int, @PathVariable idCommande: Int,
+                                @PathVariable codeLivraison: Int, auth: Authentication?) : Livraison? {
+        try {
+            val code_util = auth?.name
+            val livraisonTrouvée =
+                livraisonService.obtenirLivraisonParCodeUtilisateurEtCommande(
+                    code_utilisateur,
+                    idCommande,
+                    code_util,
+                    codeLivraison
+                )
+            return livraisonTrouvée
+        } catch (e: Exception) {
+            throw ResponseStatusException(
+                HttpStatus.INTERNAL_SERVER_ERROR, "livraison non-trouvée, veuillez réessayez!"
+            )
+        }
+    }
 
-        livraisonService.obtenirLivraisonParCode(codeLivraison) ?: throw ExceptionRessourceIntrouvable("La livraison avec le code $codeLivraison est invalide.")
 
     @PostMapping("/utilisateur/{code_utilisateur}/commande/{idCommande}/livraison")
     @Operation(summary = "Ajouté une livraison")
@@ -92,19 +121,11 @@ class LivraisonControleur (val livraisonService: LivraisonService, val évaluati
 
     @DeleteMapping("/utilisateur/{code_utilisateur}/commande/{idCommande}/livraisons/{code}")
     @Operation(summary = "Supprimer une livraison")
-    @ApiResponse(responseCode = "204", description = "Ce code signifie que la livraison a bien été supprimé et elle retourne aucun contenu.")
-    @ApiResponse(responseCode = "403", description = "Ce code signifie que l'on est interdit de supprimer une livraison, car l'utilisateur n'est pas le bon gérant.")
+    @ApiResponse(responseCode = "204", description = "Ce code signifie que la livraison a bien été supprimé et elle retourne une page sans contenu.")
+    @ApiResponse(responseCode = "401", description = "Ce code signifie que l'utilisateur n'est pas autorisé de supprimer puisqu'il n'est pas authentifié.")
+    @ApiResponse(responseCode = "403", description = "Ce code signifie qu'un utilisateur est interdit de supprimer une livraison, car il n'est pas le bon gérant.")
     @ApiResponse(responseCode = "500", description = "Ce code signifie qu'il y a un problème interne dans le serveur.")
-    fun supprimerLivraison(@PathVariable code: Int, auth: Neo4jProperties.Authentication): ResponseEntity<String> {
-
-        val username = auth.username.substringBefore('@')
-        val validation = livraisonService.obtenirGérants(code, username)
-
-        return if(validation){
-            livraisonService.supprimerLivraison(code, username)
-            ResponseEntity.status(HttpStatus.NO_CONTENT).build()
-        } else {
-            ResponseEntity.status(HttpStatus.FORBIDDEN).build()
-        }
+    fun supprimerLivraison(@PathVariable code: Int)  {
+          livraisonService.supprimerLivraison(code)
     }
 }

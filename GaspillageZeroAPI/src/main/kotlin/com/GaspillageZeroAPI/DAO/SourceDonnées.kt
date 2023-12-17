@@ -19,12 +19,12 @@ class SourceDonnées {
                 Adresse(5, "5555", "Rue WEst", "Toronto", "Ontario", "K1P 5Z9", "Canada"),
         )
         val utilisateurs = mutableListOf(
-                Utilisateur(1, "Montplaisir", "Samuel", "sammontplaisir@gmail.com", adresses[0], "514 123-9895", "client"),
-                Utilisateur(2, "Khakimov", "Alikhan", "akhakimov@gmail.com", adresses[1], "514 676-9823", "client"),
-                Utilisateur(3, "Tabti", "Lyazid", "lyatabti@gmail.com", adresses[2], "514 894-8268", "client"),
-                Utilisateur(4, "Vienneau", "Joël", "joelvienneau@gmail.com", adresses[3], "514 181-9135", "client"),
-                Utilisateur(5, "Lerouge", "Jean-Gabriel", "gabriellerouge@gmail.com", adresses[4], "514 112-8391", "client"),
-                Utilisateur(6, "Ligtas", "Audric", "audricligtas@gmail.com", adresses[4], "514 892-1903", "client")
+                Utilisateur(1, "Montplaisir", "Samuel", "sammontplaisir@gmail.com", adresses[0], "514 123-9895", "client", ""),
+                Utilisateur(2, "Khakimov", "Alikhan", "akhakimov@gmail.com", adresses[1], "514 676-9823", "client", ""),
+                Utilisateur(3, "Tabti", "Lyazid", "lyatabti@gmail.com", adresses[2], "514 894-8268", "client", ""),
+                Utilisateur(4, "Vienneau", "Joël", "joelvienneau@gmail.com", adresses[3], "514 181-9135", "client", ""),
+                Utilisateur(5, "Lerouge", "Jean-Gabriel", "gabriellerouge@gmail.com", adresses[4], "514 112-8391", "client", ""),
+                Utilisateur(6, "Ligtas", "Audric", "audricligtas@gmail.com", adresses[4], "514 892-1903", "client", "")
         )
 
         val épiceries = mutableListOf(
@@ -92,19 +92,14 @@ class SourceDonnées {
         )
 
         val livraison = mutableListOf(
-                Livraison(1,commandes[0].idCommande, null, adresses[0].idAdresse, "gaston"),
-                Livraison(2,commandes[1].idCommande, null, adresses[1].idAdresse, "michel"),
-                Livraison(3,commandes[2].idCommande, null, adresses[2].idAdresse, null)
+                Livraison(1,commandes[0], null, adresses[0]),
+                Livraison(2,commandes[1], null, adresses[1]),
+                Livraison(3,commandes[2], null, adresses[2])
         )
-
-
 
         val avis = mutableListOf(
            Évaluation(1,livraison[0].code,1,"La nourriture est froide" ),
             Évaluation(2,livraison[1].code,5,"Impeccable") ,
-            Évaluation(3,livraison[2].code,4,"Livraison rapide et satisfait") ,
-
-       )
-
+            Évaluation(3,livraison[2].code,4,"Livraison rapide et satisfait") )
     }
 }

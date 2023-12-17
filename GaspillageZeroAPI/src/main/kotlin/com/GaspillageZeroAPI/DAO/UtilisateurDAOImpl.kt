@@ -2,9 +2,7 @@ package com.GaspillageZeroAPI.DAO
 
 import com.GaspillageZeroAPI.Exceptions.ExceptionErreurServeur
 import com.GaspillageZeroAPI.Exceptions.ExceptionRessourceIntrouvable
-import com.GaspillageZeroAPI.Modèle.Produit
 import com.GaspillageZeroAPI.Modèle.Utilisateur
-import com.GaspillageZeroAPI.Modèle.UtilisateursTable
 import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.stereotype.Repository
 import java.sql.ResultSet
@@ -78,7 +76,8 @@ class UtilisateurDAOImpl(private val jdbcTemplate: JdbcTemplate): UtilisateurDAO
             courriel = rs.getString("courriel"),
             adresseDAO.chercherParCode(rs.getInt("adresse_id")),
             téléphone = rs.getString("téléphone"),
-            rs.getString("rôle")
+            rs.getString("rôle"),
+            code_util = rs.getString("code_util")
         )
     }
 }

@@ -1,13 +1,13 @@
 package com.GaspillageZeroAPI.Services
 
 import com.GaspillageZeroAPI.DAO.LivraisonDAO
-import com.GaspillageZeroAPI.DAO.LivraisonDAOImpl
 import com.GaspillageZeroAPI.Exceptions.DroitAccèsInsuffisantException
 import com.GaspillageZeroAPI.Modèle.Livraison
 import org.springframework.stereotype.Service
 
+
 @Service
-class LivraisonService (val livraisonDAO: LivraisonDAO, val livraisonDAOImpl: LivraisonDAOImpl){
+class LivraisonService (val livraisonDAO: LivraisonDAO){
 
     fun obtenirLivraisons(): List<Livraison> {
         return livraisonDAO.chercherTous()
@@ -17,8 +17,8 @@ class LivraisonService (val livraisonDAO: LivraisonDAO, val livraisonDAOImpl: Li
         return livraisonDAO.chercherParCode(code)
     }
 
-    fun obtenirGérants(code:Int, nom_gérant: String): Boolean{
-        return livraisonDAO.validerGérants(code, nom_gérant)
+    fun obtenirLivraisonParCodeUtilisateurEtCommande(code: Int, commande_code: Int, utilisateur_code: String?, livraison_code: Int): Livraison?{
+        return livraisonDAO.chercherParUtilisateurCommandeEtLivraison(code, commande_code, utilisateur_code, livraison_code)
     }
 
     fun obtenirLivraisonExistanteParCode(code: Int) : Int? {
@@ -31,11 +31,7 @@ class LivraisonService (val livraisonDAO: LivraisonDAO, val livraisonDAOImpl: Li
         return livraisonDAO.modifier(code, livraison)
     }
 
-    fun supprimerLivraison(code: Int, nom_gérant: String) {
-        if (livraisonDAO.validerGérants(code, nom_gérant)) {
-            livraisonDAO.supprimer(code)
-        } else {
-            throw DroitAccèsInsuffisantException("Seuls les gérants de l'épicerie " + code + " peuvent le désinscrire. L'utilisateur " + nom_gérant + " n'est pas inscrit comme gérant de cette épicerie.")
-        }
+    fun supprimerLivraison(code: Int) {
+        livraisonDAO.supprimer(code)
     }
 }

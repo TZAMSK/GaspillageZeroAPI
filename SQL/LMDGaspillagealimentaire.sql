@@ -5,16 +5,16 @@ values  ("1111", "Place des Chocolats", "Montreal", "QC", "H3A 0G4", "CA"),
 		("2222", "Longue Rue", "Montreal", "QC", "H1B 0N4", "CA"),
 		("3333", "Rue Addison", "Toronto", "ON", "M5H 2N2", "CA"),
 		("4444", "Rue Est", "Toronto", "ON", "M9B 3N4", "CA"),
-		("5555", "Rue West", "Toronto", "ON", "K1P 5Z9", "CA");
+		("5555", "Rue West", "Toronto", "ON", "K1P 5Z9", "CA"),
+		("6666", "Rue October", "Calgary", "AB", "H0Y 6H7", "CA");
 
-insert into utilisateur (nom, prénom, courriel, adresse_id, téléphone, rôle)
-values  ("Montplaisir", "Samuel", "sammontplaisir@gmail.com", 1, "514 123-9895", "client"),
-		("Khakimov", "Alikhan", "akhakimov@gmail.com", 2, "514 676-9823", "client"),
-		("Tabti", "Lyazid", "lyatabti@gmail.com", 3, "514 894-8268", "client"),
-		("Vienneau", "Joël", "joelvienneau@gmail.com", 4, "514 894-8268", "livreur"),
-		("Lerouge", "Jean-Gabriel", "gabriellerouge@gmail.com", 5, "514 112-8391", "livreur"),
-		("Ligtas", "Audric", "audricligtas@gmail.com", 5, "514 892-1903", "épicerie");
-
+insert into utilisateur (nom, prénom, courriel, adresse_id, téléphone, rôle, code_util)
+values  ("Montplaisir", "Samuel", "sammontplaisir@gmail.com", 1, "514 123-9895", "client", "auth0|657e61dfd4eada6b02d17dd9"),
+		("Khakimov", "Alikhan", "akhakimov@gmail.com", 2, "514 676-9823", "client", "auth0|657e624f9a0fa387ad49396e"),
+		("Tabti", "Lyazid", "lyatabti@gmail.com", 3, "514 894-8268", "client", "auth0|657e62829a0fa387ad493980"),
+		("Vienneau", "Joël", "joelvienneau@gmail.com", 4, "514 894-8268", "livreur", "auth0|657e62df17683158f971585b"),
+		("Lerouge", "Jean-Gabriel", "gabriellerouge@gmail.com", 5, "514 112-8391", "livreur", "auth0|657e63284d56c64e93880850"),
+		("Ligtas", "Audric", "audricligtas@gmail.com", 6, "514 892-1903", "épicerie", "auth0|657e6357b037b915578c1335");
 
 insert into épicerie(adresse_id, utilisateur_code, nom, courriel, téléphone)
 values  (2, 2, "Metro", "metro@gmail.com", "514 231-6666"),
@@ -42,8 +42,8 @@ values  (1, 1, 2),
 
 insert into livraison(commande_code, utilisateur_code, adresse_id)
 values  (1, 4, 4),
-		(2, 3, 3),
-		(3, 4, 4);
+        (2, 3, 3),
+        (3, 4, 4);
 
 insert into avis (livraison_code, avis, commentaire)
 values  (1, 4, 'Super! merci beaucoup'),

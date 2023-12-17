@@ -7,5 +7,6 @@ data class Utilisateur(
         val courriel: String,
         val adresse: Adresse?,
         val téléphone: String,
-        val rôle: String) {
+        val rôle: String,
+        val code_util: String) {
 }
