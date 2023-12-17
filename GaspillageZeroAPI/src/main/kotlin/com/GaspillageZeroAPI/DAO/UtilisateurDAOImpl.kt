@@ -25,6 +25,14 @@ class UtilisateurDAOImpl(private val jdbcTemplate: JdbcTemplate): UtilisateurDAO
         }
     }
 
+    override fun validerCodeAuth0(code: Int): String? {
+        return jdbcTemplate.queryForObject(
+            "SELECT code_util FROM utilisateur WHERE code = ?", arrayOf(code))
+        { rs, _ ->
+            rs.getString("code_util")
+        }
+    }
+
     private fun obtenirProchaineIncrementationIDUtilisateur():Int?{
         return jdbcTemplate.queryForObject(
                 "SELECT auto_increment FROM INFORMATION_SCHEMA.TABLES WHERE table_schema = 'gaspillagealimentaire' AND table_name = 'utilisateur'"

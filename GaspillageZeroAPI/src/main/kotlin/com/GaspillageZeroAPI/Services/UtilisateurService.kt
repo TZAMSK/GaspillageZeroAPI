@@ -9,6 +9,7 @@ class UtilisateurService(val dao: UtilisateurDAO) {
 
     fun chercherTous(): List<Utilisateur> = dao.chercherTous()
     fun chercherParCode(idUtilisateur: Int): Utilisateur? = dao.chercherParCode(idUtilisateur)
+    fun validerCodeAuth0(code: Int): String? = dao.validerCodeAuth0(code)
     fun ajouter(utilisateur: Utilisateur): Utilisateur? = dao.ajouter(utilisateur)
     fun supprimer(idUtilisateur: Int): Utilisateur? = dao.supprimer(idUtilisateur)
     fun modifier(idUtilisateur: Int, utilisateur: Utilisateur): Utilisateur? = dao.modifier(idUtilisateur, utilisateur)
