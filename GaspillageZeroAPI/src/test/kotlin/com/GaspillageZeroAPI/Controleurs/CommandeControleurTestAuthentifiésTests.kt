@@ -96,7 +96,7 @@ class CommandeControleurTestAuthentifiésTests {
     @WithMockUser
     @Test
     fun `Étant donnée une commande avec le code 3, lorsqu'on essaie de supprimer avec la requête DELETE la commande avec le code 3, on obtient le code 200`(){
-        Mockito.doNothing().`when`(service).supprimer(3)
+        Mockito.doNothing().`when`(service).supprimer(3, "")
 
         // Act and Assert
         mockMvc.perform(MockMvcRequestBuilders.delete("/commande/3").with(csrf()))
@@ -110,7 +110,7 @@ class CommandeControleurTestAuthentifiésTests {
 
         Mockito.`when`(service.modifier(3, updatedCommand)).thenReturn(updatedCommand)
 
-        mockMvc.perform(MockMvcRequestBuilders.put("/commande/3")
+        mockMvc.perform(MockMvcRequestBuilders.put("/commande/3").with(csrf())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(mapper.writeValueAsString(updatedCommand)))
                 .andExpect(status().isOk)
@@ -119,13 +119,14 @@ class CommandeControleurTestAuthentifiésTests {
                 .andExpect(jsonPath("$.itemsPanier[1].produit.nomProduit").value("updated-cabbage"))
     }
 
+    @WithMockUser
     @Test
     fun `Étant donnée une commande avec le code 4 qui n'existe pas, lorsqu'on exécute un requête PUT afin de modifier un attribut on obtient alors un code d'erreur 404`(){
         val updatedCommand = SourceDonnées.commandes.get(2)
 
         Mockito.`when`(service.modifier(4, updatedCommand)).thenThrow(ExceptionRessourceIntrouvable("La commande avec le code 4 est introuvable"))
 
-        mockMvc.perform(MockMvcRequestBuilders.put("/commande/4")
+        mockMvc.perform(MockMvcRequestBuilders.put("/commande/4").with(csrf())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(mapper.writeValueAsString(updatedCommand)))
                 .andExpect(status().isNotFound)
