@@ -38,9 +38,12 @@ class CommandeControleur(val service: CommandeService) {
     @GetMapping("/utilisateur/{idUtilisateur}/commandes/")
     fun obtenirCommandesParUtilisateur(
             @PathVariable idUtilisateur: Int,
-            @RequestParam code_util: String
+            principal: Principal?
     ): ResponseEntity<List<Commande>> {
-        val commandes = service.chercherCommandesParUtilisateur(idUtilisateur, code_util)
+        if(principal == null){
+            throw ExceptionAuthentification("Veuillez vous authentifier")
+        }
+        val commandes = service.chercherCommandesParUtilisateur(idUtilisateur, principal.name)
 
         return if (commandes != null && commandes.isNotEmpty()) {
             ResponseEntity.ok(commandes)
