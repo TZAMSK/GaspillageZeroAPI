@@ -54,7 +54,7 @@ class CommandeControleurTestNonAuthentifiésTests {
 
     @Test
     fun `Étant donnée un utilisateur qui n'est pas authentifié, lorsque j'essaie d'ajouter une commande avec une requête POST, on obtient alors un code de retour 401`(){
-        Mockito.`when`(service.ajouter(SourceDonnées.commandes[0])).thenReturn(SourceDonnées.commandes[0])
+        Mockito.`when`(service.ajouter(SourceDonnées.commandes[0], principal)).thenReturn(SourceDonnées.commandes[0])
 
         mockMvc.perform(
                 MockMvcRequestBuilders.post("/commande").with(csrf())

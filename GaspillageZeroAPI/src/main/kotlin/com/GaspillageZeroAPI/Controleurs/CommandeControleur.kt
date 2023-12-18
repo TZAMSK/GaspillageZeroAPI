@@ -2,7 +2,6 @@ package com.GaspillageZeroAPI.Controleurs
 
 import com.GaspillageZeroAPI.Exceptions.ExceptionAuthentification
 import com.GaspillageZeroAPI.Exceptions.ExceptionRessourceIntrouvable
-import com.GaspillageZeroAPI.Modèle.Adresse
 import com.GaspillageZeroAPI.Modèle.Commande
 import com.GaspillageZeroAPI.Services.CommandeService
 import io.swagger.v3.oas.annotations.Operation
@@ -12,7 +11,6 @@ import io.swagger.v3.oas.annotations.tags.Tag
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder
-import java.lang.Exception
 import java.net.URI
 import java.security.Principal
 
@@ -117,8 +115,8 @@ class CommandeControleur(val service: CommandeService) {
     ])
     @Operation(summary = "Permet d'ajouter une commande à la base de données")
     @PostMapping("/commande")
-    fun ajouterCommande(@RequestBody commande: Commande): ResponseEntity<Commande> {
-        val commande = service.ajouter(commande)
+    fun ajouterCommande(@RequestBody commande: Commande, principal: Principal?): ResponseEntity<Commande> {
+        val commande = service.ajouter(commande, principal)
 
         if(commande != null) {
             val location: URI = ServletUriComponentsBuilder

@@ -4,6 +4,7 @@ import com.GaspillageZeroAPI.DAO.CommandeDAO
 import com.GaspillageZeroAPI.DAO.UtilisateurDAO
 import com.GaspillageZeroAPI.DAO.ÉpicerieDAO
 import com.GaspillageZeroAPI.Exceptions.DroitAccèsInsuffisantException
+import com.GaspillageZeroAPI.Exceptions.ExceptionAuthentification
 import com.GaspillageZeroAPI.Modèle.Commande
 import org.springframework.stereotype.Service
 import java.security.Principal
@@ -38,7 +39,19 @@ class CommandeService(val dao: CommandeDAO, val utilisateurDAO : UtilisateurDAO,
     }
 
 
-    fun ajouter(commande: Commande): Commande? = dao.ajouter(commande)
+    fun ajouter(commande: Commande, principal: Principal?): Commande? {
+        var uneCommande: Commande? = null
+        if(principal == null){
+            throw ExceptionAuthentification("Vous devez vous enthentifier afin de pouvoir faire cet action")
+        }
+
+        if(utilisateurDAO.validerUtilisateur(commande.utilisateur?.code ?: 0, principal.name)){
+            uneCommande = dao.ajouter(commande)
+        }else{
+            throw DroitAccèsInsuffisantException("Vous ne pouvez pas creer de commande pour les autres compte sauf le votre ")
+        }
+        return uneCommande
+    }
 
     fun supprimer(idCommande: Int, principal: String) {
         val utilisateur = dao.chercherParCode(idCommande)?.utilisateur
