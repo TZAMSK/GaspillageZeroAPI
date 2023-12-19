@@ -28,8 +28,9 @@ class CommandeControleur(val service: CommandeService) {
     ])
     @Operation(summary = "Obtenir la commande par le ID de celui-ci")
     @GetMapping("/commande/{idCommande}")
-    fun obtenirCommandeparCode(@PathVariable idCommande: Int) = service.chercherParCode(idCommande) ?: throw ExceptionRessourceIntrouvable("La commande avec le code $idCommande est introuvable")
-
+    fun obtenirCommandeparCode(@PathVariable idCommande: Int, principal: Principal) =
+            service.chercherParCode(idCommande, principal.name)
+                    ?: throw ExceptionRessourceIntrouvable("La commande avec le code $idCommande est introuvable")
     @ApiResponses(value = [
         ApiResponse(responseCode = "200", description = "Commande trouvée"),
         ApiResponse(responseCode = "404", description = "commande non trouvé")

@@ -14,7 +14,16 @@ class CommandeService(val dao: CommandeDAO, val utilisateurDAO : UtilisateurDAO,
 
     fun chercherTous(): List<Commande> = dao.chercherTous()
 
-    fun chercherParCode(idCommande: Int): Commande? = dao.chercherParCode(idCommande)
+    fun chercherParCode(idCommande: Int, principal: String): Commande? {
+        val commande = dao.chercherParCode(idCommande)
+        val utilisateur = commande?.utilisateur
+
+        if (utilisateur?.code != null && utilisateurDAO.validerUtilisateur(utilisateur.code, principal)) {
+            return commande
+        } else {
+            throw DroitAccèsInsuffisantException("L'utilisateur $principal ne peut pas accéder à cette commande")
+        }
+    }
 
 
     fun chercherCommandesParUtilisateur(idUtilisateur: Int, code_util: String): List<Commande>?{
