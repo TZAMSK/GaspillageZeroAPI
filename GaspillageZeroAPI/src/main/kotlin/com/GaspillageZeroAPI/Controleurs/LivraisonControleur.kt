@@ -1,5 +1,7 @@
 package com.GaspillageZeroAPI.Controleurs
 
+import com.GaspillageZeroAPI.Exceptions.DroitAccèsInsuffisantException
+import com.GaspillageZeroAPI.Exceptions.ExceptionAuthentification
 import com.GaspillageZeroAPI.Exceptions.ExceptionRessourceIntrouvable
 import com.GaspillageZeroAPI.Exceptions.LivraisonIntrouvableException
 import com.GaspillageZeroAPI.Modèle.Livraison
@@ -16,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder
 import java.net.URI
+import java.security.Principal
 
 @RestController
 class LivraisonControleur (val livraisonService: LivraisonService, val commandeService: CommandeService,
@@ -44,17 +47,28 @@ class LivraisonControleur (val livraisonService: LivraisonService, val commandeS
     @GetMapping("/utilisateur/{code_utilisateur}/commande/{idCommande}/livraisons")
     @Operation(summary = "Obtenir la liste des livraisons")
     @ApiResponse(responseCode = "200", description = "Liste des livraisons trouvées")
-    @ApiResponse(responseCode = "404", description = "Liste des livraisons non-trouvées, veuillez réessayez...")
-    fun obtenirLivraisons(@PathVariable codeUtilisateur: Int, @PathVariable idÉpicerie: Int,
-                          @PathVariable idCommande: Int): ResponseEntity<List<Livraison>> {
-        val utilisateur = utilisateurService.chercherParCode(codeUtilisateur)
-        val commande = commandeService.chercherParCode(idCommande)
+    @ApiResponse(responseCode = "404", description = "Liste des livraisons non-trouvées, veuillez réessayer...")
+    @ApiResponse(responseCode = "403", description = "Accès interdit")
+    fun obtenirLivraisons(
+            @PathVariable code_utilisateur: Int,
+            @PathVariable idCommande: Int?,
+            principal: Principal
+    ): ResponseEntity<List<Livraison>> {
+        if (principal == null) {
+            throw ExceptionAuthentification("Vous devez vous authentifier")
+        }
 
-        return if (utilisateur != null && commande != null) {
+        val utilisateur = utilisateurService.chercherParCode(code_utilisateur)
+        val commande = idCommande?.let { commandeService.chercherParCode(it) }
+
+        if (utilisateur == null || commande == null) {
+            throw ExceptionRessourceIntrouvable("Non existant")
+        }
+        try {
             val livraisons = livraisonService.obtenirLivraisons()
-            ResponseEntity.status(HttpStatus.OK).body(livraisons)
-        } else {
-            ResponseEntity.status(HttpStatus.NOT_FOUND).build()
+            return ResponseEntity.status(HttpStatus.OK).body(livraisons)
+        } catch (e: DroitAccèsInsuffisantException) {
+            throw ExceptionAuthentification("Accès interdit")
         }
     }
 

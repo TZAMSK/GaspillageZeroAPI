@@ -3,6 +3,7 @@ package com.GaspillageZeroAPI.DAO
 import com.GaspillageZeroAPI.Exceptions.ExceptionErreurServeur
 import com.GaspillageZeroAPI.Exceptions.ExceptionRessourceIntrouvable
 import com.GaspillageZeroAPI.Modèle.GabaritProduit
+import com.GaspillageZeroAPI.Modèle.Utilisateur
 import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.stereotype.Repository
 import java.lang.Exception
@@ -63,6 +64,14 @@ class GabaritProduitDAOImpl(private val jdbcTemplate: JdbcTemplate): GabaritProd
             throw ExceptionErreurServeur("Erreur lors de la modification du gabararit produit avec l'ID $idGabaritProduit: ${e.message}")
         }
         return gabaritProduit
+    }
+
+
+    override fun estGerantParCode(code: String): Boolean {
+        val utilisateurDAO = UtilisateurDAOImpl(jdbcTemplate)
+        val utilisateurs = utilisateurDAO.chercherTous()
+        val utilisateur = utilisateurs.find { it.tokenAuth0 == code }
+        return utilisateur?.rôle?.contains("épicerie") ?: false
     }
 
     private fun mapRowToGabaritProduit(resultat: ResultSet):GabaritProduit{

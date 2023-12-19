@@ -92,6 +92,8 @@ class UtilisateurDAOImpl(private val jdbcTemplate: JdbcTemplate): UtilisateurDAO
         )
     }
 
-
+    override fun validerDroit(utilisateur: Utilisateur?, role: String?): Boolean {
+        return utilisateur?.rôle == role
+    }
 
 }

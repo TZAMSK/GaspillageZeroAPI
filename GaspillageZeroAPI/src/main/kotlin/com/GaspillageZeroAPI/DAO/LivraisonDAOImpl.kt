@@ -75,10 +75,11 @@ class LivraisonDAOImpl(val jdbcTemplate: JdbcTemplate): LivraisonDAO {
 
 
 
-
-
-
-
+    override fun TrouverParCommandeCode(commandeCode: Int): List<Livraison> {
+        return jdbcTemplate.query("SELECT * FROM Livraison WHERE commande_code = ?", arrayOf(commandeCode)) { rs, _ ->
+            mapRowToLivraison(rs)
+        }
+    }
 
 
     private fun mapRowToLivraison(rs: ResultSet): Livraison {

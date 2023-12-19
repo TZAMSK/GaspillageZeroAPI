@@ -14,6 +14,7 @@ import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import java.io.ByteArrayOutputStream
+import java.security.Principal
 import java.util.*
 import javax.sql.rowset.serial.SerialBlob
 
@@ -69,9 +70,9 @@ class GabaritProduitController(val service: GabaritProduitService) {
     ])
     @Operation(summary = "Ajouter un gabaritproduit")
     @PostMapping("/gabaritproduit")
-    fun ajouterGabarit(@RequestBody gabaritProduit: GabaritProduit): ResponseEntity<Void> {
+    fun ajouterGabarit(@RequestBody gabaritProduit: GabaritProduit, principal: Principal): ResponseEntity<Void> {
         return try {
-            service.ajouter(gabaritProduit)
+            service.ajouter(gabaritProduit, principal.name)
             ResponseEntity.status(HttpStatus.CREATED).build()
         } catch (e: DataIntegrityViolationException) {
             throw ExceptionConflitRessourceExistante("Conflit: Violation de contrainte")
@@ -89,9 +90,9 @@ class GabaritProduitController(val service: GabaritProduitService) {
     ])
     @Operation(summary = "Supprimer un gabaritproduit par son ID")
     @DeleteMapping("/gabaritproduit/{idGabaritProduit}")
-    fun supprimerGabarit(@PathVariable idGabaritProduit: Int): ResponseEntity<Void> {
+    fun supprimerGabarit(@PathVariable idGabaritProduit: Int, principal: Principal): ResponseEntity<Void> {
         return try {
-            if (service.supprimer(idGabaritProduit)) {
+            if (service.supprimer(idGabaritProduit, principal.name)) {
                 ResponseEntity.ok().build()
             } else {
                 throw ExceptionRessourceIntrouvable("Gabaritproduit avec l'ID $idGabaritProduit non trouvé")
@@ -112,9 +113,9 @@ class GabaritProduitController(val service: GabaritProduitService) {
     ])
     @Operation(summary = "Modifier un gabaritproduit par son ID")
     @PutMapping("/gabaritproduit/{idGabaritProduit}")
-    fun modifierGabarit(@PathVariable idGabaritProduit: Int, @RequestBody gabaritProduit: GabaritProduit): ResponseEntity<Void> {
+    fun modifierGabarit(@PathVariable idGabaritProduit: Int, @RequestBody gabaritProduit: GabaritProduit, principal: Principal): ResponseEntity<Void> {
         return try {
-            if (service.modifier(idGabaritProduit, gabaritProduit)) {
+            if (service.modifier(idGabaritProduit, gabaritProduit, principal.name)) {
                 ResponseEntity.ok().build()
             } else {
                 throw ExceptionRessourceIntrouvable("Gabaritproduit avec l'ID $idGabaritProduit non trouvé")

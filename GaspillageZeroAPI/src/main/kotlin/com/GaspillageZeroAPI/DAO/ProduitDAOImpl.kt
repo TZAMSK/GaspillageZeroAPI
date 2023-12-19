@@ -94,6 +94,13 @@ class ProduitDAOImpl(private val jdbcTemplate: JdbcTemplate): ProduitDAO {
         return produitParCodeParÉpicerie
     }
 
+    override fun estGerantParCode(code: String): Boolean {
+        val utilisateurDAO = UtilisateurDAOImpl(jdbcTemplate)
+        val utilisateurs = utilisateurDAO.chercherTous()
+        val utilisateur = utilisateurs.find { it.tokenAuth0 == code }
+        return utilisateur?.rôle?.contains("épicerie") ?: false
+    }
+
 
     private fun mapRowToProduit(resultat: ResultSet): Produit {
         val épicerieDAO = ÉpicerieDAOImpl(jdbcTemplate)

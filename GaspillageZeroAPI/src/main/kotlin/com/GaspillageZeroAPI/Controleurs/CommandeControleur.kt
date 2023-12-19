@@ -35,6 +35,7 @@ class CommandeControleur(val service: CommandeService) {
             produces = ["application/json"])
     fun obtenirCommandes() = service.chercherTous()
 
+
     @Operation(
             summary = "Obtenir une commande par son code",
             description = "Retourne une commande grâce à son ID.",
@@ -64,6 +65,7 @@ class CommandeControleur(val service: CommandeService) {
     @GetMapping(
             value = ["/utilisateur/{idUtilisateur}/commandes/"],
             produces = ["application/json"])
+
     fun obtenirCommandesParUtilisateur(
             @PathVariable idUtilisateur: Int,
             principal: Principal?
@@ -142,7 +144,6 @@ class CommandeControleur(val service: CommandeService) {
         if(principal == null){
             throw ExceptionAuthentification("Vous devez vous authentifier")
         }
-
         service.supprimer(idCommande, principal.name)
     }
 
@@ -154,8 +155,11 @@ class CommandeControleur(val service: CommandeService) {
     ])
     @Operation(summary = "Permet de modifier les informations d'une commande")
     @PutMapping("/commande/{idCommande}")
-    fun modifierCommande(@PathVariable idCommande: Int, @RequestBody commande: Commande){
-        service.modifier(idCommande, commande)
+    fun modifierCommande(@PathVariable idCommande: Int, principal: Principal?, @RequestBody commande: Commande){
+        if(principal == null){
+            throw ExceptionAuthentification("Vous devez vous authentifier")
+        }
+        service.modifier(idCommande, commande, principal.name)
     }
 
 
