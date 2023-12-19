@@ -61,8 +61,10 @@ class UtilisateurControleur(val service: UtilisateurService) {
     ])
     @Operation(summary = "Permet de supprimer un utilisateur de la base de données")
     @DeleteMapping("/utilisateur/{idUtilisateur}")
-    fun suppimerUtilisateur(@PathVariable idUtilisateur: Int) {
+    fun suppimerUtilisateur(@PathVariable idUtilisateur: Int): ResponseEntity<Utilisateur> {
         service.supprimer(idUtilisateur)
+
+        return ResponseEntity.noContent().build()
     }
 
     @ApiResponses(value = [

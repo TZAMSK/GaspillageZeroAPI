@@ -140,11 +140,12 @@ class CommandeControleur(val service: CommandeService) {
     ])
     @Operation(summary = "Permet de retirer une commande de la base de données")
     @DeleteMapping("/commande/{idCommande}")
-    fun suppimerCommande(@PathVariable idCommande: Int, principal: Principal?) {
+    fun suppimerCommande(@PathVariable idCommande: Int, principal: Principal?): ResponseEntity<Commande> {
         if(principal == null){
             throw ExceptionAuthentification("Vous devez vous authentifier")
         }
         service.supprimer(idCommande, principal.name)
+        return ResponseEntity.noContent().build()
     }
 
     @ApiResponses(value = [
