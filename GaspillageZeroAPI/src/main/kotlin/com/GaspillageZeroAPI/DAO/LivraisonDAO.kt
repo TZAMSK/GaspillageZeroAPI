@@ -10,4 +10,6 @@ interface LivraisonDAO: DAO<Livraison> {
     override fun modifier(code: Int, livraison: Livraison): Livraison?
     override fun supprimer(code: Int): Livraison?
 
+    fun TrouverParCommandeCode(commandeCode: Int): List<Livraison>
+
 }

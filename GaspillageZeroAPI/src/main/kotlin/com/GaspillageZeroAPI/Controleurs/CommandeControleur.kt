@@ -107,7 +107,6 @@ class CommandeControleur(val service: CommandeService) {
         if(principal == null){
             throw ExceptionAuthentification("Vous devez vous authentifier")
         }
-
         service.supprimer(idCommande, principal.name)
     }
 
