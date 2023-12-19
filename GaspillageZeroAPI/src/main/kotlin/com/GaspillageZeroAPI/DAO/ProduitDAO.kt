@@ -11,4 +11,5 @@ interface ProduitDAO : DAO<Produit> {
 
     fun chercherParÉpicerie(idProduit: Int): List<Produit>?
     fun chercherParÉpicerieParCode(code_épicerie: Int, code_produit: Int): Produit?
+    fun estGerantParCode(code: String): Boolean
 }
