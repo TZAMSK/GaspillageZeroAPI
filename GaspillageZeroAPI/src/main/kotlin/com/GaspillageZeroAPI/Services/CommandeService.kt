@@ -2,7 +2,8 @@ package com.GaspillageZeroAPI.Services
 
 import com.GaspillageZeroAPI.DAO.*
 import com.GaspillageZeroAPI.Exceptions.DroitAccèsInsuffisantException
-import com.GaspillageZeroAPI.Exceptions.ExceptionSuppressionCommande
+import com.GaspillageZeroAPI.Exceptions.ExceptionAuthentification
+import com.GaspillageZeroAPI.Exceptions.ExceptionRessourceIntrouvable
 import com.GaspillageZeroAPI.Modèle.Commande
 import org.springframework.stereotype.Service
 import java.security.Principal
@@ -14,15 +15,11 @@ class CommandeService(val dao: CommandeDAO, val utilisateurDAO : UtilisateurDAO,
 
     fun chercherTous(): List<Commande> = dao.chercherTous()
 
-    fun chercherParCode(idCommande: Int, principal: String): Commande? {
+    fun chercherParCode(idCommande: Int): Commande? {
         val commande = dao.chercherParCode(idCommande)
         val utilisateur = commande?.utilisateur
 
-        if (utilisateur?.code != null && utilisateurDAO.validerUtilisateur(utilisateur.code, principal)) {
-            return commande
-        } else {
-            throw DroitAccèsInsuffisantException("L'utilisateur $principal ne peut pas accéder à cette commande")
-        }
+        return commande
     }
 
 
@@ -47,21 +44,27 @@ class CommandeService(val dao: CommandeDAO, val utilisateurDAO : UtilisateurDAO,
     }
 
 
-    fun ajouter(commande: Commande): Commande? = dao.ajouter(commande)
+    fun ajouter(commande: Commande, principal: Principal?): Commande? {
+        var uneCommande: Commande? = null
+        if(principal == null){
+            throw ExceptionAuthentification("Vous devez vous enthentifier afin de pouvoir faire cet action")
+        }
+
+        if(utilisateurDAO.validerUtilisateur(commande.utilisateur?.code ?: 0, principal.name)){
+            uneCommande = dao.ajouter(commande)
+        }else{
+            throw DroitAccèsInsuffisantException("Vous ne pouvez pas creer de commande pour les autres compte sauf le votre ")
+        }
+        return uneCommande
+    }
 
     fun supprimer(idCommande: Int, principal: String) {
-        val commande = dao.chercherParCode(idCommande)
-        val utilisateur = commande?.utilisateur
-        if (utilisateur?.code != null && utilisateurDAO.validerUtilisateur(utilisateur.code, principal)) {
-            val livraisons = livrasonDAO.TrouverParCommandeCode(idCommande)
-            if (livraisons.isNotEmpty()) {
-                for (livraison in livraisons) {
-                    if (livraison.code != null) {
-                        evalDAO.supprimerParLivraisonCode(livraison.code)
-                        livrasonDAO.supprimer(livraison.code)
-                    }
-                }
-            }
+        val utilisateur = dao.chercherParCode(idCommande)?.utilisateur
+        if(utilisateur == null){
+            throw ExceptionRessourceIntrouvable("la commande avec le ID:" + idCommande + " est introuvable")
+        }
+        if(utilisateur?.code != null && utilisateurDAO.validerUtilisateur(utilisateur.code, principal)){
+
             dao.supprimer(idCommande)
         } else {
             throw DroitAccèsInsuffisantException("L'utilisateur $principal ne peut pas supprimer cette commande")

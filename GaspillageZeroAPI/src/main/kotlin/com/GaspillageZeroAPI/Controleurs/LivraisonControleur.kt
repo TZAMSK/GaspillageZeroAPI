@@ -59,7 +59,7 @@ class LivraisonControleur (val livraisonService: LivraisonService, val commandeS
         }
 
         val utilisateur = utilisateurService.chercherParCode(code_utilisateur)
-        val commande = idCommande?.let { commandeService.chercherParCode(it, principal.name) }
+        val commande = idCommande?.let { commandeService.chercherParCode(it) }
 
         if (utilisateur == null || commande == null) {
             throw ExceptionRessourceIntrouvable("Non existant")

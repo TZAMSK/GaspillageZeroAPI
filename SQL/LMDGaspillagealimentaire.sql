@@ -18,7 +18,7 @@ values  ("Montplaisir", "Samuel", "sammontplaisir@gmail.com", 1, "514 123-9895",
 
 insert into épicerie(adresse_id, utilisateur_code, nom, courriel, téléphone)
 values  (2, 2, "Metro", "metro@gmail.com", "514 231-6666"),
-		(4, 2, "iga", "iga@gmail.com", "514 231-6666");
+		(4, 6, "iga", "iga@gmail.com", "514 231-6666");
 
 insert into gabaritProduit(nom, description, catégorie, idÉpicerie)
 values  ("tomate", "tomate rouge ", "Fruit&Légumes", 1),
@@ -30,9 +30,9 @@ values  ("tomate de la ferme Rosemont", "2023-11-20 23:59:59", 33, 1.2, 1, 1),
 		("Boite de concerve de tomate broyées Casa Di Pomodoros", "2023-11-20 23:59:59", 33, 1.2, 1, 2);
 
 insert into commande (épicerie_id, utilisateur_code)
-values  (1, 4),
-		(2, 3),
-		(1, 4);
+values  (1, 1),
+		(2, 1),
+		(1, 1);
 
 insert into commande_produits(commande_code, produit_id, quantité)
 values  (1, 1, 2),
@@ -42,7 +42,7 @@ values  (1, 1, 2),
 
 insert into livraison(commande_code, utilisateur_code, adresse_id)
 values  (1, 4, 4),
-		(2, 3, 3),
+		(2, 5, 3),
 		(3, 4, 4);
 
 insert into avis (livraison_code, avis, commentaire)

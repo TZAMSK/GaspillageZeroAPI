@@ -44,6 +44,7 @@ class ÉvaluationDAOImpl(val jdbcTemplate: JdbcTemplate) : ÉvaluationDAO {
     }
 
 
+
     override fun supprimerParLivraisonCode(livraisonCode: Int) {
         try {
             jdbcTemplate.update("DELETE FROM avis WHERE livraison_code = ?", livraisonCode)
@@ -51,10 +52,6 @@ class ÉvaluationDAOImpl(val jdbcTemplate: JdbcTemplate) : ÉvaluationDAO {
             throw ExceptionErreurServeur("Erreur lors de la suppression des évaluations associées à la livraison avec l'ID $livraisonCode: ${e.message}")
         }
     }
-
-
-
-
 
     private fun mapRowToLivraison(rs: ResultSet): Évaluation {
         return Évaluation(
