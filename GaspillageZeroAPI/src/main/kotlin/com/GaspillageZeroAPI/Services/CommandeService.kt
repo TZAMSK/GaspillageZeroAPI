@@ -59,7 +59,15 @@ class CommandeService(val dao: CommandeDAO, val utilisateurDAO : UtilisateurDAO,
         }
     }
 
-    fun modifier(idCommande: Int, commande: Commande): Commande? = dao.modifier(idCommande, commande)
+    fun modifier(idCommande: Int, commande: Commande, principal: String){
+        val commande = dao.chercherParCode(idCommande)
+        val utilisateur = commande?.utilisateur
+        if (utilisateur?.code != null && utilisateurDAO.validerUtilisateur(utilisateur.code, principal)) {
+            dao.modifier(idCommande, commande)
+        }else {
+            throw DroitAccèsInsuffisantException("L'utilisateur $principal ne peut pas supprimer cette commande")
+        }
+    }
 
     
 }

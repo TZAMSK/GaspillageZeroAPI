@@ -117,8 +117,11 @@ class CommandeControleur(val service: CommandeService) {
 
     @Operation(summary = "Permet de modifier les informations d'une commande")
     @PutMapping("/commande/{idCommande}")
-    fun modifierCommande(@PathVariable idCommande: Int, @RequestBody commande: Commande){
-        service.modifier(idCommande, commande)
+    fun modifierCommande(@PathVariable idCommande: Int, principal: Principal?, @RequestBody commande: Commande){
+        if(principal == null){
+            throw ExceptionAuthentification("Vous devez vous authentifier")
+        }
+        service.modifier(idCommande, commande, principal.name)
     }
 
 
