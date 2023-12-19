@@ -5,6 +5,7 @@ import com.GaspillageZeroAPI.DAO.UtilisateurDAO
 import com.GaspillageZeroAPI.DAO.ÉpicerieDAO
 import com.GaspillageZeroAPI.Exceptions.DroitAccèsInsuffisantException
 import com.GaspillageZeroAPI.Exceptions.ExceptionAuthentification
+import com.GaspillageZeroAPI.Exceptions.ExceptionRessourceIntrouvable
 import com.GaspillageZeroAPI.Modèle.Commande
 import org.springframework.stereotype.Service
 import java.security.Principal
@@ -55,6 +56,9 @@ class CommandeService(val dao: CommandeDAO, val utilisateurDAO : UtilisateurDAO,
 
     fun supprimer(idCommande: Int, principal: String) {
         val utilisateur = dao.chercherParCode(idCommande)?.utilisateur
+        if(utilisateur == null){
+            throw ExceptionRessourceIntrouvable("la commande avec le ID:" + idCommande + " est introuvable")
+        }
         if(utilisateur?.code != null && utilisateurDAO.validerUtilisateur(utilisateur.code, principal)){
             dao.supprimer(idCommande)
         }else{

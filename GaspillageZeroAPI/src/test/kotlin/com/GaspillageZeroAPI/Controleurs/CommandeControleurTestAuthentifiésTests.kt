@@ -66,7 +66,7 @@ class CommandeControleurTestAuthentifiésTests {
     fun `Étant donnée une commande avec le code 4, lorsqu'on ajoute une commande à l'épicerie avec le code 1 l'aide d'une requète POST on obtient le code 201`(){
         val commandeÀAjouter = SourceDonnées.commandes.get(3)
 
-        Mockito.`when`(service.ajouter(commandeÀAjouter, principal)).thenReturn(commandeÀAjouter)
+        Mockito.`when`(service.ajouter(commandeÀAjouter, null)).thenReturn(commandeÀAjouter)
 
         mockMvc.perform(MockMvcRequestBuilders.post("/commande").with(csrf())
                 .contentType(MediaType.APPLICATION_JSON)
@@ -82,7 +82,7 @@ class CommandeControleurTestAuthentifiésTests {
         val commandeÀAjouter = SourceDonnées.commandes.get(2)
 
 
-        Mockito.`when`(service.ajouter(commandeÀAjouter, principal)).thenThrow(ExceptionConflitRessourceExistante("La ressource avec ce id ${commandeÀAjouter.idCommande} existe déjà dans la base de données"))
+        Mockito.`when`(service.ajouter(commandeÀAjouter, null)).thenThrow(ExceptionConflitRessourceExistante("La ressource avec ce id ${commandeÀAjouter.idCommande} existe déjà dans la base de données"))
 
         mockMvc.perform(post("/commande").with(csrf())
                 .contentType(MediaType.APPLICATION_JSON)
@@ -147,7 +147,7 @@ class CommandeControleurTestAuthentifiésTests {
                 panier = mutableListOf()
         )
 
-        Mockito.`when`(service.ajouter(nouvelleCommand, principal)).thenReturn(nouvelleCommand)
+        Mockito.`when`(service.ajouter(nouvelleCommand, null)).thenReturn(nouvelleCommand)
 
         mockMvc.perform(
                 MockMvcRequestBuilders.post("/commande").with(csrf())

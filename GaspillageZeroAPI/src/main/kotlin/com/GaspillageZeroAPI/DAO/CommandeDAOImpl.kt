@@ -53,6 +53,10 @@ class CommandeDAOImpl(private val jdbcTemplate: JdbcTemplate): CommandeDAO {
             }
         }catch (e: Exception){}
 
+        if(commandesParÉpicerie == null || commandesParÉpicerie.size < 1){
+            throw ExceptionRessourceIntrouvable("Il n'y a pas de commandes pour cette épicerie")
+        }
+
         return commandesParÉpicerie
     }
      

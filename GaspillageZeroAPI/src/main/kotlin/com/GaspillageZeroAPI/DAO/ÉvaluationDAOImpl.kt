@@ -43,13 +43,6 @@ class ÉvaluationDAOImpl(val jdbcTemplate: JdbcTemplate) : ÉvaluationDAO {
         return null
     }
 
-
-
-
-
-
-
-
     private fun mapRowToLivraison(rs: ResultSet): Évaluation {
         return Évaluation(
              idÉvaluation = rs.getInt("id"),

@@ -7,6 +7,7 @@ import com.GaspillageZeroAPI.Services.UtilisateurService
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.responses.ApiResponse
 import io.swagger.v3.oas.annotations.responses.ApiResponses
+import io.swagger.v3.oas.annotations.tags.Tag
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder
@@ -14,6 +15,11 @@ import java.net.URI
 import java.security.Principal
 
 @RestController
+@RequestMapping("\${api.base-path:}")
+@Tag(
+        name = "Utilisateur",
+        description = "Points d'accès aux ressources liées aux utilisateur du service."
+)
 class UtilisateurControleur(val service: UtilisateurService) {
 
     @Operation(summary = "Permet d'obtenir la liste de tout les utilisateur")
