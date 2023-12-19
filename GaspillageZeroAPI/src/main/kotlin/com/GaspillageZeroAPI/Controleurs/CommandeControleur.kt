@@ -35,7 +35,7 @@ class CommandeControleur(val service: CommandeService) {
         ApiResponse(responseCode = "404", description = "commande non trouvé")
     ])
     @Operation(summary = "Permet d'obtenir toutes les commande faites pour l'utlisateur ayant le {idUtilisateur}")
-    @GetMapping("/utilisateur/{idUtilisateur}/commandes/")
+    @GetMapping("/utilisateur/{idUtilisateur}/commandes")
     fun obtenirCommandesParUtilisateur(
             @PathVariable idUtilisateur: Int,
             principal: Principal?
