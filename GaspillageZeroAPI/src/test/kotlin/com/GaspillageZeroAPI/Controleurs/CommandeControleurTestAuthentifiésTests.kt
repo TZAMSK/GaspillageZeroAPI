@@ -73,7 +73,7 @@ class CommandeControleurTestAuthentifiésTests {
     }
     @WithMockUser
     @Test
-    fun `Given a command with code 4, when adding a command to the grocery store with code 1 using a POST request, then receive status code 201`() {
+    fun `Étant donné une commande avec le code 4, lors de l'ajout d'une commande à l'épicerie avec le code 1 à l'aide d'une requête POST, recevez le code d'état 201`() {
         // Given
         val commandeToAdd = SourceDonnées.commandes[3]
 
@@ -119,7 +119,7 @@ class CommandeControleurTestAuthentifiésTests {
 
     @WithMockUser(username = "Samuel", roles = ["client"])
     @Test
-    fun `Given a command with code 3, when trying to modify an attribute with the PUT request, then receive status code 200`() {
+    fun `Étant donné une commande avec le code 3, lorsque vous essayez de modifier un attribut avec la requête PUT, recevez le code d'état 200`() {
         val updatedCommand = SourceDonnées.commandes[2]
         val principal = mock(Principal::class.java)
         given(principal.name).willReturn("Samuel")
@@ -155,7 +155,7 @@ class CommandeControleurTestAuthentifiésTests {
 
         Mockito.`when`(service.modifier(4, updatedCommand, principal))
                 .thenThrow(ExceptionRessourceIntrouvable("La commande avec le code 4 est introuvable"))
-        
+
         mockMvc.perform(
                 MockMvcRequestBuilders.put("/commande/4")
                         .with(csrf())
