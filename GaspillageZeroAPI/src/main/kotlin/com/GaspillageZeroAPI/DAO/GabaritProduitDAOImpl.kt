@@ -51,6 +51,8 @@ class GabaritProduitDAOImpl(private val jdbcTemplate: JdbcTemplate): GabaritProd
             throw ExceptionRessourceIntrouvable("Le gabaritproduit avec le ID $idGabaritProduit est introuvable")
         }
         try{
+            jdbcTemplate.update("DELETE FROM commande_produits WHERE produit_id IN (SELECT id FROM produits WHERE idGabarit = ?)", idGabaritProduit)
+            jdbcTemplate.update("DELETE FROM produits WHERE idGabarit=?",idGabaritProduit)
             jdbcTemplate.update("DELETE FROM gabaritproduit WHERE id=?", idGabaritProduit)
         }catch (e: Exception){throw ExceptionErreurServeur("Erreur lors de la suppression du gabararit produit avec l'ID $idGabaritProduit: ${e.message}")}
         return null
