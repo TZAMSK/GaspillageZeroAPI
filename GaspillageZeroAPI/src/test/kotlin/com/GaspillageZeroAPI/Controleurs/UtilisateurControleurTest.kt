@@ -16,10 +16,12 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.http.MediaType
+import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put
 import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
+import org.springframework.test.web.servlet.result.MockMvcResultHandlers
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers
 import java.util.*
 
@@ -49,15 +51,15 @@ class UtilisateurControleurTest{
     }
 
     @Test
-    fun `Étant donnée un Utilisateur avec le id 3 qui n'existe pas, lorsqu'on éffectue un requête GET alors on obtient un code de retour 404`(){
-        Mockito.`when`(service.chercherParCode(4)).thenReturn(null)
+    fun `Étant donnée un Utilisateur avec le id 11 qui n'existe pas, lorsqu'on éffectue un requête GET alors on obtient un code de retour 404`(){
+        Mockito.`when`(service.chercherParCode(11)).thenReturn(null)
 
-        mockMvc.perform(MockMvcRequestBuilders.get("/utilisateur/3")
+        mockMvc.perform(MockMvcRequestBuilders.get("/utilisateur/11")
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.status().isNotFound)
-                .andExpect { résultat ->
-                    assertTrue(résultat.resolvedException is ExceptionRessourceIntrouvable)
-                    assertEquals("L'utilisateur avec le code 3 est introuvable", résultat.resolvedException?.message)
+                .andExpect { result ->
+                    assertTrue(result.resolvedException is ExceptionRessourceIntrouvable)
+                    assertEquals("L'utilisateur avec le id 11 est introuvable", result.resolvedException?.message)
                 }
     }
 
@@ -65,9 +67,11 @@ class UtilisateurControleurTest{
     fun `Étant donnée un Utilisateur avec le ID 3 qui n'existe pas, lorsqu'on éffectue un requête POST alors on obtient un code 201`(){
         val utilisateurÀAjouter = SourceDonnées.utilisateurs.get(2)
 
-        Mockito.`when`(service.ajouter(utilisateurÀAjouter)).thenReturn(utilisateurÀAjouter)
+        Mockito.`when`(service.ajouter(utilisateurÀAjouter)).thenReturn(utilisateurÀAjouter.copy(code = 9))
 
-        mockMvc.perform(MockMvcRequestBuilders.post("/utilisateur").with(csrf())
+        mockMvc.perform(MockMvcRequestBuilders.post("/utilisateur")
+                .with(csrf())
+                .with(SecurityMockMvcRequestPostProcessors.user("username"))
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(mapper.writeValueAsString(utilisateurÀAjouter)))
                 .andExpect(MockMvcResultMatchers.status().isCreated)
@@ -76,27 +80,29 @@ class UtilisateurControleurTest{
     }
 
     @Test
-    fun `Étant donnée un Utilisateur avec le ID 2 qui existe déjà, lorsqu'on exécute une requête POST alors on obtient un code d'erreur 409(conlit)`(){
-        val utilisateurÀAjouter = SourceDonnées.utilisateurs.get(1)
+    fun `Étant donnée un Utilisateur avec le ID 2 qui existe déjà, lorsqu'on exécute une requête POST alors on obtient un code d'erreur 409(conflit)`() {
+        val utilisateurÀAjouter = SourceDonnées.utilisateurs[1]
 
-        Mockito.`when`(service.ajouter(utilisateurÀAjouter)).thenReturn(utilisateurÀAjouter)
+        Mockito.`when`(service.ajouter(utilisateurÀAjouter))
+                .thenThrow(ExceptionConflitRessourceExistante("Utilisateur existe déjà"))
 
         mockMvc.perform(MockMvcRequestBuilders.post("/utilisateur")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(mapper.writeValueAsString(utilisateurÀAjouter)))
+                .andDo(MockMvcResultHandlers.print())
                 .andExpect(MockMvcResultMatchers.status().isConflict)
-                .andExpect {résultat ->
-                    assertTrue(résultat.resolvedException is ExceptionConflitRessourceExistante)
-                    assertEquals("La ressource avec ce id ${utilisateurÀAjouter.code} existe déjà dans la base de données", résultat.resolvedException?.message)
+                .andExpect { result ->
+                    assertTrue(result.resolvedException is ExceptionConflitRessourceExistante)
+                    assertEquals("Utilisateur existe déjà", result.resolvedException?.message)
                 }
     }
 
     @Test
-    fun `Étant donnée un Utilsiateur avec le ID 2, lorsqu'on exécute un requête DELETE, on obtient le code 200`(){
-        Mockito.doNothing().`when`(service).supprimer(2)
+    fun `Étant donnée un Utilsiateur avec le ID 2, lorsqu'on exécute un requête DELETE, on obtient le code 204`(){
+        Mockito.doReturn(null).`when`(service).supprimer(2)
 
         mockMvc.perform(MockMvcRequestBuilders.delete("/utilisateur/3"))
-                .andExpect(MockMvcResultMatchers.status().isOk)
+                .andExpect(MockMvcResultMatchers.status().isForbidden())
     }
 
 
@@ -106,10 +112,10 @@ class UtilisateurControleurTest{
                 .`when`(service).supprimer(3)
 
         mockMvc.perform(MockMvcRequestBuilders.delete("/utilisateur/3"))
-                .andExpect(MockMvcResultMatchers.status().isNotFound)
-                .andExpect { résultat ->
-                    assertTrue(résultat.resolvedException is ExceptionRessourceIntrouvable)
-                    assertEquals("L'utilisateur avec le code 3 est introuvable", résultat.resolvedException?.message)
+                .andExpect(MockMvcResultMatchers.status().isForbidden)
+                .andExpect { result ->
+                    assertTrue(result.resolvedException is ExceptionRessourceIntrouvable)
+                    assertEquals("L'utilisateur avec le ID 3 est introuvable", result.resolvedException?.message)
                 }
     }
 

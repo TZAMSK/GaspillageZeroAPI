@@ -5,6 +5,7 @@ import com.GaspillageZeroAPI.Exceptions.ExceptionErreurServeur
 import com.GaspillageZeroAPI.Exceptions.ExceptionRequeteInvalide
 import com.GaspillageZeroAPI.Exceptions.ExceptionRessourceIntrouvable
 import com.GaspillageZeroAPI.Modèle.GabaritProduit
+import com.GaspillageZeroAPI.Modèle.Produit
 import com.GaspillageZeroAPI.Services.GabaritProduitService
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.responses.ApiResponse
@@ -59,6 +60,23 @@ class GabaritProduitController(val service: GabaritProduitService) {
             throw ExceptionRequeteInvalide("Requête invalide : ${e.message}")
         } catch (e: Exception) {
             throw ExceptionRessourceIntrouvable("Gabaritproduit avec l'ID $idGabaritProduit non trouvé")
+        }
+    }
+
+    @ApiResponses(value = [
+        ApiResponse(responseCode = "200", description = "Gabarits trouvés"),
+        ApiResponse(responseCode = "404", description = "Gabarits non trouvés"),
+        ApiResponse(responseCode = "500", description = "Erreur interne du serveur")
+    ])
+    @Operation(summary = "Obtenir la liste des gabarits avec le ID de l'épicerie")
+    @GetMapping("/épicerie/{idÉpicerie}/gabaritproduits")
+    fun obtenirGabaritsÉpicerie(@PathVariable idÉpicerie: Int): ResponseEntity<List<GabaritProduit>> {
+        return try {
+            val gabarits = service.chercherParÉpicerie(idÉpicerie)
+                ?: throw ExceptionRessourceIntrouvable("Gabarits de l'épicerie avec l'ID $idÉpicerie non trouvés")
+            ResponseEntity.ok(gabarits)
+        } catch (e: Exception) {
+            throw ExceptionErreurServeur("Erreur interne du serveur", e)
         }
     }
 

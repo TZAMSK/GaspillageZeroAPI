@@ -45,17 +45,17 @@ class CommandeService(val dao: CommandeDAO, val utilisateurDAO : UtilisateurDAO,
 
 
     fun ajouter(commande: Commande, principal: Principal?): Commande? {
-        var uneCommande: Commande? = null
-        if(principal == null){
-            throw ExceptionAuthentification("Vous devez vous enthentifier afin de pouvoir faire cet action")
+        if (principal == null) {
+            throw ExceptionAuthentification("Vous devez vous authentifier pour effectuer cette action.")
         }
 
-        if(utilisateurDAO.validerUtilisateur(commande.utilisateur?.code ?: 0, principal.name)){
-            uneCommande = dao.ajouter(commande)
-        }else{
-            throw DroitAccèsInsuffisantException("Vous ne pouvez pas creer de commande pour les autres compte sauf le votre ")
+        val utilisateurCode = commande.utilisateur?.code ?: 0
+
+        if (utilisateurDAO.validerUtilisateur(utilisateurCode, principal.name)) {
+            return dao.ajouter(commande)
+        } else {
+            throw DroitAccèsInsuffisantException("Vous n'avez pas les droits nécessaires pour créer une commande pour un autre compte que le vôtre.")
         }
-        return uneCommande
     }
 
     fun supprimer(idCommande: Int, principal: String) {
@@ -77,13 +77,24 @@ class CommandeService(val dao: CommandeDAO, val utilisateurDAO : UtilisateurDAO,
         }
     }
 
-    fun modifier(idCommande: Int, commande: Commande, principal: String){
-        val commande = dao.chercherParCode(idCommande)
-        val utilisateur = commande?.utilisateur
-        if (utilisateur?.code != null && utilisateurDAO.validerUtilisateur(utilisateur.code, principal)) {
-            dao.modifier(idCommande, commande)
-        }else {
-            throw DroitAccèsInsuffisantException("L'utilisateur $principal ne peut pas supprimer cette commande")
+    fun modifier(idCommande: Int, nouvelleCommande: Commande, principal: Principal) {
+        val commandeExistante = dao.chercherParCode(idCommande)
+
+        if (commandeExistante != null) {
+            val utilisateur = commandeExistante.utilisateur
+
+            if (utilisateur?.code != null && utilisateurDAO.validerUtilisateur(utilisateur.code, principal.name)) {
+                val commandeModifiee = commandeExistante.copy(
+                        épicerie = nouvelleCommande.épicerie,
+                        utilisateur = nouvelleCommande.utilisateur,
+                        panier = nouvelleCommande.panier
+                )
+                dao.modifier(idCommande, commandeModifiee)
+            } else {
+                throw DroitAccèsInsuffisantException("L'utilisateur $principal ne peut pas modifier cette commande")
+            }
+        } else {
+            throw ExceptionRessourceIntrouvable("La commande avec l'ID $idCommande est introuvable")
         }
     }
 

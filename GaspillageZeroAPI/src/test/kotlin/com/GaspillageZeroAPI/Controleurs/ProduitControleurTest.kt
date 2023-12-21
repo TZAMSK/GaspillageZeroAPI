@@ -60,54 +60,64 @@ class ProduitControleurTest {
     @Test
     fun `Étant donnée un Produit avec le code 4, lorsqu'on ajoute un Produit à l'épicerie avec le code 1 l'aide d'une requète POST on obtient le code 201`() {
         val nouveauProduit = créationÉchantillonProduit(4, "NouveauProduit", Date(), 15, 10.0, 1, 1)
-        Mockito.`when`(service.ajouter(nouveauProduit)).thenReturn(nouveauProduit)
+        val codeUtilisateur = "testUser" // Replace this with a valid code_util value or create a mock
+
+        Mockito.`when`(service.ajouter(nouveauProduit, codeUtilisateur)).thenReturn(nouveauProduit)
 
         mockMvc.perform(post("/produit")
-            .contentType(MediaType.APPLICATION_JSON)
-            .content(mapper.writeValueAsString(nouveauProduit)))
-            .andExpect(status().isCreated)
-            .andExpect(jsonPath("$.idProduit").value(4))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(mapper.writeValueAsString(nouveauProduit)))
+                .andExpect(status().isCreated)
+                .andExpect(jsonPath("$.idProduit").value(4))
     }
 
     @Test
     fun `Étant donnée un Produit avec le code 3 qui existe déjà, lorsqu'on exécute une requête POST, alors on obtient un code d'erreur 409(conflit)`() {
+        val codeUtilisateur = "testUser" // Replace this with a valid code_util value or create a mock
         val produitExistant = créationÉchantillonProduit(3, "ProduitExistant", Date(), 10, 5.0, 1, 1)
-        Mockito.`when`(service.ajouter(produitExistant)).thenThrow(RuntimeException("Conflit"))
+
+        Mockito.`when`(service.ajouter(produitExistant, codeUtilisateur)).thenThrow(RuntimeException("Conflit"))
 
         mockMvc.perform(post("/produit")
-            .contentType(MediaType.APPLICATION_JSON)
-            .content(mapper.writeValueAsString(produitExistant)))
-            .andExpect(status().isConflict)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(mapper.writeValueAsString(produitExistant)))
+                .andExpect(status().isConflict)
     }
 
     @Test
     fun `Étant donnée un Produit avec le code 3, lorsqu'on essaie de supprimer avec la requête DELETE le Produit avec le code 3, on obtient le code 200`() {
-        Mockito.doNothing().`when`(service).supprimer(3)
+        val codeUtilisateur = "testUser" // Replace this with a valid code_util value or create a mock
+
+        Mockito.doNothing().`when`(service).supprimer(3, codeUtilisateur)
 
         mockMvc.perform(delete("/produit/3"))
-            .andExpect(status().isOk)
+                .andExpect(status().isOk)
     }
 
     @Test
     fun `Étant donnée un Produit avec le code 3, lorsqu'on essaie de modifier un attribut avec la requête PUT, on obtient le code 200`() {
+        val codeUtilisateur = "testUser" // Replace this with a valid code_util value or create a mock
         val produitModifié = créationÉchantillonProduit(3, "ProduitModifié", Date(), 20, 10.0, 1, 1)
-        Mockito.`when`(service.modifier(3, produitModifié)).thenReturn(true)
+
+        Mockito.`when`(service.modifier(3, produitModifié, codeUtilisateur)).thenReturn(true)
 
         mockMvc.perform(put("/produit/3")
-            .contentType(MediaType.APPLICATION_JSON)
-            .content(mapper.writeValueAsString(produitModifié)))
-            .andExpect(status().isOk)
-            .andExpect(jsonPath("$.nom").value("ProduitModifié"))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(mapper.writeValueAsString(produitModifié)))
+                .andExpect(status().isOk)
+                .andExpect(jsonPath("$.nom").value("ProduitModifié"))
     }
 
     @Test
     fun `Étant donnée un Produit avec le code 4 qui n'existe pas, lorsqu'on exécute un requête PUT afin de modifier un attribut on obtient alors un code d'erreur 404`() {
+        val codeUtilisateur = "testUser" // Replace this with a valid code_util value or create a mock
         val produitInexistant = créationÉchantillonProduit(4, "ProduitInexistant", Date(), 30, 15.0, 1, 1)
-        Mockito.`when`(service.modifier(4, produitInexistant)).thenThrow(ExceptionRessourceIntrouvable::class.java)
+
+        Mockito.`when`(service.modifier(4, produitInexistant, codeUtilisateur)).thenThrow(ExceptionRessourceIntrouvable::class.java)
 
         mockMvc.perform(put("/produit/4")
-            .contentType(MediaType.APPLICATION_JSON)
-            .content(mapper.writeValueAsString(produitInexistant)))
-            .andExpect(status().isNotFound)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(mapper.writeValueAsString(produitInexistant)))
+                .andExpect(status().isNotFound)
     }
 }

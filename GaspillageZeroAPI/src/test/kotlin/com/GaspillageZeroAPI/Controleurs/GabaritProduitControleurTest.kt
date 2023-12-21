@@ -60,44 +60,53 @@ class GabaritProduitControleurTest {
     }
 
     @Test
-    fun `Étant donnée un GabaritProduit avec le code 4, lorsqu'on ajoute un GabaritProduit à l'épicerie avec le code 1 l'aide d'une requète POST on obtient le code 201`() {
+    fun `Étant donnée un GabaritProduit avec le code 4, lorsqu'on ajoute un GabaritProduit à l'épicerie avec le code 1 à l'aide d'une requête POST, on obtient le code 201`() {
         val gabaritProduit = créationÉchantillonGabaritProduit(1, "NouveauGabarit", "DescriptionNouvelle", "CatégorieNouvelle")
-        Mockito.`when`(service.ajouter(gabaritProduit)).thenReturn(gabaritProduit)
+        val codeUtilisateur = "testUser"
+
+        Mockito.`when`(service.ajouter(gabaritProduit, codeUtilisateur)).thenReturn(gabaritProduit)
 
         mockMvc.perform(post("/gabaritproduits")
-            .contentType(MediaType.APPLICATION_JSON)
-            .content(mapper.writeValueAsString(gabaritProduit)))
-            .andExpect(status().isCreated)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(mapper.writeValueAsString(gabaritProduit)))
+                .andExpect(status().isCreated)
     }
 
     @Test
     fun `Étant donnée un GabaritProduit avec le code 3, lorsqu'on essaie de supprimer avec la requête DELETE le GabaritProduit avec le code 3, on obtient le code 200`() {
-        Mockito.doNothing().`when`(service).supprimer(3)
+        val codeUtilisateur = "testUser"
+
+        Mockito.doNothing().`when`(service).supprimer(3, codeUtilisateur)
 
         mockMvc.perform(delete("/gabaritproduit/3"))
-            .andExpect(status().isOk)
+                .andExpect(status().isOk)
     }
 
     @Test
     fun `Étant donnée un GabaritProduit avec le code 3, lorsqu'on essaie de modifier un attribut avec la requête PUT, on obtient le code 200`() {
         val updatedGabaritProduit = créationÉchantillonGabaritProduit(3, "NomModifié", "DescriptionModifiée", "CatégorieModifiée")
-        Mockito.`when`(service.modifier(3, updatedGabaritProduit)).thenReturn(true)
+        val codeUtilisateur = "testUser"
+
+        Mockito.`when`(service.modifier(3, updatedGabaritProduit, codeUtilisateur)).thenReturn(true)
 
         mockMvc.perform(put("/gabaritproduit/3")
-            .contentType(MediaType.APPLICATION_JSON)
-            .content(mapper.writeValueAsString(updatedGabaritProduit)))
-            .andExpect(status().isOk)
-            .andExpect(jsonPath("$.nom").value("NomModifié"))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(mapper.writeValueAsString(updatedGabaritProduit)))
+                .andExpect(status().isOk)
+                .andExpect(jsonPath("$.nom").value("NomModifié"))
     }
 
     @Test
-    fun `Étant donnée un GabaritProduit avec le code 4 qui n'existe pas, lorsqu'on exécute un requête PUT afin de modifier un attribut on obtient alors un code d'erreur 404`() {
+    fun `Étant donnée un GabaritProduit avec le code 4 qui n'existe pas, lorsqu'on exécute une requête PUT afin de modifier un attribut, on obtient alors un code d'erreur 404`() {
         val updatedGabaritProduit = créationÉchantillonGabaritProduit(4, "NomInexistant", "DescriptionInexistante", "CatégorieInexistante")
-        Mockito.`when`(service.modifier(4, updatedGabaritProduit)).thenThrow(ExceptionRessourceIntrouvable("Le gabarit de code 4 est introuvable"))
+        val codeUtilisateur = "testUser" // Replace this with a valid code_util value or create a mock
+
+        Mockito.`when`(service.modifier(4, updatedGabaritProduit, codeUtilisateur))
+                .thenThrow(ExceptionRessourceIntrouvable("Le gabarit de code 4 est introuvable"))
 
         mockMvc.perform(put("/gabaritproduit/4")
-            .contentType(MediaType.APPLICATION_JSON)
-            .content(mapper.writeValueAsString(updatedGabaritProduit)))
-            .andExpect(status().isNotFound)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(mapper.writeValueAsString(updatedGabaritProduit)))
+                .andExpect(status().isNotFound)
     }
 }

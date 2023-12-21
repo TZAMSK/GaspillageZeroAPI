@@ -8,6 +8,7 @@ import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.responses.ApiResponse
 import io.swagger.v3.oas.annotations.responses.ApiResponses
 import io.swagger.v3.oas.annotations.tags.Tag
+import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder
@@ -109,27 +110,38 @@ class CommandeControleur(val service: CommandeService) {
 
 
 
-    @ApiResponses(value = [
-        ApiResponse(responseCode = "201", description = "La commande à été ajouter à la base de données"),
-        ApiResponse(responseCode = "500", description = "Il y a eu un problème lors de l'ajout de la commande dans la base de données"),
-        ApiResponse(responseCode = "401", description = "L'utilisateur voulant effectuer l'opération n'est pas correctement authentifié."),
-        ApiResponse(responseCode = "403", description = "L'utilisateur voulant effectuer l'opération n'a pas les droits nécessaires."),
-    ])
-    @Operation(summary = "Permet d'ajouter une commande à la base de données")
+    @ApiResponses(
+            value = [
+                ApiResponse(responseCode = "201", description = "La commande a été ajoutée à la base de données"),
+                ApiResponse(responseCode = "500", description = "Erreur interne du serveur lors de l'ajout de la commande"),
+                ApiResponse(responseCode = "401", description = "Non authentifié - L'utilisateur n'est pas correctement authentifié"),
+                ApiResponse(responseCode = "403", description = "Accès interdit - L'utilisateur n'a pas les droits nécessaires"),
+            ]
+    )
+    @Operation(summary = "Ajouter une commande à la base de données")
     @PostMapping("/commande")
-    fun ajouterCommande(@RequestBody commande: Commande, principal: Principal?): ResponseEntity<Commande> {
-        val commande = service.ajouter(commande, principal)
+    fun ajouterCommande(
+            @RequestBody nouvelleCommande: Commande,
+            principal: Principal?
+    ): ResponseEntity<Commande> {
+        try {
+            val commandeAjoutee = service.ajouter(nouvelleCommande, principal)
 
-        if(commande != null) {
-            val location: URI = ServletUriComponentsBuilder
-                    .fromCurrentRequest()
-                    .path("/{idCommande}")
-                    .buildAndExpand(commande.idCommande)
-                    .toUri()
-            return ResponseEntity.created(location).body(commande)
+            return if (commandeAjoutee != null) {
+                val location: URI = ServletUriComponentsBuilder
+                        .fromCurrentRequest()
+                        .path("/{idCommande}")
+                        .buildAndExpand(commandeAjoutee.idCommande)
+                        .toUri()
+
+                ResponseEntity.created(location).body(commandeAjoutee)
+            } else {
+                ResponseEntity.internalServerError().build()
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build()
         }
-
-        return ResponseEntity.internalServerError().build()
     }
 
     @ApiResponses(value = [
@@ -160,7 +172,7 @@ class CommandeControleur(val service: CommandeService) {
         if(principal == null){
             throw ExceptionAuthentification("Vous devez vous authentifier")
         }
-        service.modifier(idCommande, commande, principal.name)
+        service.modifier(idCommande, commande, principal)
     }
 
 

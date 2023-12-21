@@ -3,6 +3,7 @@ package com.GaspillageZeroAPI.DAO
 import com.GaspillageZeroAPI.Exceptions.ExceptionErreurServeur
 import com.GaspillageZeroAPI.Exceptions.ExceptionRessourceIntrouvable
 import com.GaspillageZeroAPI.Modèle.GabaritProduit
+import com.GaspillageZeroAPI.Modèle.Produit
 import com.GaspillageZeroAPI.Modèle.Utilisateur
 import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.stereotype.Repository
@@ -28,6 +29,17 @@ class GabaritProduitDAOImpl(private val jdbcTemplate: JdbcTemplate): GabaritProd
         }
     }
 
+    override fun chercherParÉpicerie(idÉpicerie: Int): List<GabaritProduit>? {
+        var gabaritParÉpicerie: List<GabaritProduit>? = null
+        try{
+            gabaritParÉpicerie = jdbcTemplate.query("SELECT * FROM gabaritproduit WHERE idÉpicerie=?", arrayOf(idÉpicerie)) { resultat, _ ->
+                mapRowToGabaritProduit(resultat)
+            }
+        }catch (e:Exception){}
+
+        return gabaritParÉpicerie
+    }
+
     private fun obtenirProchaineIncrementationIDGabaritProduit():Int?{
         return jdbcTemplate.queryForObject("SELECT `auto_increment` FROM INFORMATION_SCHEMA.TABLES\n" +
                 "WHERE table_name = 'gabaritproduit'"){ resultat, _ ->
@@ -51,6 +63,8 @@ class GabaritProduitDAOImpl(private val jdbcTemplate: JdbcTemplate): GabaritProd
             throw ExceptionRessourceIntrouvable("Le gabaritproduit avec le ID $idGabaritProduit est introuvable")
         }
         try{
+            jdbcTemplate.update("DELETE FROM commande_produits WHERE produit_id IN (SELECT id FROM produits WHERE idGabarit = ?)", idGabaritProduit)
+            jdbcTemplate.update("DELETE FROM produits WHERE idGabarit=?",idGabaritProduit)
             jdbcTemplate.update("DELETE FROM gabaritproduit WHERE id=?", idGabaritProduit)
         }catch (e: Exception){throw ExceptionErreurServeur("Erreur lors de la suppression du gabararit produit avec l'ID $idGabaritProduit: ${e.message}")}
         return null
