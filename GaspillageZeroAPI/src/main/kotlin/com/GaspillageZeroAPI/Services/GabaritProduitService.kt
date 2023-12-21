@@ -3,6 +3,7 @@ package com.GaspillageZeroAPI.Services
 import com.GaspillageZeroAPI.DAO.GabaritProduitDAO
 import com.GaspillageZeroAPI.Exceptions.DroitAccèsInsuffisantException
 import com.GaspillageZeroAPI.Modèle.GabaritProduit
+import com.GaspillageZeroAPI.Modèle.Produit
 import org.springframework.stereotype.Service
 
 @Service
@@ -10,6 +11,7 @@ class GabaritProduitService(val dao: GabaritProduitDAO) {
 
     fun chercherTous(): List<GabaritProduit> = dao.chercherTous()
     fun chercherParCode(idGabaritProduit: Int): GabaritProduit? = dao.chercherParCode(idGabaritProduit)
+    fun chercherParÉpicerie(idGabarit: Int): List<GabaritProduit>? = dao.chercherParÉpicerie(idGabarit)
     fun ajouter(gabaritProduit: GabaritProduit, code_util: String): GabaritProduit?{
         if (dao.estGerantParCode(code_util)) {
             return dao.ajouter(gabaritProduit)

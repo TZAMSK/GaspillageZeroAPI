@@ -3,6 +3,7 @@ package com.GaspillageZeroAPI.DAO
 import com.GaspillageZeroAPI.Exceptions.ExceptionErreurServeur
 import com.GaspillageZeroAPI.Exceptions.ExceptionRessourceIntrouvable
 import com.GaspillageZeroAPI.Modèle.GabaritProduit
+import com.GaspillageZeroAPI.Modèle.Produit
 import com.GaspillageZeroAPI.Modèle.Utilisateur
 import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.stereotype.Repository
@@ -26,6 +27,17 @@ class GabaritProduitDAOImpl(private val jdbcTemplate: JdbcTemplate): GabaritProd
         } catch (e: Exception) {
             throw ExceptionErreurServeur("Erreur lors de la recherche du gabarit produit avec l'ID $idGabaritProduit: ${e.message}")
         }
+    }
+
+    override fun chercherParÉpicerie(idÉpicerie: Int): List<GabaritProduit>? {
+        var gabaritParÉpicerie: List<GabaritProduit>? = null
+        try{
+            gabaritParÉpicerie = jdbcTemplate.query("SELECT * FROM gabaritproduit WHERE idÉpicerie=?", arrayOf(idÉpicerie)) { resultat, _ ->
+                mapRowToGabaritProduit(resultat)
+            }
+        }catch (e:Exception){}
+
+        return gabaritParÉpicerie
     }
 
     private fun obtenirProchaineIncrementationIDGabaritProduit():Int?{
