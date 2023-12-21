@@ -5,8 +5,15 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="6af0c390-7601-48c1-b79c-f305013d14f2" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/GaspillageZeroAPI/src/main/kotlin/com/GaspillageZeroAPI/Controleurs/ItemsPanierControleur.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/GaspillageZeroAPI/src/main/kotlin/com/GaspillageZeroAPI/DAO/ItemsPanierDAO.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/GaspillageZeroAPI/src/main/kotlin/com/GaspillageZeroAPI/DAO/ItemsPanierDAOImpl.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/GaspillageZeroAPI/src/main/kotlin/com/GaspillageZeroAPI/Services/ItemsPanierService.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/GaspillageZeroAPI/src/main/kotlin/com/GaspillageZeroAPI/DAO/ProduitDAOImpl.kt" beforeDir="false" afterPath="$PROJECT_DIR$/GaspillageZeroAPI/src/main/kotlin/com/GaspillageZeroAPI/DAO/ProduitDAOImpl.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/GaspillageZeroAPI/src/main/kotlin/com/GaspillageZeroAPI/DAO/CommandeDAOImpl.kt" beforeDir="false" afterPath="$PROJECT_DIR$/GaspillageZeroAPI/src/main/kotlin/com/GaspillageZeroAPI/DAO/CommandeDAOImpl.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/GaspillageZeroAPI/src/main/kotlin/com/GaspillageZeroAPI/DAO/SourceDonnées.kt" beforeDir="false" afterPath="$PROJECT_DIR$/GaspillageZeroAPI/src/main/kotlin/com/GaspillageZeroAPI/DAO/SourceDonnées.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/GaspillageZeroAPI/src/main/kotlin/com/GaspillageZeroAPI/Modèle/ItemsPanier.kt" beforeDir="false" afterPath="$PROJECT_DIR$/GaspillageZeroAPI/src/main/kotlin/com/GaspillageZeroAPI/Modèle/ItemsPanier.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/GaspillageZeroAPI/src/test/kotlin/com/GaspillageZeroAPI/Controleurs/CommandeControleurTestAuthentifiésTests.kt" beforeDir="false" afterPath="$PROJECT_DIR$/GaspillageZeroAPI/src/test/kotlin/com/GaspillageZeroAPI/Controleurs/CommandeControleurTestAuthentifiésTests.kt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -25,6 +32,14 @@
       </state>
     </system>
   </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Kotlin Interface" />
+        <option value="Kotlin Class" />
+      </list>
+    </option>
+  </component>
   <component name="Git.Settings">
     <option name="RECENT_BRANCH_BY_REPOSITORY">
       <map>
@@ -41,24 +56,24 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "RequestMappingsPanelOrder0": "0",
-    "RequestMappingsPanelOrder1": "1",
-    "RequestMappingsPanelWidth0": "75",
-    "RequestMappingsPanelWidth1": "75",
-    "RunOnceActivity.OpenProjectViewOnStart": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "WebServerToolWindowFactoryState": "false",
-    "last_opened_file_path": "D:/projetsedan3-lmkltv/GaspillageZeroAPI",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "spring.configuration.checksum": "b7fc63250e8f5b0a24ec7d2a293f0e18",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;RequestMappingsPanelOrder0&quot;: &quot;0&quot;,
+    &quot;RequestMappingsPanelOrder1&quot;: &quot;1&quot;,
+    &quot;RequestMappingsPanelWidth0&quot;: &quot;75&quot;,
+    &quot;RequestMappingsPanelWidth1&quot;: &quot;75&quot;,
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
+    &quot;last_opened_file_path&quot;: &quot;D:/projetsedan3-lmkltv/GaspillageZeroAPI&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;spring.configuration.checksum&quot;: &quot;b7fc63250e8f5b0a24ec7d2a293f0e18&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="RunManager">
     <configuration name="app" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
       <module name="GaspillageZeroAPI.main" />
@@ -77,11 +92,25 @@
       <option name="presentableId" value="Default" />
       <updated>1699232077672</updated>
       <workItem from="1699232079073" duration="119000" />
-      <workItem from="1703022457404" duration="2897000" />
+      <workItem from="1703022457404" duration="4940000" />
+      <workItem from="1703123993192" duration="7558000" />
+      <workItem from="1703167096287" duration="8077000" />
     </task>
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="kotlin-field">
+          <url>file://$PROJECT_DIR$/GaspillageZeroAPI/src/main/kotlin/com/GaspillageZeroAPI/Modèle/ItemsPanier.kt</url>
+          <line>3</line>
+          <properties myFieldName="produit" myClassName="com.GaspillageZeroAPI.Modèle.ItemsPanier" />
+          <option name="timeStamp" value="1" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
   </component>
 </project>

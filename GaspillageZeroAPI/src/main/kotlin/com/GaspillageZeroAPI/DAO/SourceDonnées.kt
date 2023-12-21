@@ -50,44 +50,44 @@ class SourceDonnées {
 
         val commandes = mutableListOf(
                 Commande(1, null, null, mutableListOf<ItemsPanier>(
-                        ItemsPanier(Produit(1, "patate", Date(), 33, 2.44, épiceries[1], gabariProduits[1]), 2),
-                        ItemsPanier(Produit(2, "celerie", Date(), 33, 2.44, épiceries[1], gabariProduits[1]), 2),
-                        ItemsPanier(Produit(1, "jus", Date(), 33, 2.44, épiceries[1], gabariProduits[1]), 3),
+                        ItemsPanier(1,Produit(1, "patate", Date(), 33, 2.44, épiceries[1], gabariProduits[1]), 2),
+                        ItemsPanier(2,Produit(2, "celerie", Date(), 33, 2.44, épiceries[1], gabariProduits[1]), 2),
+                        ItemsPanier(3,Produit(1, "jus", Date(), 33, 2.44, épiceries[1], gabariProduits[1]), 3),
                 )),
                 Commande(2, null, null, mutableListOf<ItemsPanier>(
-                        ItemsPanier(Produit(1, "patate", Date(), 33, 2.44, épiceries[1], gabariProduits[1]), 2),
-                        ItemsPanier(Produit(2, "celerie", Date(), 33, 2.44, épiceries[1], gabariProduits[1]), 2),
-                        ItemsPanier(Produit(1, "jus", Date(), 33, 2.44, épiceries[1], gabariProduits[1]), 3),
+                        ItemsPanier(1,Produit(1, "patate", Date(), 33, 2.44, épiceries[1], gabariProduits[1]), 2),
+                        ItemsPanier(2,Produit(2, "celerie", Date(), 33, 2.44, épiceries[1], gabariProduits[1]), 2),
+                        ItemsPanier(3,Produit(1, "jus", Date(), 33, 2.44, épiceries[1], gabariProduits[1]), 3),
                 )),
                 Commande(3, null, null, mutableListOf<ItemsPanier>(
-                        ItemsPanier(Produit(1, "patate", Date(), 33, 2.44, épiceries[1], gabariProduits[1]), 2),
-                        ItemsPanier(Produit(2, "celerie", Date(), 33, 2.44, épiceries[1], gabariProduits[1]), 2),
-                        ItemsPanier(Produit(1, "jus", Date(), 33, 2.44, épiceries[1], gabariProduits[1]), 3),
+                        ItemsPanier(1,Produit(1, "patate", Date(), 33, 2.44, épiceries[1], gabariProduits[1]), 2),
+                        ItemsPanier(2,Produit(2, "celerie", Date(), 33, 2.44, épiceries[1], gabariProduits[1]), 2),
+                        ItemsPanier(3,Produit(1, "jus", Date(), 33, 2.44, épiceries[1], gabariProduits[1]), 3),
                 )),
                 Commande(4, null, null, mutableListOf<ItemsPanier>(
-                        ItemsPanier(Produit(1, "patate", Date(), 33, 2.44, épiceries[1], gabariProduits[1]), 2),
-                        ItemsPanier(Produit(2, "celerie", Date(), 33, 2.44, épiceries[1], gabariProduits[1]), 2),
-                        ItemsPanier(Produit(1, "jus", Date(), 33, 2.44, épiceries[1], gabariProduits[1]), 3),
+                        ItemsPanier(1,Produit(1, "patate", Date(), 33, 2.44, épiceries[1], gabariProduits[1]), 2),
+                        ItemsPanier(2,Produit(2, "celerie", Date(), 33, 2.44, épiceries[1], gabariProduits[1]), 2),
+                        ItemsPanier(3,Produit(1, "jus", Date(), 33, 2.44, épiceries[1], gabariProduits[1]), 3),
                 )),
                 Commande(5, null, null, mutableListOf<ItemsPanier>(
-                        ItemsPanier(Produit(1, "patate", Date(), 33, 2.44, épiceries[1], gabariProduits[1]), 2),
-                        ItemsPanier(Produit(2, "celerie", Date(), 33, 2.44, épiceries[1], gabariProduits[1]), 2),
-                        ItemsPanier(Produit(1, "jus", Date(), 33, 2.44, épiceries[1], gabariProduits[1]), 3),
+                        ItemsPanier(1,Produit(1, "patate", Date(), 33, 2.44, épiceries[1], gabariProduits[1]), 2),
+                        ItemsPanier(2,Produit(2, "celerie", Date(), 33, 2.44, épiceries[1], gabariProduits[1]), 2),
+                        ItemsPanier(3,Produit(1, "jus", Date(), 33, 2.44, épiceries[1], gabariProduits[1]), 3),
                 )),
                 Commande(6, null, null, mutableListOf<ItemsPanier>(
-                        ItemsPanier(Produit(1, "patate", Date(), 33, 2.44, épiceries[1], gabariProduits[1]), 2),
-                        ItemsPanier(Produit(2, "celerie", Date(), 33, 2.44, épiceries[1], gabariProduits[1]), 2),
-                        ItemsPanier(Produit(1, "jus", Date(), 33, 2.44, épiceries[1], gabariProduits[1]), 3),
+                        ItemsPanier(1,Produit(1, "patate", Date(), 33, 2.44, épiceries[1], gabariProduits[1]), 2),
+                        ItemsPanier(2,Produit(2, "celerie", Date(), 33, 2.44, épiceries[1], gabariProduits[1]), 2),
+                        ItemsPanier(3,Produit(1, "jus", Date(), 33, 2.44, épiceries[1], gabariProduits[1]), 3),
                 )),
                 Commande(7, null, null, mutableListOf<ItemsPanier>(
-                        ItemsPanier(Produit(1, "patate", Date(), 33, 2.44, épiceries[1], gabariProduits[1]), 2),
-                        ItemsPanier(Produit(2, "celerie", Date(), 33, 2.44, épiceries[1], gabariProduits[1]), 2),
-                        ItemsPanier(Produit(1, "jus", Date(), 33, 2.44, épiceries[1], gabariProduits[1]), 3),
+                        ItemsPanier(1,Produit(1, "patate", Date(), 33, 2.44, épiceries[1], gabariProduits[1]), 2),
+                        ItemsPanier(2,Produit(2, "celerie", Date(), 33, 2.44, épiceries[1], gabariProduits[1]), 2),
+                        ItemsPanier(3,Produit(1, "jus", Date(), 33, 2.44, épiceries[1], gabariProduits[1]), 3),
                 )),
                 Commande(8, null, null, mutableListOf<ItemsPanier>(
-                        ItemsPanier(Produit(1, "patate", Date(), 33, 2.44, épiceries[1], gabariProduits[1]), 2),
-                        ItemsPanier(Produit(2, "celerie", Date(), 33, 2.44, épiceries[1], gabariProduits[1]), 2),
-                        ItemsPanier(Produit(1, "jus", Date(), 33, 2.44, épiceries[1], gabariProduits[1]), 3),
+                        ItemsPanier(1,Produit(1, "patate", Date(), 33, 2.44, épiceries[1], gabariProduits[1]), 2),
+                        ItemsPanier(2,Produit(2, "celerie", Date(), 33, 2.44, épiceries[1], gabariProduits[1]), 2),
+                        ItemsPanier(3,Produit(1, "jus", Date(), 33, 2.44, épiceries[1], gabariProduits[1]), 3),
                 ))
         )
 
@@ -98,6 +98,11 @@ class SourceDonnées {
         )
 
 
+        val itemsPanier = mutableListOf(
+            ItemsPanier(1,Produit(1, "patate", Date(), 33, 2.44, épiceries[1], gabariProduits[1]), 2),
+            ItemsPanier(2,Produit(2, "celerie", Date(), 33, 2.44, épiceries[1], gabariProduits[1]), 2),
+            ItemsPanier(3,Produit(1, "jus", Date(), 33, 2.44, épiceries[1], gabariProduits[1]), 3),
+        )
 
         val avis = mutableListOf(
            Évaluation(1,livraison[0].code,1,"La nourriture est froide" ),

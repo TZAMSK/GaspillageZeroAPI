@@ -109,7 +109,7 @@ class CommandeControleurTestAuthentifiésTests {
     fun `Étant donnée une commande avec le code 3, lorsqu'on essaie de modifier un attribut avec la requête PUT, on obtient le code 200`(){
         val updatedCommand = SourceDonnées.commandes.get(2)
 
-        Mockito.`when`(service.modifier(3, updatedCommand)).thenReturn(updatedCommand)
+        Mockito.`when`(service.modifier(3, updatedCommand,"")).thenReturn(updatedCommand)
 
         mockMvc.perform(MockMvcRequestBuilders.put("/commande/3").with(csrf())
                 .contentType(MediaType.APPLICATION_JSON)
@@ -125,7 +125,7 @@ class CommandeControleurTestAuthentifiésTests {
     fun `Étant donnée une commande avec le code 4 qui n'existe pas, lorsqu'on exécute un requête PUT afin de modifier un attribut on obtient alors un code d'erreur 404`(){
         val updatedCommand = SourceDonnées.commandes.get(2)
 
-        Mockito.`when`(service.modifier(4, updatedCommand)).thenThrow(ExceptionRessourceIntrouvable("La commande avec le code 4 est introuvable"))
+        Mockito.`when`(service.modifier(4, updatedCommand,"")).thenThrow(ExceptionRessourceIntrouvable("La commande avec le code 4 est introuvable"))
 
         mockMvc.perform(MockMvcRequestBuilders.put("/commande/4").with(csrf())
                 .contentType(MediaType.APPLICATION_JSON)
