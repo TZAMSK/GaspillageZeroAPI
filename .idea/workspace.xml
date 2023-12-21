@@ -5,15 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="6af0c390-7601-48c1-b79c-f305013d14f2" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/GaspillageZeroAPI/src/main/kotlin/com/GaspillageZeroAPI/Controleurs/ItemsPanierControleur.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/GaspillageZeroAPI/src/main/kotlin/com/GaspillageZeroAPI/DAO/ItemsPanierDAO.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/GaspillageZeroAPI/src/main/kotlin/com/GaspillageZeroAPI/DAO/ItemsPanierDAOImpl.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/GaspillageZeroAPI/src/main/kotlin/com/GaspillageZeroAPI/Services/ItemsPanierService.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/GaspillageZeroAPI/src/main/kotlin/com/GaspillageZeroAPI/DAO/CommandeDAOImpl.kt" beforeDir="false" afterPath="$PROJECT_DIR$/GaspillageZeroAPI/src/main/kotlin/com/GaspillageZeroAPI/DAO/CommandeDAOImpl.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/GaspillageZeroAPI/src/main/kotlin/com/GaspillageZeroAPI/DAO/SourceDonnées.kt" beforeDir="false" afterPath="$PROJECT_DIR$/GaspillageZeroAPI/src/main/kotlin/com/GaspillageZeroAPI/DAO/SourceDonnées.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/GaspillageZeroAPI/src/main/kotlin/com/GaspillageZeroAPI/Modèle/ItemsPanier.kt" beforeDir="false" afterPath="$PROJECT_DIR$/GaspillageZeroAPI/src/main/kotlin/com/GaspillageZeroAPI/Modèle/ItemsPanier.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/GaspillageZeroAPI/src/test/kotlin/com/GaspillageZeroAPI/Controleurs/CommandeControleurTestAuthentifiésTests.kt" beforeDir="false" afterPath="$PROJECT_DIR$/GaspillageZeroAPI/src/test/kotlin/com/GaspillageZeroAPI/Controleurs/CommandeControleurTestAuthentifiésTests.kt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -101,16 +93,27 @@
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
   </component>
-  <component name="XDebuggerManager">
-    <breakpoint-manager>
-      <breakpoints>
-        <line-breakpoint enabled="true" type="kotlin-field">
-          <url>file://$PROJECT_DIR$/GaspillageZeroAPI/src/main/kotlin/com/GaspillageZeroAPI/Modèle/ItemsPanier.kt</url>
-          <line>3</line>
-          <properties myFieldName="produit" myClassName="com.GaspillageZeroAPI.Modèle.ItemsPanier" />
-          <option name="timeStamp" value="1" />
-        </line-breakpoint>
-      </breakpoints>
-    </breakpoint-manager>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State>
+              <option name="FILTERS">
+                <map>
+                  <entry key="branch">
+                    <value>
+                      <list>
+                        <option value="origin/main" />
+                      </list>
+                    </value>
+                  </entry>
+                </map>
+              </option>
+            </State>
+          </value>
+        </entry>
+      </map>
+    </option>
   </component>
 </project>
