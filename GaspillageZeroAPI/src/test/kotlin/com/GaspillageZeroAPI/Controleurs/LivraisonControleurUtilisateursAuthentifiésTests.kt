@@ -5,16 +5,10 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.autoconfigure.neo4j.Neo4jProperties.Authentication
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.mock.mockito.MockBean
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
-import org.springframework.security.core.annotation.AuthenticationPrincipal
-import org.springframework.security.core.context.SecurityContextHolder
-import org.springframework.security.test.context.support.WithAnonymousUser
 import org.springframework.security.test.context.support.WithMockUser
-import org.springframework.security.test.context.support.WithSecurityContext
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.*

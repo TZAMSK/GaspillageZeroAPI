@@ -95,7 +95,7 @@ create table livraison (
 	code int primary key auto_increment,
 	commande_code int not null,
 	utilisateur_code int not null,
-	adresse_id int not null
+	adresse_id int not null,
 	constraint fk_livraison_commande_commandeCode foreign key (commande_code)
 	references commande(code),
 	constraint fk_livraison_utilisateur_utilisateurCode foreign key (utilisateur_code)

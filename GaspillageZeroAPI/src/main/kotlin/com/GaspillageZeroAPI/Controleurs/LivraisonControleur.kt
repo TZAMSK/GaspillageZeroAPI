@@ -11,6 +11,7 @@ import com.GaspillageZeroAPI.Services.UtilisateurService
 import com.GaspillageZeroAPI.Services.ÉvaluationService
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.responses.ApiResponse
+import org.springframework.dao.EmptyResultDataAccessException
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.security.core.Authentication
@@ -55,7 +56,7 @@ class LivraisonControleur (val livraisonService: LivraisonService, val évaluati
     @ApiResponse(responseCode = "200", description = "Ce code signifie que la livraison a été trouvé avec le bon utilisateur")
     @ApiResponse(responseCode = "401", description = "Ce code est retourné lorsqu'un utilisateur non-authentifié tente de chercher une livraison par code.")
     @ApiResponse(responseCode = "403", description = "Ce code est retourné lorsqu'un individu non-autorisé tente de chercher une livraison par code d'un autre utilisateur.")
-    @ApiResponse(responseCode = "500", description = "Ce code est retournée lorsqu'on essaye de rechercher une livraison qui n'existe pas et envoye une exception avec un message")
+    @ApiResponse(responseCode = "404", description = "Ce code est retournée lorsque recherche une livraison qui n'existe pas.")
     fun obtenirLivraisonParCode(@PathVariable code_utilisateur: Int, @PathVariable idCommande: Int,
                                 @PathVariable codeLivraison: Int, auth: Authentication?) : ResponseEntity<Livraison> {
 
@@ -71,29 +72,28 @@ class LivraisonControleur (val livraisonService: LivraisonService, val évaluati
                         codeLivraison
                     )
                 return ResponseEntity.ok(livraisonTrouvée)
-            } else if (code_util == null){
+            } else if (code_util == null) {
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build()
             } else {
-                return ResponseEntity.status(HttpStatus.FORBIDDEN).build()
+                throw DroitAccèsInsuffisantException("Seul l'utilisateur avec le code " + code_util + " peut accéder à cette ressource.")
             }
-        } catch (e: Exception) {
-            throw ResponseStatusException(
-                HttpStatus.INTERNAL_SERVER_ERROR, "Livraison non-trouvée, veuillez réessayer!"
-            )
+        } catch (e: EmptyResultDataAccessException) {
+            throw ExceptionRessourceIntrouvable("La livraison avec le code $codeLivraison n'est pas inscrit au service.")
         }
     }
 
     @PostMapping("/utilisateur/{code_utilisateur}/commande/{idCommande}/livraison")
     @Operation(summary = "Ajouté une livraison")
     @ApiResponse(responseCode = "201", description = "Ce code signifie que la livraison a bien été ajouté dans la base de données.")
+    @ApiResponse(responseCode = "400", description = "Ce code est retourné lorsqu'un utilisateur non-authentifié tente d'ajouter une livraison.")
+    @ApiResponse(responseCode = "401", description = "Ce code est retourné lorsqu'un utilisateur non-authentifié tente d'ajouter une livraison.")
     @ApiResponse(responseCode = "409", description = "Ce code est retourné lorsqu'on essaye d'ajouter une livraison qui existe déjà.")
-    @ApiResponse(responseCode = "500", description = "Ce code signifie qu'il y a un problème interne dans le serveur.")
     fun inscrireLivraison(@PathVariable code_utilisateur: Int,
         @PathVariable idCommande: Int, @RequestBody livraison: Livraison,
                           uriComponentsBuilder: UriComponentsBuilder) : ResponseEntity<Livraison> {
         val livraisonExistante = livraison.code?.let { livraisonService.obtenirLivraisonExistanteParCode(it) }
 
-        return if (livraisonExistante == 0) {
+        if (livraisonExistante == 0) {
             val nouvelleLivraison = livraisonService.ajouterLivraison(livraison)
             val location: URI = ServletUriComponentsBuilder
                 .fromCurrentRequest()
@@ -101,29 +101,49 @@ class LivraisonControleur (val livraisonService: LivraisonService, val évaluati
                 .buildAndExpand(code_utilisateur, idCommande, livraison.code)
                 .toUri()
 
-            ResponseEntity.created(location).body(nouvelleLivraison)
+            return ResponseEntity.created(location).body(nouvelleLivraison)
         } else if (livraisonExistante == 1){
             throw ExceptionConflitRessourceExistante("La livraison avec le numéro de code ${livraison.code} est déjà inscrit au service.")
         } else {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build()
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build()
         }
     }
 
     @PutMapping("/utilisateur/{code_utilisateur}/commande/{idCommande}/livraisons/{code}")
     @Operation(summary = "Modifier une livraison")
-    @ApiResponse(responseCode = "204", description = "La livraison a été modifiée avec succès!")
+    @ApiResponse(responseCode = "201", description = "La livraison a été modifiée avec succès!")
     fun majLivraison(@PathVariable code_utilisateur: Int, @PathVariable idCommande: Int,
-                     @PathVariable code: Int, @RequestBody livraison: Livraison) {
+                     @PathVariable code: Int, @RequestBody livraison: Livraison, auth: Authentication?) {
         livraisonService.modifierLivraison(code, livraison)
     }
 
-    @DeleteMapping("/utilisateur/{code_utilisateur}/commande/{idCommande}/livraisons/{code}")
+    @DeleteMapping("/utilisateur/{code_utilisateur}/commande/{idCommande}/livraisons/{codeLivraison}")
     @Operation(summary = "Supprimer une livraison")
     @ApiResponse(responseCode = "204", description = "Ce code signifie que la livraison a bien été supprimé et elle retourne une page sans contenu.")
     @ApiResponse(responseCode = "401", description = "Ce code signifie que l'utilisateur n'est pas autorisé de supprimer puisqu'il n'est pas authentifié.")
     @ApiResponse(responseCode = "403", description = "Ce code signifie qu'un utilisateur est interdit de supprimer une livraison, car il n'est pas le bon gérant.")
-    @ApiResponse(responseCode = "500", description = "Ce code signifie qu'il y a un problème interne dans le serveur.")
-    fun supprimerLivraison(@PathVariable code: Int)  {
-          livraisonService.supprimerLivraison(code)
+    @ApiResponse(responseCode = "404", description = "Ce code signifie que la livraison n'existe pas.")
+    fun supprimerLivraison(@PathVariable code_utilisateur: Int, @PathVariable idCommande: Int,
+                           @PathVariable codeLivraison: Int, auth: Authentication?) : ResponseEntity<String> {
+
+        try {
+            val code_util = auth?.name
+            val validation = utilisateurService.validerCodeAuth0(code_utilisateur)
+            val livraisonTrouvée =
+                livraisonService.obtenirLivraisonParCodeUtilisateurEtCommande(
+                    code_utilisateur,
+                    idCommande,
+                    code_util,
+                    codeLivraison
+                )
+            if (validation == code_util && livraisonTrouvée != null) {
+                livraisonService.supprimerLivraison(codeLivraison)
+                return ResponseEntity.status(HttpStatus.NO_CONTENT).build()
+            } else {
+                throw DroitAccèsInsuffisantException("Seul l'utilisateur avec le code " + code_util + " peut supprimer cette livraison.")
+            }
+        } catch (e: EmptyResultDataAccessException) {
+            throw ExceptionRessourceIntrouvable("La livraison avec le code $codeLivraison n'est pas inscrit au service.")
+        }
     }
 }

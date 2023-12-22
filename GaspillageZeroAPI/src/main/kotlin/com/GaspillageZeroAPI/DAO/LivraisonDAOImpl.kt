@@ -3,8 +3,11 @@ package com.GaspillageZeroAPI.DAO
 import com.GaspillageZeroAPI.Exceptions.ExceptionErreurServeur
 import com.GaspillageZeroAPI.Exceptions.ExceptionRessourceIntrouvable
 import com.GaspillageZeroAPI.Modèle.*
+import org.springframework.dao.DataIntegrityViolationException
+import org.springframework.http.HttpStatus
 import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.stereotype.Repository
+import org.springframework.web.server.ResponseStatusException
 import java.sql.ResultSet
 
 @Repository
@@ -72,8 +75,8 @@ class LivraisonDAOImpl(val jdbcTemplate: JdbcTemplate): LivraisonDAO {
         try {
             jdbcTemplate.update("INSERT INTO Livraison(code, commande_code, utilisateur_code, adresse_id) VALUES (?, ?, ?, ?)",
             id, livraison.commande?.idCommande, livraison.utilisateur?.code, livraison.adresse?.idAdresse)
-        } catch (e:Exception){
-            throw ExceptionErreurServeur("Erreur lors de l'ajout de la livraison: ${e.message}")
+        } catch (e: DataIntegrityViolationException){
+            throw ResponseStatusException(HttpStatus.BAD_REQUEST, "Erreur lors de l'ajout de la livraison: ${e.localizedMessage}")
         }
         return livraison
     }

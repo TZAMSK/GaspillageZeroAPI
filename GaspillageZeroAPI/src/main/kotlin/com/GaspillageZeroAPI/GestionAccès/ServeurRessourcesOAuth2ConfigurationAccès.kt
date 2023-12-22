@@ -29,6 +29,7 @@ class ServeurRessourcesOAuth2ConfigurationAccès {
     @Bean
     fun filterChain(http: HttpSecurity): SecurityFilterChain {
         http {
+            cors { disable() }
             authorizeHttpRequests {
                 authorize("/", permitAll)
                 authorize(HttpMethod.GET, "/**", permitAll)
