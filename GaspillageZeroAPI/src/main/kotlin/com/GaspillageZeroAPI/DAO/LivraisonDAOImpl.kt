@@ -86,8 +86,8 @@ class LivraisonDAOImpl(val jdbcTemplate: JdbcTemplate): LivraisonDAO {
             jdbcTemplate.update(
                 "UPDATE Livraison SET commande_code = ?, utilisateur_code = ?, adresse_id = ? WHERE code = ?",
                 livraison.commande?.idCommande, livraison.utilisateur?.code, livraison.adresse?.idAdresse, code)
-        }catch (e: Exception) {
-            throw ExceptionErreurServeur("Erreur lors de la modification de la livraison avec l'ID $code: ${e.message}")
+        }catch (e: DataIntegrityViolationException) {
+            throw ResponseStatusException(HttpStatus.BAD_REQUEST, "Erreur lors de l'ajout de la livraison: ${e.localizedMessage}")
         }
         return livraison
     }

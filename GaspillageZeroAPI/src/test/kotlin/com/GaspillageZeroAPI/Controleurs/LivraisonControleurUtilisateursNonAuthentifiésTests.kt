@@ -15,16 +15,13 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.http.MediaType
-import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors
 import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers.*
 import java.text.SimpleDateFormat
-import java.util.*
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -47,12 +44,6 @@ class LivraisonControleurUtilisateursNonAuthentifiésTests {
         val livraison = SourceDonnées.livraison.get(1)
         val éval = Évaluation(1,1,3,"tres bon")
 
-    /*  @Test
-    fun `Étant donnée la livraison avec le code 1, lorsqu'on éffectue une requète GET alors on obtient une livraison  dans un format JSON avec le id 3 et un code 200 `(){
-        val restaurant = Livraison("RF125", Commande(1,2,2,3),
-            Utilisateur(1,"","","", Adresse("",3,"",))
-
-    }*/
     @Test
     fun `Étant donnée un avis avec le code 19 qui n'existe , lorsqu'on éffectue une requète GET alors on obtient un code de retour 404`(){
 
@@ -147,7 +138,7 @@ class LivraisonControleurUtilisateursNonAuthentifiésTests {
 
     @Test
     //@PutMapping("/utilisateur/{code_utilisateur}/commande/{idCommande}/livraisons/{code}")
-    fun `Étant donnée une livraison avec le code '2', lorsqu'on essaie de modifier un attribut avec la requête PUT, on obtient le code 200` (){
+    fun `Étant donnée une livraison avec le code '2' et un utilisateur non-authentifié, lorsqu'il essaie de modifier un attribut avec la requête PUT, on obtient le code 401` (){
         val adresse = Adresse(3, "3333", "Rue Addison", "Toronto", "ON", "M5H 2N2", "CA")
         val utilisateur = Utilisateur(3, "Tabti", "Lyazid", "lyatabti@gmail.com", adresse, "514 894-8268", "client", "auth0|657e62829a0fa387ad493980")
         val épicerie = Épicerie(1, adresse, utilisateur, "Metro", "metro@gmail.com", "514 231-6666", null)
