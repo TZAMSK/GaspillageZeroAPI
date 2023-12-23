@@ -1,8 +1,8 @@
 auth0:
-  audience: http://gaspillagezero.demo
+  audience: https://gaspillezero/
 spring:
   security:
     oauth2:
       resourceserver:
         jwt:
-          issuer-uri: https://dev-tmsylhcqmyl63lry.us.auth0.com/
+          issuer-uri: https://dev-dzubrtusqkbhecui.us.auth0.com/

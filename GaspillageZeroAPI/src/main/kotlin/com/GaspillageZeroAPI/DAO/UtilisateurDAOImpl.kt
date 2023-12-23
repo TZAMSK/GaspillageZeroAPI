@@ -26,6 +26,14 @@ class UtilisateurDAOImpl(private val jdbcTemplate: JdbcTemplate): UtilisateurDAO
         }
     }
 
+    override fun validerCodeAuth0(code: Int): String? {
+        return jdbcTemplate.queryForObject(
+            "SELECT code_util FROM utilisateur WHERE code = ?", arrayOf(code))
+        { rs, _ ->
+            rs.getString("code_util")
+        }
+    }
+
     private fun obtenirProchaineIncrementationIDUtilisateur():Int?{
         return jdbcTemplate.queryForObject(
                 "SELECT auto_increment FROM INFORMATION_SCHEMA.TABLES WHERE table_schema = 'gaspillagealimentaire' AND table_name = 'utilisateur'"
@@ -84,7 +92,7 @@ class UtilisateurDAOImpl(private val jdbcTemplate: JdbcTemplate): UtilisateurDAO
     override fun validerUtilisateur(code_utilisateur: Int, principal: String?): Boolean {
         val utilisateur = chercherParCode(code_utilisateur)
 
-        if(utilisateur?.tokenAuth0 == principal){
+        if(utilisateur?.code_util == principal){
             return true
         }else{
             return false
@@ -102,7 +110,7 @@ class UtilisateurDAOImpl(private val jdbcTemplate: JdbcTemplate): UtilisateurDAO
             adresseDAO.chercherParCode(rs.getInt("adresse_id")),
             téléphone = rs.getString("téléphone"),
             rs.getString("rôle"),
-            rs.getString("codeAuth")
+            code_util = rs.getString("code_util")
         )
     }
 
