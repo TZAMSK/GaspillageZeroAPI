@@ -92,19 +92,14 @@ class SourceDonnées {
         )
 
         val livraison = mutableListOf(
-                Livraison(1,commandes[0].idCommande, null, adresses[0].idAdresse) ,
-                Livraison(2,commandes[1].idCommande, null, adresses[1].idAdresse),
-                Livraison(3,commandes[2].idCommande, null, adresses[2].idAdresse),
+                Livraison(1, commandes[0], utilisateurs[3], adresses[3]),
+                Livraison(2, commandes[1], utilisateurs[2], adresses[2]),
+                Livraison(3, commandes[2], utilisateurs[3], adresses[3])
         )
-
-
 
         val avis = mutableListOf(
            Évaluation(1,livraison[0].code,1,"La nourriture est froide" ),
             Évaluation(2,livraison[1].code,5,"Impeccable") ,
-            Évaluation(3,livraison[2].code,4,"Livraison rapide et satisfait") ,
-
-       )
-
+            Évaluation(3,livraison[2].code,4,"Livraison rapide et satisfait") )
     }
 }

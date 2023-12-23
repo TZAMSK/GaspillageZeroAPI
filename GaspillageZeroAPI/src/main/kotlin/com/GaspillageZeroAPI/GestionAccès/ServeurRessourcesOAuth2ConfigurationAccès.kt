@@ -1,18 +1,21 @@
 package com.GaspillageZeroAPI.GestionAccès
 
+import crosemont.tdi.g66.restaurantapirest.GestionAccès.AudienceValidateur
+import jakarta.servlet.http.HttpServletRequest
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpMethod
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
 import org.springframework.security.config.annotation.web.invoke
 import org.springframework.security.oauth2.core.DelegatingOAuth2TokenValidator
 import org.springframework.security.oauth2.core.OAuth2TokenValidator
-import org.springframework.security.oauth2.jwt.JwtValidators
-import org.springframework.security.oauth2.jwt.JwtDecoder
-import org.springframework.security.web.SecurityFilterChain
 import org.springframework.security.oauth2.jwt.*
+import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter
+import org.springframework.security.web.SecurityFilterChain
+import java.util.*
 
 @Configuration
 @EnableWebSecurity
@@ -26,6 +29,7 @@ class ServeurRessourcesOAuth2ConfigurationAccès {
     @Bean
     fun filterChain(http: HttpSecurity): SecurityFilterChain {
         http {
+            csrf { disable() }
             authorizeHttpRequests {
                 authorize("/", permitAll)
                 authorize(HttpMethod.GET, "/**", permitAll)

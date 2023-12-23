@@ -5,7 +5,6 @@ import com.GaspillageZeroAPI.Exceptions.DroitAccèsInsuffisantException
 import com.GaspillageZeroAPI.Exceptions.ExceptionAuthentification
 import com.GaspillageZeroAPI.Exceptions.ExceptionConflitRessourceExistante
 import com.GaspillageZeroAPI.Modèle.Utilisateur
-import com.GaspillageZeroAPI.Modèle.UtilisateursTable
 import org.springframework.stereotype.Service
 import java.security.Principal
 
@@ -14,6 +13,7 @@ class UtilisateurService(val dao: UtilisateurDAO) {
 
     fun chercherTous(): List<Utilisateur> = dao.chercherTous()
     fun chercherParCode(idUtilisateur: Int): Utilisateur? = dao.chercherParCode(idUtilisateur)
+    fun validerCodeAuth0(code: Int): String? = dao.validerCodeAuth0(code)
     fun ajouter(utilisateur: Utilisateur): Utilisateur? {
         val idUtilisateur = utilisateur.code
 
@@ -23,7 +23,6 @@ class UtilisateurService(val dao: UtilisateurDAO) {
 
         return dao.ajouter(utilisateur)
     }
-
     fun supprimer(idUtilisateur: Int): Utilisateur? = dao.supprimer(idUtilisateur)
 
     fun modifier(idUtilisateur: Int, code_util: String, utilisateur: Utilisateur): Utilisateur?{

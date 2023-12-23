@@ -84,7 +84,7 @@ class GabaritProduitDAOImpl(private val jdbcTemplate: JdbcTemplate): GabaritProd
     override fun estGerantParCode(code: String): Boolean {
         val utilisateurDAO = UtilisateurDAOImpl(jdbcTemplate)
         val utilisateurs = utilisateurDAO.chercherTous()
-        val utilisateur = utilisateurs.find { it.tokenAuth0 == code }
+        val utilisateur = utilisateurs.find { it.code_util == code }
         return utilisateur?.rôle?.contains("épicerie") ?: false
     }
 
