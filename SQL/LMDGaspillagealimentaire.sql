@@ -50,3 +50,4 @@ insert into avis (livraison_code, avis, commentaire)
 values  (1, 4, 'Super! merci beaucoup'),
 		(2, 4, 'Super! merci beaucoup'),
 		(3, 4, 'Super! merci beaucoup');
+

@@ -54,9 +54,9 @@ class ProduitDAOImpl(private val jdbcTemplate: JdbcTemplate): ProduitDAO {
             throw ExceptionRessourceIntrouvable("Le produit avec le ID $idProduit est introuvable")
         }
         try{
+            jdbcTemplate.update("DELETE FROM commande_produits WHERE produit_id=?", idProduit)
             jdbcTemplate.update("DELETE FROM produits WHERE id=?",idProduit)
         }catch (e:Exception){throw ExceptionErreurServeur("Erreur lors de la suppression du produit avec l'ID $idProduit: ${e.message}")}
-
         return null
     }
 
@@ -72,7 +72,6 @@ class ProduitDAOImpl(private val jdbcTemplate: JdbcTemplate): ProduitDAO {
 
     override fun chercherParÉpicerie(idÉpicerie: Int): List<Produit>? {
         var produitParÉpicerie: List<Produit>? = null
-
         try{
             produitParÉpicerie = jdbcTemplate.query("SELECT * FROM produits WHERE idÉpicerie=?", arrayOf(idÉpicerie)) { resultat, _ ->
                 mapRowToProduit(resultat)
@@ -92,6 +91,13 @@ class ProduitDAOImpl(private val jdbcTemplate: JdbcTemplate): ProduitDAO {
         }catch (e: Exception){}
 
         return produitParCodeParÉpicerie
+    }
+
+    override fun estGerantParCode(code: String): Boolean {
+        val utilisateurDAO = UtilisateurDAOImpl(jdbcTemplate)
+        val utilisateurs = utilisateurDAO.chercherTous()
+        val utilisateur = utilisateurs.find { it.code_util == code }
+        return utilisateur?.rôle?.contains("épicerie") ?: false
     }
 
 

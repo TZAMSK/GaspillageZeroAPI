@@ -1,5 +1,6 @@
 package com.GaspillageZeroAPI.DAO
 
+import com.GaspillageZeroAPI.Exceptions.ExceptionConflitRessourceExistante
 import com.GaspillageZeroAPI.Exceptions.ExceptionErreurServeur
 import com.GaspillageZeroAPI.Exceptions.ExceptionRessourceIntrouvable
 import com.GaspillageZeroAPI.Modèle.Utilisateur
@@ -42,18 +43,31 @@ class UtilisateurDAOImpl(private val jdbcTemplate: JdbcTemplate): UtilisateurDAO
     }
 
     override fun ajouter(utilisateur: Utilisateur): Utilisateur? {
-        val id = obtenirProchaineIncrementationIDUtilisateur()
-        try{
-            jdbcTemplate.update("INSERT INTO utilisateur(nom, prénom, courriel, adresse_id, téléphone, rôle) VALUES (?,?,?,?,?,?)",
-                    utilisateur.nom, utilisateur.prénom, utilisateur.courriel, utilisateur.adresse?.idAdresse, utilisateur.téléphone, utilisateur.rôle)
-        }catch(e: Exception){
+        val idUtilisateur = utilisateur.code
+
+        if (idUtilisateur != null && chercherParCode(idUtilisateur) != null) {
+            throw ExceptionConflitRessourceExistante("Utilisateur existe déjà")
+        }
+
+        try {
+            if (idUtilisateur != null && chercherParCode(idUtilisateur) != null) {
+                throw ExceptionConflitRessourceExistante("Utilisateur existe déjà")
+            }
+
+            jdbcTemplate.update(
+                    "INSERT INTO utilisateur(nom, prénom, courriel, adresse_id, téléphone, rôle) VALUES (?,?,?,?,?,?)",
+                    utilisateur.nom, utilisateur.prénom, utilisateur.courriel, utilisateur.adresse?.idAdresse,
+                    utilisateur.téléphone, utilisateur.rôle
+            )
+        } catch (e: Exception) {
             throw ExceptionErreurServeur("Erreur lors de l'ajout de l'utilisateur: ${e.message}")
         }
-        return id?.let { chercherParCode(it) }
+
+        return idUtilisateur?.let { chercherParCode(it) }
     }
 
     override fun supprimer(idUtilisateur: Int): Utilisateur? {
-        if(chercherParCode(idUtilisateur)==null){
+        if (chercherParCode(idUtilisateur) == null) {
             throw ExceptionRessourceIntrouvable("L'utilisateur avec le ID $idUtilisateur est introuvable")
         }
         try{
@@ -74,6 +88,17 @@ class UtilisateurDAOImpl(private val jdbcTemplate: JdbcTemplate): UtilisateurDAO
         }
         return utilisateur
     }
+
+    override fun validerUtilisateur(code_utilisateur: Int, principal: String?): Boolean {
+        val utilisateur = chercherParCode(code_utilisateur)
+
+        if(utilisateur?.code_util == principal){
+            return true
+        }else{
+            return false
+        }
+    }
+
     private fun mapRowToUtilisateur(rs: ResultSet): Utilisateur {
         val adresseDAO = AdresseDAOImpl(jdbcTemplate)
 
@@ -88,4 +113,9 @@ class UtilisateurDAOImpl(private val jdbcTemplate: JdbcTemplate): UtilisateurDAO
             code_util = rs.getString("code_util")
         )
     }
+
+    override fun validerDroit(utilisateur: Utilisateur?, role: String?): Boolean {
+        return utilisateur?.rôle == role
+    }
+
 }

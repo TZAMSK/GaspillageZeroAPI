@@ -3,6 +3,8 @@ package com.GaspillageZeroAPI.DAO
 import com.GaspillageZeroAPI.Exceptions.ExceptionErreurServeur
 import com.GaspillageZeroAPI.Exceptions.ExceptionRessourceIntrouvable
 import com.GaspillageZeroAPI.Modèle.GabaritProduit
+import com.GaspillageZeroAPI.Modèle.Produit
+import com.GaspillageZeroAPI.Modèle.Utilisateur
 import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.stereotype.Repository
 import java.lang.Exception
@@ -25,6 +27,17 @@ class GabaritProduitDAOImpl(private val jdbcTemplate: JdbcTemplate): GabaritProd
         } catch (e: Exception) {
             throw ExceptionErreurServeur("Erreur lors de la recherche du gabarit produit avec l'ID $idGabaritProduit: ${e.message}")
         }
+    }
+
+    override fun chercherParÉpicerie(idÉpicerie: Int): List<GabaritProduit>? {
+        var gabaritParÉpicerie: List<GabaritProduit>? = null
+        try{
+            gabaritParÉpicerie = jdbcTemplate.query("SELECT * FROM gabaritproduit WHERE idÉpicerie=?", arrayOf(idÉpicerie)) { resultat, _ ->
+                mapRowToGabaritProduit(resultat)
+            }
+        }catch (e:Exception){}
+
+        return gabaritParÉpicerie
     }
 
     private fun obtenirProchaineIncrementationIDGabaritProduit():Int?{
@@ -50,6 +63,8 @@ class GabaritProduitDAOImpl(private val jdbcTemplate: JdbcTemplate): GabaritProd
             throw ExceptionRessourceIntrouvable("Le gabaritproduit avec le ID $idGabaritProduit est introuvable")
         }
         try{
+            jdbcTemplate.update("DELETE FROM commande_produits WHERE produit_id IN (SELECT id FROM produits WHERE idGabarit = ?)", idGabaritProduit)
+            jdbcTemplate.update("DELETE FROM produits WHERE idGabarit=?",idGabaritProduit)
             jdbcTemplate.update("DELETE FROM gabaritproduit WHERE id=?", idGabaritProduit)
         }catch (e: Exception){throw ExceptionErreurServeur("Erreur lors de la suppression du gabararit produit avec l'ID $idGabaritProduit: ${e.message}")}
         return null
@@ -65,13 +80,21 @@ class GabaritProduitDAOImpl(private val jdbcTemplate: JdbcTemplate): GabaritProd
         return gabaritProduit
     }
 
+
+    override fun estGerantParCode(code: String): Boolean {
+        val utilisateurDAO = UtilisateurDAOImpl(jdbcTemplate)
+        val utilisateurs = utilisateurDAO.chercherTous()
+        val utilisateur = utilisateurs.find { it.code_util == code }
+        return utilisateur?.rôle?.contains("épicerie") ?: false
+    }
+
     private fun mapRowToGabaritProduit(resultat: ResultSet):GabaritProduit{
         val épicerieDAO = ÉpicerieDAOImpl(jdbcTemplate)
         return GabaritProduit(
                 resultat.getInt("id"),
                 resultat.getString("nom"),
                 resultat.getString("description"),
-                resultat.getBlob("image"),
+                resultat.getString("image"),
                 resultat.getString("catégorie"),
                 épicerieDAO.chercherParCode(resultat.getInt("idÉpicerie"))
         )

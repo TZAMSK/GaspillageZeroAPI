@@ -1,0 +1,49 @@
+curl --request POST \
+    --url https://dev-tmsylhcqmyl63lry.us.auth0.com/oauth/token \
+    --header 'content-type: application/json' \
+    --data '{
+        "client_id": "citEiVCMfPynxJ439fzpkvkyx8yjLOld",
+        "client_secret": "xuno6FWHaU0smfH8RNqFcoFk2ZOvFgSmZP2C4XJhGCZSq4P6LUnDa6NF5dmLl6a1",
+        "audience": "http://gaspillagezero.demo",
+        "grant_type": "client_credentials"
+    }'
+
+# Samuel Montplaisir - Client
+
+curl --request POST \
+  --url 'https://dev-tmsylhcqmyl63lry.us.auth0.com/oauth/token' \
+  --header 'content-type: application/x-www-form-urlencoded' \
+  --data grant_type=password \
+  --data 'username=sammontplaisir@gmail.com' \
+  --data 'password=collegeR0semont' \
+  --data 'audience=http://gaspillagezero.demo' \
+  --data scope=read:sample \
+  --data 'client_id=citEiVCMfPynxJ439fzpkvkyx8yjLOld' \
+  --data 'client_secret=xuno6FWHaU0smfH8RNqFcoFk2ZOvFgSmZP2C4XJhGCZSq4P6LUnDa6NF5dmLl6a1'
+
+
+# Alikhan Khakimov - Gérant épicerie
+
+curl --request POST \
+  --url 'https://dev-tmsylhcqmyl63lry.us.auth0.com/oauth/token' \
+  --header 'content-type: application/x-www-form-urlencoded' \
+  --data grant_type=password \
+  --data 'username=akhakimov@gmail.com' \
+  --data 'password=collegeR0semont' \
+  --data 'audience=http://gaspillagezero.demo' \
+  --data scope=read:sample \
+  --data 'client_id=citEiVCMfPynxJ439fzpkvkyx8yjLOld' \
+  --data 'client_secret=xuno6FWHaU0smfH8RNqFcoFk2ZOvFgSmZP2C4XJhGCZSq4P6LUnDa6NF5dmLl6a1'
+
+# Joël Vienneau - Livreur
+
+curl --request POST \
+  --url 'https://dev-tmsylhcqmyl63lry.us.auth0.com/oauth/token' \
+  --header 'content-type: application/x-www-form-urlencoded' \
+  --data grant_type=password \
+  --data 'username=joelvienneau@gmail.com' \
+  --data 'password=collegeR0semont' \
+  --data 'audience=http://gaspillagezero.demo' \
+  --data scope=read:sample \
+  --data 'client_id=citEiVCMfPynxJ439fzpkvkyx8yjLOld' \
+  --data 'client_secret=xuno6FWHaU0smfH8RNqFcoFk2ZOvFgSmZP2C4XJhGCZSq4P6LUnDa6NF5dmLl6a1'

@@ -43,6 +43,7 @@ class CommandeDAOImpl(private val jdbcTemplate: JdbcTemplate): CommandeDAO {
         return commandesParUtilisateur
     }
 
+
     override fun chercherCommandesParÉpicerie(idÉpicerie: Int): List<Commande>?{
         var commandesParÉpicerie: List<Commande>? = null
 
@@ -52,8 +53,14 @@ class CommandeDAOImpl(private val jdbcTemplate: JdbcTemplate): CommandeDAO {
             }
         }catch (e: Exception){}
 
+        if(commandesParÉpicerie == null || commandesParÉpicerie.size < 1){
+            throw ExceptionRessourceIntrouvable("Il n'y a pas de commandes pour cette épicerie")
+        }
+
         return commandesParÉpicerie
     }
+     
+
 
     private fun obtenireProchaineIncrementationIDCommande(): Int?{
         return jdbcTemplate.queryForObject("SELECT `auto_increment` FROM INFORMATION_SCHEMA.TABLES\n" +
@@ -110,7 +117,7 @@ class CommandeDAOImpl(private val jdbcTemplate: JdbcTemplate): CommandeDAO {
     fun chercherItemsPanierParCodeCommande(code: Int): MutableList<ItemsPanier>?{
         var panier: MutableList<ItemsPanier>? = null
         try{
-            panier = jdbcTemplate.query("select produits.id, produits.nom, produits.date_expiration, produits.quantité, produits.prix, produits.idÉpicerie, produits.idGabarit from commande_produits join produits on commande_produits.produit_id = produits.id where commande_code = ?", arrayOf(code) ) {resultat, _ ->
+            panier = jdbcTemplate.query("select produits.id, produits.nom, produits.date_expiration, produits.quantité as quantité_produit, produits.prix, produits.idÉpicerie, produits.idGabarit, commande_produits.quantité from commande_produits join produits on commande_produits.produit_id = produits.id where commande_code = ?", arrayOf(code) ) {resultat, _ ->
                 mapRowToItemPanier(resultat)
             }
         }catch (e: Exception){}
@@ -140,7 +147,7 @@ class CommandeDAOImpl(private val jdbcTemplate: JdbcTemplate): CommandeDAO {
                     resultat.getInt("id"),
                     resultat.getString("nom"),
                     resultat.getDate("date_expiration"),
-                    resultat.getInt("quantité"),
+                    resultat.getInt("quantité_produit"),
                     resultat.getDouble("prix"),
                     épicerieDAO.chercherParCode(resultat.getInt("idÉpicerie")),
                     gabaritProduitDAO.chercherParCode(resultat.getInt("idGabarit"))

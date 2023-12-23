@@ -67,6 +67,19 @@ class ÉpicerieDAOImpl(private val jdbcTemplate: JdbcTemplate): ÉpicerieDAO {
         return épicerie
     }
 
+    /*
+    override fun validerÉpicerie(code_épicerie: Int, code_courant: String?): Boolean {
+        val épicerie = chercherParCode(code_épicerie)
+
+        if(épicerie?.tokenAuth0 == code_courant){
+            return true
+        }else{
+            return false
+        }
+    }
+
+     */
+
     private fun mapRowToÉpicerie(resultat: ResultSet): Épicerie{
         val adresseDAO = AdresseDAOImpl(jdbcTemplate)
         val utilisateurDAO = UtilisateurDAOImpl(jdbcTemplate)
@@ -77,7 +90,8 @@ class ÉpicerieDAOImpl(private val jdbcTemplate: JdbcTemplate): ÉpicerieDAO {
                 resultat.getString("nom"),
                 resultat.getString("courriel"),
                 resultat.getString("téléphone"),
-                resultat.getBlob("logo")
+                resultat.getString("logo"),
+               // resultat.getString("codeAuth")
         )
     }
 }

@@ -22,6 +22,7 @@ import org.springframework.web.server.ResponseStatusException
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder
 import org.springframework.web.util.UriComponentsBuilder
 import java.net.URI
+import java.security.Principal
 
 @RestController
 class LivraisonControleur (val livraisonService: LivraisonService, val évaluationService : ÉvaluationService,
@@ -53,7 +54,7 @@ class LivraisonControleur (val livraisonService: LivraisonService, val évaluati
     fun obtenirLivraisons(@PathVariable code_utilisateur: Int,
                           @PathVariable idCommande: Int) = livraisonService.obtenirLivraisons()
 
-    @GetMapping("/utilisateur/{code_utilisateur}/commande/{idCommande}/livraisons/{codeLivraison}", produces = [MediaType.APPLICATION_JSON_VALUE])
+    @GetMapping("/utilisateur/{code_utilisateur}/commande/{idCommande}/livraisons/{codeLivraison}")
     @Operation(summary = "Obtenir une livraison en cherchant par code")
     @ApiResponse(responseCode = "200", description = "Ce code signifie que la livraison a été trouvé avec le bon utilisateur")
     @ApiResponse(responseCode = "401", description = "Ce code est retourné lorsqu'un utilisateur non-authentifié tente de chercher une livraison par code.")

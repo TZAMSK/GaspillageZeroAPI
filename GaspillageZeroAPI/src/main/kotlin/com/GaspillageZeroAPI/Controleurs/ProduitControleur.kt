@@ -10,6 +10,7 @@ import org.springframework.dao.DataIntegrityViolationException
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
+import java.security.Principal
 
 @RestController
 class ProduitControleur(val service: ProduitService) {
@@ -97,9 +98,9 @@ class ProduitControleur(val service: ProduitService) {
     ])
     @Operation(summary = "Ajouter un produit")
     @PostMapping("/produit")
-    fun ajouterProduit(@RequestBody produit: Produit): ResponseEntity<Void> {
+    fun ajouterProduit(@RequestBody produit: Produit, principal: Principal): ResponseEntity<Void> {
         return try {
-            service.ajouter(produit)
+            service.ajouter(produit, principal.name)
             ResponseEntity.status(HttpStatus.CREATED).build()
         } catch (e: DataIntegrityViolationException) {
             throw ExceptionConflitRessourceExistante("Conflit: Violation de contrainte")
@@ -117,9 +118,9 @@ class ProduitControleur(val service: ProduitService) {
     ])
     @Operation(summary = "Supprimer un produit par son ID")
     @DeleteMapping("/produit/{idProduit}")
-    fun supprimerProduit(@PathVariable idProduit: Int): ResponseEntity<Void> {
+    fun supprimerProduit(@PathVariable idProduit: Int, principal: Principal): ResponseEntity<Void> {
         return try {
-            if (service.supprimer(idProduit)) {
+            if (service.supprimer(idProduit, principal.name)) {
                 ResponseEntity.ok().build()
             } else {
                 throw ExceptionRessourceIntrouvable("Produit avec l'ID $idProduit non trouvé")
@@ -139,9 +140,9 @@ class ProduitControleur(val service: ProduitService) {
     ])
     @Operation(summary = "Modifier un produit par son ID")
     @PutMapping("/produit/{idProduit}")
-    fun modifierProduit(@PathVariable idProduit: Int, @RequestBody produit: Produit): ResponseEntity<Void> {
+    fun modifierProduit(@PathVariable idProduit: Int, @RequestBody produit: Produit, principal: Principal): ResponseEntity<Void> {
         return try {
-            if (service.modifier(idProduit, produit)) {
+            if (service.modifier(idProduit, produit, principal.name)) {
                 ResponseEntity.ok().build()
             } else {
                 throw ExceptionRessourceIntrouvable("Produit avec l'ID $idProduit non trouvé")

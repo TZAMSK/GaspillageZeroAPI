@@ -1,5 +1,7 @@
 package com.GaspillageZeroAPI.Controleurs
 
+import com.GaspillageZeroAPI.DAO.SourceDonnées
+import com.GaspillageZeroAPI.Exceptions.ExceptionRessourceIntrouvable
 import com.GaspillageZeroAPI.Modèle.Épicerie
 import com.GaspillageZeroAPI.Services.ÉpicerieService
 import com.fasterxml.jackson.databind.ObjectMapper
@@ -28,8 +30,8 @@ class ÉpicerieControleurTest {
     @Autowired
     private lateinit var mapper: ObjectMapper
 
-    private fun créationÉchantillonEpicerie(idÉpicerie: Int, idAdresse: Int, idUtilisateur: Int, nom: String, courriel: String, téléphone: String, logo: Blob?): Épicerie {
-        return Épicerie(idÉpicerie, idAdresse, idUtilisateur, nom, courriel, téléphone, logo)
+    private fun créationÉchantillonEpicerie(idÉpicerie: Int, idAdresse: Int, idUtilisateur: Int, nom: String, courriel: String, téléphone: String, logo: String?): Épicerie {
+        return Épicerie(idÉpicerie, SourceDonnées.adresses[idAdresse-1], SourceDonnées.utilisateurs[idUtilisateur-1], nom, courriel, téléphone, logo)
     }
 
     @Test
@@ -47,7 +49,7 @@ class ÉpicerieControleurTest {
 
     @Test
     fun `Étant donnée une Épicerie avec le code 4 qui n'existe pas, lorsqu'on éffectue une requète GET alors on obtient un code de retour 404`() {
-        Mockito.`when`(service.chercherParCode(5)).thenThrow(ÉpicerieIntrouvableException::class.java)
+        Mockito.`when`(service.chercherParCode(5)).thenThrow(ExceptionRessourceIntrouvable::class.java)
 
         mockMvc.perform(get("/épicerie/5"))
             .andExpect(status().isNotFound)
