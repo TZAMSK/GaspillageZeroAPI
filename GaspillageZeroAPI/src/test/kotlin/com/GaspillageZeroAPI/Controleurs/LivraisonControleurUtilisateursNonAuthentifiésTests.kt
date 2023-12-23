@@ -58,7 +58,7 @@ class LivraisonControleurUtilisateursNonAuthentifiésTests {
 
     }
     @Test
-    fun `Étant donnée une livraison avec le code 1, lorsqu'on recherche un avis  l'aide d'une requète POST on obtient le code 201`(){
+    fun `Étant donnée une evaluation avec le code 1, lorsqu'on recherche un avis  l'aide d'une requète POST on obtient le code 201`(){
         Mockito.`when`(avis.chercherParCodeÉvaluation(1)).thenReturn(éval)
 
         mockMvc.perform(MockMvcRequestBuilders.get("/evaluations/1"))
