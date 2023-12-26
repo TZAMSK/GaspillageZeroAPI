@@ -4,13 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-<<<<<<< HEAD
     <list default="true" id="6af0c390-7601-48c1-b79c-f305013d14f2" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/GaspillageZeroAPI/src/main/kotlin/com/GaspillageZeroAPI/DAO/ItemsPanierDAOImpl.kt" beforeDir="false" afterPath="$PROJECT_DIR$/GaspillageZeroAPI/src/main/kotlin/com/GaspillageZeroAPI/DAO/ItemsPanierDAOImpl.kt" afterDir="false" />
     </list>
-=======
-    <list default="true" id="6af0c390-7601-48c1-b79c-f305013d14f2" name="Changes" comment="" />
->>>>>>> main
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
