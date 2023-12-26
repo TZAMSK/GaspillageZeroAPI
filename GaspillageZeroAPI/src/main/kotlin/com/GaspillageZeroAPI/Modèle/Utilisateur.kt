@@ -8,5 +8,5 @@ data class Utilisateur(
         val adresse: Adresse?,
         val téléphone: String,
         val rôle: String,
-        val tokenAuth0: String?) {
+        val code_util: String) {
 }

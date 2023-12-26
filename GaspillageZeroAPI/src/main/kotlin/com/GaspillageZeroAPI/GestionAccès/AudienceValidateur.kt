@@ -1,4 +1,4 @@
-package com.GaspillageZeroAPI.GestionAccès
+package crosemont.tdi.g66.restaurantapirest.GestionAccès
 
 import org.springframework.security.oauth2.core.OAuth2Error
 import org.springframework.security.oauth2.core.OAuth2ErrorCodes

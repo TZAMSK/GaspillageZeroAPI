@@ -7,7 +7,7 @@ import org.springframework.data.relational.core.mapping.Table
 class Livraison (
     @Id
     val code: Int?,
-    val commande_code: Int?,
-    val utilisateur_code: Int?,
-    val adresse_id: Int?
+    val commande: Commande?,
+    val utilisateur: Utilisateur?,
+    val adresse: Adresse?
 )
