@@ -92,7 +92,7 @@ class LivraisonControleurUtilisateursAuthentifiésTests {
         val utilisateur = Utilisateur(4, "Vienneau", "Joël", "joelvienneau@gmail.com", adresse, "514 894-8268", "livreur", "auth0|657e62df17683158f971585b")
         val épicerie = Épicerie(1, adresse, utilisateur, "Metro", "metro@gmail.com", "514 231-6666", null)
         val produit = Produit(2, "tomate de la ferme Amarika", date, 25, 1.2, épicerie, GabaritProduit(1, "tomate", "tomate rouge", null, "Fruit&Légumes", épicerie))
-        val commande = Commande(4, épicerie, utilisateur, mutableListOf(ItemsPanier(produit, 1)))
+        val commande = Commande(4, épicerie, utilisateur, mutableListOf(ItemsPanier(1, produit, 1)))
         val nouvelleLivraison = Livraison(4, commande, utilisateur, adresse)
         Mockito.`when`(service.ajouterLivraison(nouvelleLivraison)).thenReturn(nouvelleLivraison)
 
@@ -134,7 +134,7 @@ class LivraisonControleurUtilisateursAuthentifiésTests {
         val utilisateur = Utilisateur(3, "Tabti", "Lyazid", "lyatabti@gmail.com", adresse, "514 894-8268", "client", "auth0|657e62829a0fa387ad493980")
         val épicerie = Épicerie(1, adresse, utilisateur, "Metro", "metro@gmail.com", "514 231-6666", null)
         val produit = Produit(2, "tomate de la ferme Amarika", date, 25, 1.2, épicerie, GabaritProduit(1, "tomate", "tomate rouge", null, "Fruit&Légumes", épicerie))
-        val commande = Commande(2, épicerie, utilisateur, mutableListOf(ItemsPanier(produit, 1)))
+        val commande = Commande(2, épicerie, utilisateur, mutableListOf(ItemsPanier(1, produit, 1)))
         val livraisonExistante = Livraison(2, commande, utilisateur, adresse)
         Mockito.`when`(service.obtenirLivraisonExistanteParCode(2)).thenThrow(ExceptionConflitRessourceExistante("La livraison avec le numéro de code 2 est déjà inscrit au service."))
 
@@ -159,7 +159,7 @@ class LivraisonControleurUtilisateursAuthentifiésTests {
         val utilisateur = Utilisateur(3, "Tabti", "Lyazid", "lyatabti@gmail.com", adresse, "514 894-8268", "client", "auth0|657e62829a0fa387ad493980")
         val épicerie = Épicerie(1, adresse, utilisateur, "Metro", "metro@gmail.com", "514 231-6666", null)
         val produit = Produit(2, "tomate de la ferme Rosemont", date, 25, 1.2, épicerie, GabaritProduit(1, "tomate", "tomate rouge", null, "Fruit&Légumes", épicerie))
-        val commande = Commande(2, épicerie, utilisateur, mutableListOf(ItemsPanier(produit, 1)))
+        val commande = Commande(2, épicerie, utilisateur, mutableListOf(ItemsPanier(1, produit, 1)))
         val updateLivraison = Livraison(2, commande, utilisateur, adresse)
 
         Mockito.`when`(service.modifierLivraison(2, updateLivraison)).thenReturn(null)
@@ -218,7 +218,7 @@ class LivraisonControleurUtilisateursAuthentifiésTests {
         val utilisateur = Utilisateur(3, "Tabti", "Lyazid", "lyatabti@gmail.com", adresse, "514 894-8268", "client", "auth0|657e62829a0fa387ad493980")
         val épicerie = Épicerie(1, adresse, utilisateur, "Metro", "metro@gmail.com", "514 231-6666", null)
         val produit = Produit(2, "tomate de la ferme Rosemont", date, 25, 1.2, épicerie, GabaritProduit(1, "tomate", "tomate rouge", null, "Fruit&Légumes", épicerie))
-        val commande = Commande(2, épicerie, utilisateur, mutableListOf(ItemsPanier(produit, 1)))
+        val commande = Commande(2, épicerie, utilisateur, mutableListOf(ItemsPanier(1, produit, 1)))
         val updateLivraison = Livraison(2, commande, utilisateur, adresse)
 
         Mockito.`when`(service.modifierLivraison(2, updateLivraison)).thenReturn(null)
